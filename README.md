@@ -1,2 +1,6 @@
 # comment3
 A Social web3 comment system.
+
+Metaforo is a forum alternative on Web3 - with features such as Token / NFT Gated access and moderations, Gas-less Airdrop / Tipping, and decentralized user content storage. Our main audiences are the DAO communities who value a less-spammy platform to chat and retain the knowledge and history structurally. We work closely with the pioneers of the Web3 world to reinvent the old-fashioned online forums. Metaforo is built on Ethereum, Arweave and its Layer 2 networks. It brings all the web3 tools that are needed to manage a decentralized group of people who share a common goal. 
+
+Comment3 is another major initiative that was originally incubated out of Metaforo. Comment3 is an open-source, social comment box plugin. Users can leave comments and participate in discussions on any site that integrates Comment3. The comments/discussions will be permanently stored on Arweave. Users can also view each other's Web3 profiles, including NFTs, POAPs, and Kudos. Any comments that were made out of the Comment3 box can automatically link back to an instantly created thread in Metaforo. With the threads being created automatically, the users' comments made across the web3 world are now no longer scattered. Content is inerasable and in structure agai
