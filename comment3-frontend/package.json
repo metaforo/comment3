@@ -1,0 +1,52 @@
+{
+	"name": "vite-project",
+	"private": true,
+	"version": "0.0.0",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build --mode test",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@ant-design/icons-vue": "^6.1.0",
+		"@cyberlab/cyberconnect": "^4.4.1",
+		"@esbuild-plugins/node-globals-polyfill": "^0.1.1",
+		"@solana/spl-token": "^0.2.0",
+		"@solana/web3.js": "^1.41.4",
+		"@unegma/ensjs": "^0.1.7",
+		"@walletconnect/qrcode-modal": "^1.7.8",
+		"ant-design-vue": "^3.2.2",
+		"axios": "^0.26.1",
+		"buffer": "^6.0.3",
+		"chart.js": "^2.9.4",
+		"everpay": "^0.3.4",
+		"fuse.js": "^3.6.1",
+		"lodash": "^4.17.21",
+		"process": "^0.11.10",
+		"quill": "^1.3.6",
+		"quill-delta-to-html": "^0.11.0",
+		"quill-mention": "^3.0.3",
+		"quilljs-markdown": "^1.1.10",
+		"remarkable": "^2.0.1",
+		"vue": "^3.2.25",
+		"vue-chartjs": "^3.5.1",
+		"vue-clipboard2": "^0.3.1",
+		"vue-i18n": "^9.2.0-beta.30",
+		"vue-router": "^4.0.13",
+		"vue3-clipboard": "^1.0.0",
+		"vue3-cookies": "^1.0.6",
+		"vuestic-ui": "^1.3.5",
+		"vuex": "^4.0.2",
+		"walletconnect": "^1.7.8",
+		"web3": "^1.7.3",
+		"web3-core": "^1.7.3"
+	},
+	"devDependencies": {
+		"@intlify/vite-plugin-vue-i18n": "^3.4.0",
+		"@vitejs/plugin-vue": "^2.3.0",
+		"less": "^4.1.2",
+		"sass": "^1.51.0",
+		"typescript": "^4.6.3",
+		"vite": "^2.9.0"
+	}
+}
