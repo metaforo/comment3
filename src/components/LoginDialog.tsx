@@ -79,7 +79,9 @@ export function LoginDialog(props: LoginDialogProps) {
     let content;
     if (loading) {
         content = (
+            <div className={'dialog-circle-div'}>
             <CircularProgress/>
+            </div>
         );
     } else {
         content = (<List>
@@ -110,7 +112,11 @@ export function LoginDialog(props: LoginDialogProps) {
         </List>);
     }
     return (
-        <Dialog onClose={handleClose} open={open} maxWidth={"sm"} fullWidth={true}>
+        <Dialog
+            onClose={handleClose}
+            open={open}
+            maxWidth={"sm"}
+            fullWidth={true}>
             <DialogTitle>Connect Wallet</DialogTitle>
             {content}
         </Dialog>

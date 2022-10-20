@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import "./css/common.css";
 
 window.Buffer = window.Buffer || require("buffer").Buffer;
 const tipElement = document.getElementById('metaforo-tip');
@@ -16,3 +17,4 @@ if (tipElement) {
 } else {
     // Do nothing.
 }
+

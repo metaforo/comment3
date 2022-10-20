@@ -1,0 +1,10 @@
+ .dialog-circle-div{
+     height: 100px;
+     display: flex;
+     text-align: center;
+     width: 100%;
+     justify-content: center;
+     align-items: baseline;
+     padding-top: 35px;
+
+ }
