@@ -29,7 +29,7 @@ export function LoginDialog(props: LoginDialogProps) {
     let selectedValue = '';
 
     const {snakeBarDispatch} = useSnakeBarContext();
-    const {userInfoState, setUserState} = useUserContext();
+    const {setUserState} = useUserContext();
     const [loading, setLoading] = useState(false);
 
     const handleClose = () => {
