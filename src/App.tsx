@@ -23,11 +23,11 @@ function App(props: any) {
             <SnackBarContextProvider>
                 <TipWidgetContextProvider>
                     <UserContextProvider>
-                        <TipWidget siteName={htmlAttrs['siteName']} pageId={htmlAttrs['pageId']}
+                        <TipWidget siteName={htmlAttrs['siteName'].value} pageId={htmlAttrs['pageId'].value}
                                    receiver={{
-                                       address: htmlAttrs['receiverAddress'],
-                                       chainId: htmlAttrs['receiverChainId'],
-                                       username: htmlAttrs['receiverUsername'],
+                                       address: htmlAttrs['receiverAddress'].value,
+                                       chainId: htmlAttrs['receiverChainId'].value,
+                                       username: htmlAttrs['receiverUsername'].value,
                                    }}/>
                     </UserContextProvider>
                 </TipWidgetContextProvider>
