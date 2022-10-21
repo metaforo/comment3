@@ -38,13 +38,12 @@ export default function TipWidget(props: TipWidgetProps) {
 
 
     switch (userInfoState.loginStatus) {
-        case UserStatus.isChecking:
-            return (<div>Checking Current User...</div>);
         case UserStatus.login:
             return (<MemberView/>);
         case UserStatus.notLogin:
             return (<GuestView/>);
+        case UserStatus.isChecking:
         default:
-            return <div></div>
+            return null;
     }
 }
