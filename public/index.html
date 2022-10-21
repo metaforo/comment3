@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="theme-color" content="#000000"/>
     <meta
-            name="description"
-            content="Web site created using create-react-app"
+            name="metaforo tipping widget example"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png"/>
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
     <title>React App</title>
 </head>
-<body style="background-color: #A3BDE0">
+<body style="background-color: #EFEFEF">
 <noscript>You need to enable JavaScript to run this app.</noscript>
+<h1>Metaforo Tipping Widget Example</h1>
 
 <div class="metaforo-tip"
      style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; line-height: 50px; border: 2px solid #5100CE; border-radius: 4px; user-select: none"
@@ -25,7 +25,7 @@
      receiverChainId="1"
      theme="dark"
 >
-    Metaforo Tip
+    Metaforo Tipping
 </div>
 
 <script>
@@ -37,6 +37,41 @@
         }
     }
 </script>
+
+<p>Sample Code: </p>
+<code>
+    <pre>
+&lt;div class=&quot;metaforo-tip&quot;
+     style=&quot;width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; line-height: 50px; border: 2px solid #5100CE; border-radius: 4px; user-select: none&quot;
+     siteName=&quot;INPUT_SITE_NAME&quot;
+     pageId=&quot;INPUT_PAGE_ID&quot;
+     receiverAddress=&quot;INPUT_ADDRESS&quot;
+     receiverUsername=&quot;INPUT_USERNAME&quot;
+     receiverChainId=&quot;1&quot;
+     theme=&quot;dark&quot;&gt;
+    Metaforo Tipping
+&lt;/div&gt;
+    </pre>
+</code>
+
+<p>You can modify the theme attribute in the div tag to specify light or dart styles.</p>
+<p>We use mui as the component library. If you need to customize the style of the popup box, you can define a variable
+    in the window with the value of mui's theme definition in mfTheme. For the full definition format, please refer to
+    <a href="https://mui.com/material-ui/customization/default-theme/">this document</a>.</p>
+
+<code>
+    <pre>
+&lt;script&gt;
+    window.mfTheme = {
+        palette: {
+            background: {
+                paper: &#39;#232323&#39;,
+            }
+        }
+    }
+&lt;/script&gt;
+    </pre>
+</code>
 
 </body>
 </html>
