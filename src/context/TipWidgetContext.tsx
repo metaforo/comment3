@@ -16,7 +16,7 @@ const initialTipWidgetState: TipWidgetState = {
     },
 }
 
-export const TipWidgetContext = createContext<{
+const TipWidgetContext = createContext<{
     tipWidgetState: TipWidgetState,
     tipWidgetDispatch: Dispatch<TipWidgetState>
 }>({

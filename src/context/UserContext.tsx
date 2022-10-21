@@ -10,7 +10,7 @@ export interface UserInfoState {
     arAddress?: string,
 }
 
-export const initialUserState = {
+const initialUserState = {
     loginStatus: UserStatus.isChecking,
     username: undefined,
     avatar: undefined,
@@ -18,7 +18,7 @@ export const initialUserState = {
     arAddress: undefined,
 };
 
-export const UserContext = React.createContext<{ userInfoState: UserInfoState, setUserState: Dispatch<UserInfoState> }>({
+const UserContext = React.createContext<{ userInfoState: UserInfoState, setUserState: Dispatch<UserInfoState> }>({
     userInfoState: initialUserState,
     setUserState: () => null,
 });
