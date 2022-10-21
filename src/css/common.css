@@ -1,4 +1,4 @@
- .dialog-circle-div{
+ .mf-dialog-circle-div{
      height: 100px;
      display: flex;
      text-align: center;
@@ -6,5 +6,34 @@
      justify-content: center;
      align-items: baseline;
      padding-top: 35px;
+ }
 
+ .mf-dialog-padding{
+     padding: 0 24px;
+     display: flex;
+ }
+
+ .mf-position-relative{
+     position: relative;
+ }
+
+
+ /*.mf-dialog-padding .MuiGrid-root{*/
+ /*    --Grid-rowSpacing : unset;*/
+ /*}*/
+
+ .mf-token-info{
+
+ }
+ .mf-token-info .MuiInputBase-root{
+     width: 160px;
+ }
+
+ .mf-token-amount{
+     margin-left: 20px!important;
+     flex-grow: 1;
+ }
+
+ .mf-token-address{
+     flex-grow: 1;
  }

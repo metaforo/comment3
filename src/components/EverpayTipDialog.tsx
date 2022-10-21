@@ -13,6 +13,8 @@ import {
     Stack,
     TextField
 } from "@mui/material";
+import Box from '@mui/system/Box';
+import Grid from '@mui/system/Unstable_Grid';
 import {useUserContext} from "../context/UserContext";
 import tip from "./Everpay";
 
@@ -71,48 +73,59 @@ export function EverpayDialog(props: EverpayDialogProps) {
 
     let content;
     if (loading) {
-        content = (<CircularProgress/>);
+        content = (<div className={'mf-dialog-circle-div'}>
+            <CircularProgress/>
+        </div>);
     } else {
         content = (<Stack direction={'column'} spacing={2}>
             <FormControl>
-                <Stack direction={'row'}>
-                    <InputLabel>Token</InputLabel>
-                    <Select
-                        value={tokenType}
-                        label={'Token'}
-                        onChange={(event: SelectChangeEvent) => {
-                            setTokenType(event.target.value)
-                        }}
-                    >
-                        <MenuItem value={"BNB"}>BNB</MenuItem>
-                        <MenuItem value={"DODO"}>DODO</MenuItem>
-                        <MenuItem value={"LAT"}>LAT</MenuItem>
-                        <MenuItem value={"USDC"}>USDC</MenuItem>
-                        <MenuItem value={"XSGD"}>XSGD</MenuItem>
-                        <MenuItem value={"AR"}>AR</MenuItem>
-                        <MenuItem value={"ETH"}>ETH</MenuItem>
-                        <MenuItem value={"GLMR"}>GLMR</MenuItem>
-                        <MenuItem value={"CFX"}>CFX</MenuItem>
-                        <MenuItem value={"USDT"}>USDT</MenuItem>
-                        <MenuItem value={"FOX"}>FOX</MenuItem>
-                        <MenuItem value={"ARDRIVE"}>ARDRIVE</MenuItem>
-                        <MenuItem value={"SOS"}>SOS</MenuItem>
-                        <MenuItem value={"T4EVER"}>T4EVER</MenuItem>
-                        <MenuItem value={"WBTC"}>WBTC</MenuItem>
-                        <MenuItem value={"ZLK"}>ZLK</MenuItem>
-                        <MenuItem value={"BANK"}>BANK</MenuItem>
-                        <MenuItem value={"VRT"}>VRT</MenuItem>
-                        <MenuItem value={"MASK"}>MASK</MenuItem>
-                        <MenuItem value={"UNI"}>UNI</MenuItem>
-                        <MenuItem value={"DAI"}>DAI</MenuItem>
-                    </Select>
-                    <TextField label={'Amount'} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                <div className={'mf-dialog-padding'}>
+                    
+                    <div className={'mf-position-relative mf-token-info'}>
+                        <InputLabel>Token</InputLabel>
+                        <Select
+                            value={tokenType}
+                            label={'Token'}
+                            onChange={(event: SelectChangeEvent) => {
+                                setTokenType(event.target.value)
+                            }}
+                        >
+                            <MenuItem value={"BNB"}>BNB</MenuItem>
+                            <MenuItem value={"DODO"}>DODO</MenuItem>
+                            <MenuItem value={"LAT"}>LAT</MenuItem>
+                            <MenuItem value={"USDC"}>USDC</MenuItem>
+                            <MenuItem value={"XSGD"}>XSGD</MenuItem>
+                            <MenuItem value={"AR"}>AR</MenuItem>
+                            <MenuItem value={"ETH"}>ETH</MenuItem>
+                            <MenuItem value={"GLMR"}>GLMR</MenuItem>
+                            <MenuItem value={"CFX"}>CFX</MenuItem>
+                            <MenuItem value={"USDT"}>USDT</MenuItem>
+                            <MenuItem value={"FOX"}>FOX</MenuItem>
+                            <MenuItem value={"ARDRIVE"}>ARDRIVE</MenuItem>
+                            <MenuItem value={"SOS"}>SOS</MenuItem>
+                            <MenuItem value={"T4EVER"}>T4EVER</MenuItem>
+                            <MenuItem value={"WBTC"}>WBTC</MenuItem>
+                            <MenuItem value={"ZLK"}>ZLK</MenuItem>
+                            <MenuItem value={"BANK"}>BANK</MenuItem>
+                            <MenuItem value={"VRT"}>VRT</MenuItem>
+                            <MenuItem value={"MASK"}>MASK</MenuItem>
+                            <MenuItem value={"UNI"}>UNI</MenuItem>
+                            <MenuItem value={"DAI"}>DAI</MenuItem>
+                        </Select>
+                    </div>
+
+                    <TextField className={'mf-token-amount'}  label={'Amount'} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         setTokenAmount(parseFloat(event.target.value));
                     }}>0</TextField>
-                </Stack>
+
+                </div>
             </FormControl>
-            <TextField label={'Address'} value={props.toAddress} InputProps={{readOnly: true}}/>
-            <Button onClick={startTipping}>Tip</Button>
+            <div className={'mf-dialog-padding'}>
+                <TextField className={'mf-token-address'}  label={'Address'} value={props.toAddress} InputProps={{readOnly: true}}/>
+            </div>
+            <div className={'mf-dialog-padding'}>
+                <Button onClick={startTipping}>Tip</Button>
+            </div>
         </Stack>);
     }
 

@@ -1,4 +1,4 @@
-import React, {Dispatch} from "react";
+import {Dispatch} from "react";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {loginToEth} from "../api/ApiService";

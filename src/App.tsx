@@ -15,7 +15,7 @@ function App(props: any) {
         || !htmlAttrs['receiverUsername']
         || !htmlAttrs['receiverChainId']
     ) {
-        return (<p>Missing attributes!</p>);
+        return null;
     }
 
     return (
