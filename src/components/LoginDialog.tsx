@@ -17,6 +17,9 @@ import {useUserContext} from "../context/UserContext";
 import {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
 import {connectToWalletconnect} from "./WalletconnectLogin";
+import iconAr from "../assets/arconnect.png";
+import iconWc from "../assets/walletconnect.png";
+import iconMetamask from "../assets/metamask.png";
 
 export interface LoginDialogProps {
     open: boolean,
@@ -86,7 +89,7 @@ export function LoginDialog(props: LoginDialogProps) {
             {/* ArConnect */}
             <ListItemButton onClick={startArConnect}>
                 <Avatar alt={'ArConnect'}
-                        src={'https://www.arconnect.io/_next/image?url=%2Fassets%2Farconnect-logo.svg&w=32&q=75'}
+                        src={iconAr}
                         sx={avatarSxProps}
                 />
                 <ListItemText primary={'ArConnect'}/>
@@ -94,7 +97,7 @@ export function LoginDialog(props: LoginDialogProps) {
             {/* Metamask */}
             <ListItemButton onClick={startMetamaskConnect}>
                 <Avatar alt={'Metamask'}
-                        src={'https://metaforo.io/img/icons/metamask-icon.png'}
+                        src={iconMetamask}
                         sx={avatarSxProps}
                 />
                 <ListItemText primary={'Metamask'}/>
@@ -102,7 +105,7 @@ export function LoginDialog(props: LoginDialogProps) {
             {/* WalletConnect */}
             <ListItemButton onClick={startWalletconnect}>
                 <Avatar alt={'WalletConnect'}
-                        src={'https://metaforo.io/img/icons/WalletConnect-cion.png'}
+                        src={iconWc}
                         sx={avatarSxProps}
                 />
                 <ListItemText primary={'WalletConnect'}/>

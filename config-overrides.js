@@ -5,8 +5,8 @@ module.exports = function override(config, env) {
         },
     };
 // Move runtime into bundle instead of separate file
-    config.optimization.runtimeChunk = false;
-    config.optimization.minimize = false;
+//     config.optimization.runtimeChunk = false;
+//     config.optimization.minimize = false;
 
 // // JS
 //     config.output.filename = '[name].js';
