@@ -80,7 +80,6 @@ export function EverpayDialog(props: EverpayDialogProps) {
         content = (<Stack direction={'column'} spacing={2}>
             <FormControl>
                 <div className={'mf-dialog-padding'}>
-                    
                     <div className={'mf-position-relative mf-token-info'}>
                         <InputLabel>Token</InputLabel>
                         <Select
@@ -123,8 +122,8 @@ export function EverpayDialog(props: EverpayDialogProps) {
             <div className={'mf-dialog-padding'}>
                 <TextField className={'mf-token-address'}  label={'Address'} value={props.toAddress} InputProps={{readOnly: true}}/>
             </div>
-            <div className={'mf-dialog-padding'}>
-                <Button onClick={startTipping}>Tip</Button>
+            <div className={'mf-dialog-padding mf-margin-bottom-20'}>
+                <Button className={'mf-button-style-1'} onClick={startTipping}>Tip</Button>
             </div>
         </Stack>);
     }

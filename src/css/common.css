@@ -17,14 +17,6 @@
      position: relative;
  }
 
-
- /*.mf-dialog-padding .MuiGrid-root{*/
- /*    --Grid-rowSpacing : unset;*/
- /*}*/
-
- .mf-token-info{
-
- }
  .mf-token-info .MuiInputBase-root{
      width: 160px;
  }
@@ -36,4 +28,20 @@
 
  .mf-token-address{
      flex-grow: 1;
+     margin-top: 10px;
  }
+ 
+ .mf-token-address input{
+     cursor: not-allowed;
+ }
+
+ .mf-button-style-1{
+    margin: auto!important;
+     width: 80px;
+ }
+
+ .mf-margin-bottom-20{
+     margin-bottom: 20px!important;
+ }
+ 
+ 
