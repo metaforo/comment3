@@ -10,16 +10,18 @@ export interface UserInfoState {
     arAddress?: string,
 }
 
-const initialUserState = {
-    loginStatus: UserStatus.isChecking,
-    username: undefined,
-    avatar: undefined,
-    ethAddress: undefined,
-    arAddress: undefined,
-};
+function initialUserState() {
+    return {
+        loginStatus: UserStatus.isChecking,
+        username: undefined,
+        avatar: undefined,
+        ethAddress: undefined,
+        arAddress: undefined,
+    };
+}
 
 const UserContext = React.createContext<{ userInfoState: UserInfoState, setUserState: Dispatch<UserInfoState> }>({
-    userInfoState: initialUserState,
+    userInfoState: initialUserState(),
     setUserState: () => null,
 });
 
@@ -64,7 +66,7 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
 export const UserContextProvider = ({children}: { children: JSX.Element }) => {
     const [state, dispatch] = useReducer((state: UserInfoState, newState: Partial<UserInfoState>) => ({
         ...state, ...newState
-    }), initialUserState);
+    }), initialUserState());
     return (
         <UserContext.Provider value={{userInfoState: state, setUserState: dispatch}}>
             {children}

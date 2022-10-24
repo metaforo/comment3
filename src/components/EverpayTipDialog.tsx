@@ -1,10 +1,11 @@
 import {useSnakeBarContext} from "../utils/SnackBar";
 import React, {useState} from "react";
+import {Storage} from "../utils/Storage";
 import {
     Button,
     CircularProgress,
     Dialog,
-    DialogTitle,
+    DialogTitle, Divider,
     FormControl,
     InputLabel,
     MenuItem,
@@ -13,10 +14,9 @@ import {
     Stack,
     TextField
 } from "@mui/material";
-import Box from '@mui/system/Box';
-import Grid from '@mui/system/Unstable_Grid';
 import {useUserContext} from "../context/UserContext";
 import tip from "./Everpay";
+import {UserStatus} from "../utils/Constants";
 
 export interface EverpayDialogProps {
     open: boolean,
@@ -30,7 +30,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
     const {open, onClose, closeDialog} = props;
 
     const {snakeBarDispatch} = useSnakeBarContext();
-    const {userInfoState} = useUserContext();
+    const {userInfoState, setUserState} = useUserContext();
     const [loading, setLoading] = useState(false);
     const [tokenType, setTokenType] = useState('USDC');
     const [tokenAmount, setTokenAmount] = useState(0);
@@ -67,6 +67,17 @@ export function EverpayDialog(props: EverpayDialogProps) {
         }
 
         setLoading(false);
+    }
+
+    const logout = () => {
+        Storage.removeAll();
+        setUserState({
+            loginStatus: UserStatus.notLogin,
+            username: undefined,
+            avatar: undefined,
+            ethAddress: undefined,
+            arAddress: undefined,
+        });
     }
 
     // region ---- Content ----
@@ -124,6 +135,10 @@ export function EverpayDialog(props: EverpayDialogProps) {
             </div>
             <div className={'mf-dialog-padding mf-margin-bottom-20'}>
                 <Button className={'mf-button-style-1'} onClick={startTipping}>Tip</Button>
+            </div>
+            <Divider/>
+            <div className={'mf-dialog-item-padding'}>
+                <Button className={'mf-button-style-1'} onClick={logout}>Log out</Button>
             </div>
         </Stack>);
     }

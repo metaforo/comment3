@@ -1,6 +1,5 @@
 import {useUserContext} from "../context/UserContext";
 import React, {useState} from "react";
-import {Storage} from "../utils/Storage";
 import {UserStatus} from "../utils/Constants";
 import {EverpayDialog} from "../components/EverpayTipDialog";
 import {useTipWidgetContext} from "../context/TipWidgetContext";
@@ -13,17 +12,6 @@ export default function MemberView() {
     const closeLoginDialog = () => {
         setIsOpenLoginDialog(false);
     }
-
-    // function logout() {
-    //     Storage.removeAll();
-    //     setUserState({
-    //         loginStatus: UserStatus.notLogin,
-    //         username: undefined,
-    //         avatar: undefined,
-    //         ethAddress: undefined,
-    //         arAddress: undefined,
-    //     });
-    // }
 
     return (
         <EverpayDialog open={isOpenLoginDialog}
