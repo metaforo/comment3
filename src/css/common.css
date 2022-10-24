@@ -1,47 +1,44 @@
- .mf-dialog-circle-div{
-     height: 100px;
-     display: flex;
-     text-align: center;
-     width: 100%;
-     justify-content: center;
-     align-items: baseline;
-     padding-top: 35px;
- }
+.mf-dialog-circle-div {
+    height: 100px;
+    display: flex;
+    text-align: center;
+    width: 100%;
+    justify-content: center;
+    align-items: baseline;
+    padding-top: 35px;
+}
 
- .mf-dialog-padding{
-     padding: 0 24px;
-     display: flex;
- }
+.mf-dialog-padding {
+    padding: 12px 24px;
+    /*margin-inside: 0 24px;*/
+}
 
- .mf-position-relative{
-     position: relative;
- }
+.mf-dialog-item-padding {
+    display: flex;
+}
 
- .mf-token-info .MuiInputBase-root{
-     width: 160px;
- }
+.mf-position-relative {
+    position: relative;
+}
 
- .mf-token-amount{
-     margin-left: 20px!important;
-     flex-grow: 1;
- }
+.mf-token-info .MuiInputBase-root {
+    width: 160px;
+}
 
- .mf-token-address{
-     flex-grow: 1;
-     margin-top: 10px;
- }
- 
- .mf-token-address input{
-     cursor: not-allowed;
- }
+.mf-token-amount {
+    margin-left: 20px !important;
+    flex-grow: 1;
+}
 
- .mf-button-style-1{
-    margin: auto!important;
-     width: 80px;
- }
+.mf-token-address {
+    flex-grow: 1;
+    margin-top: 10px;
+}
 
- .mf-margin-bottom-20{
-     margin-bottom: 20px!important;
- }
- 
- 
+.mf-token-address input {
+    cursor: not-allowed;
+}
+
+.mf-button-style-1 {
+    margin: auto !important;
+}

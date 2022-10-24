@@ -88,9 +88,9 @@ export function EverpayDialog(props: EverpayDialogProps) {
             <CircularProgress/>
         </div>);
     } else {
-        content = (<Stack direction={'column'} spacing={2}>
+        content = (<Stack direction={'column'} spacing={2} className={'mf-dialog-padding'}>
             <FormControl>
-                <div className={'mf-dialog-padding'}>
+                <div className={'mf-dialog-item-padding'}>
                     <div className={'mf-position-relative mf-token-info'}>
                         <InputLabel>Token</InputLabel>
                         <Select
@@ -124,18 +124,21 @@ export function EverpayDialog(props: EverpayDialogProps) {
                         </Select>
                     </div>
 
-                    <TextField className={'mf-token-amount'}  label={'Amount'} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        setTokenAmount(parseFloat(event.target.value));
-                    }}>0</TextField>
+                    <TextField className={'mf-token-amount'} label={'Amount'}
+                               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                   setTokenAmount(parseFloat(event.target.value));
+                               }}>0</TextField>
 
                 </div>
             </FormControl>
-            <div className={'mf-dialog-padding'}>
-                <TextField className={'mf-token-address'}  label={'Address'} value={props.toAddress} InputProps={{readOnly: true}}/>
+            <div className={'mf-dialog-item-padding'}>
+                <TextField className={'mf-token-address'} label={'Address'} value={props.toAddress}
+                           InputProps={{readOnly: true}}/>
             </div>
-            <div className={'mf-dialog-padding mf-margin-bottom-20'}>
+            <div className={'mf-dialog-item-padding'}>
                 <Button className={'mf-button-style-1'} onClick={startTipping}>Tip</Button>
             </div>
+
             <Divider/>
             <div className={'mf-dialog-item-padding'}>
                 <Button className={'mf-button-style-1'} onClick={logout}>Log out</Button>

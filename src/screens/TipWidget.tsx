@@ -36,7 +36,6 @@ export default function TipWidget(props: TipWidgetProps) {
         }
     }
 
-
     switch (userInfoState.loginStatus) {
         case UserStatus.login:
             return (<MemberView/>);
