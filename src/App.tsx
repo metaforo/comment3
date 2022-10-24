@@ -8,6 +8,17 @@ import {TipWidgetContextProvider} from "./context/TipWidgetContext";
 
 function App(props: any) {
     const htmlAttrs = props.props;
+
+    if (htmlAttrs && htmlAttrs['debug']) {
+        console.log('---- Metaforo Tipping Widget ----');
+        console.log('Version : ' + process.env.REACT_APP_VERSION);
+        console.log('Props : ');
+        for (let i = 0; i < htmlAttrs.length; i++) {
+            console.log(htmlAttrs[i]);
+        }
+        console.log('---- Metaforo Tipping Widget ----');
+    }
+
     if (!htmlAttrs
         || !htmlAttrs['siteName']
         || !htmlAttrs['pageId']

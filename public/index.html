@@ -8,9 +8,9 @@
     <meta
             name="metaforo tipping widget example"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png"/>
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo196.png"/>
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
-    <title>React App</title>
+    <title>Metaforo Tipping Sample</title>
 </head>
 <body style="background-color: #EFEFEF">
 <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -20,10 +20,11 @@
      style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; line-height: 50px; border: 2px solid #5100CE; border-radius: 4px; user-select: none"
      siteName="INPUT_SITE_NAME"
      pageId="INPUT_PAGE_ID"
-     receiverAddress="INPUT_ADDRESS"
-     receiverUsername="INPUT_USERNAME"
+     receiverAddress="%REACT_APP_SAMPLE_ADDRESS%"
+     receiverUsername="%REACT_APP_SAMPLE_USERNAME%"
      receiverChainId="1"
      theme="dark"
+     debug
 >
     Metaforo Tipping
 </div>
