@@ -15,6 +15,7 @@
 
 .mf-dialog-item-padding {
     display: flex;
+    justify-content: space-around;
 }
 
 .mf-position-relative {

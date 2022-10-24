@@ -80,6 +80,10 @@ export function EverpayDialog(props: EverpayDialogProps) {
         });
     }
 
+    const showWallet = () => {
+        window.open('https://metaforo.io/my/wallet', '_blank', 'noopener,noreferrer');
+    }
+
     // region ---- Content ----
 
     let content;
@@ -142,6 +146,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
             <Divider/>
             <div className={'mf-dialog-item-padding'}>
                 <Button className={'mf-button-style-1'} onClick={logout}>Log out</Button>
+                <Button className={'mf-button-style-1'} onClick={showWallet}>Show Wallet Address</Button>
             </div>
         </Stack>);
     }
