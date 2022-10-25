@@ -23,7 +23,7 @@ export interface EverpayToken {
 
 export interface EverpayBalance {
     symbol: string,
-    balance: string,
+    balance: number,
 }
 
 // region ---- init everpay ----
@@ -96,17 +96,15 @@ export async function loadUserBalance(userInfoState: UserInfoState) {
             return response.map((item: BalanceItem) => {
                 return {
                     symbol: item.symbol,
-                    balance: item.balance,
+                    balance: parseFloat(item.balance),
                 } as EverpayBalance;
             });
         }).then((balanceList: EverpayBalance[]) => {
             return balanceList.sort((n1, n2) => {
-                const balance1 = parseFloat(n1.balance);
-                const balance2 = parseFloat(n2.balance);
-                if ((balance1 === 0 && balance2 === 0) || (balance1 !== 0 && balance2 !== 0)) {
+                if ((n1.balance === 0 && n2.balance === 0) || (n1.balance !== 0 && n2.balance !== 0)) {
                     return symbolSortList.indexOf(n1.symbol) > symbolSortList.indexOf(n2.symbol) ? 1 : -1;
                 } else {
-                    if (balance1 !== 0) {
+                    if (n1.balance !== 0) {
                         return -1;
                     } else {
                         return 1;

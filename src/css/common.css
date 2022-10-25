@@ -44,8 +44,19 @@
     margin: auto !important;
 }
 
+.mf-tipping-button {
+    margin: auto !important;
+}
+
 .mf-balance-menu-item {
     display: flex;
     justify-content: space-between;
     width: 280px;
+}
+
+.mf-match-parent-width {
+    width: 100%;
+    width: -moz-available;
+    width: fill-available;
+    width: -webkit-fill-available;
 }

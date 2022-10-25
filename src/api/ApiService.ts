@@ -3,7 +3,7 @@ import log from "../utils/LogUtil";
 import {Storage} from "../utils/Storage";
 import {TipWidgetState} from "../context/TipWidgetContext";
 
-const apiHost = 'https://test-chao.metaforo.io/api';
+const apiHost = 'https://metaforo.io/api';
 
 // region ---- init instance ----
 

@@ -33,8 +33,11 @@ export function EverpayDialog(props: EverpayDialogProps) {
     const {userInfoState, setUserState} = useUserContext();
     const {tipWidgetState} = useTipWidgetContext();
     const [loading, setLoading] = useState(false);
-    const [tokenType, setTokenType] = useState('USDC');
-    const [tokenAmount, setTokenAmount] = useState(0);
+    const [tokenAmount, setTokenAmount] = useState('0');
+    const [selectedBalance, setSelectedBalance] = useState({
+        symbol: '',
+        balance: 0,
+    } as EverpayBalance);
     const [balanceList, setBalanceList] = useState([] as EverpayBalance[]);
 
     useEffect(() => {
@@ -46,15 +49,17 @@ export function EverpayDialog(props: EverpayDialogProps) {
         onClose('');
     }
 
-    const initEverpayInfo = async () => {
+    const initEverpayInfo = () => {
         setLoading(true);
 
-        const balances = await loadUserBalance(userInfoState);
-        if (balances != null) {
-            setBalanceList(balances!);
-        }
-
-        setLoading(false);
+        loadUserBalance(userInfoState)
+            .then((balances) => {
+                if (balances != null) {
+                    setBalanceList(balances!);
+                    setSelectedBalance(balances[0]);
+                }
+                setLoading(false);
+            });
     }
 
     const startTipping = async () => {
@@ -62,8 +67,8 @@ export function EverpayDialog(props: EverpayDialogProps) {
 
         const everpayResponse = await tip({
             toAccount: tipWidgetState.receiver.address,
-            tokenType: tokenType,
-            amount: tokenAmount,
+            tokenType: selectedBalance.symbol,
+            amount: parseFloat(tokenAmount),
             userInfoState: userInfoState,
         });
 
@@ -73,6 +78,8 @@ export function EverpayDialog(props: EverpayDialogProps) {
             // log to metaforo api.
             closeDialog();
             snakeBarDispatch({open: true, message: 'Tipping Success'});
+            // no need wait for log api.
+            // noinspection ES6MissingAwait
             saveEverpayLog(everpayResponse, tipWidgetState);
         } else if (everpayResponse['error']) {
             snakeBarDispatch({open: true, message: everpayResponse['error']});
@@ -127,10 +134,15 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     <div className={'mf-position-relative mf-token-info'}>
                         <InputLabel>Token</InputLabel>
                         <Select
-                            value={tokenType}
+                            value={selectedBalance.symbol}
                             label={'Token'}
                             onChange={(event: SelectChangeEvent) => {
-                                setTokenType(event.target.value)
+                                balanceList.forEach((b) => {
+                                    if (b.symbol === event.target.value) {
+                                        setSelectedBalance(b);
+                                        setTokenAmount('0');
+                                    }
+                                })
                             }}
                             renderValue={(selected) => (
                                 <>{selected}</>
@@ -147,14 +159,45 @@ export function EverpayDialog(props: EverpayDialogProps) {
                         </Select>
                     </div>
 
-                    <TextField className={'mf-token-amount'} label={'Amount'}
+                    <TextField className={'mf-token-amount'}
+                               label={'Amount (You have ' + selectedBalance.balance + ' ' + selectedBalance.symbol + ')'}
                                inputProps={{
+                                   max: selectedBalance.balance,
+                                   min: 0,
                                    inputMode: 'numeric',
-                                   pattern: '[0-9】*',
+                               }}
+                               value={tokenAmount}
+                               onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
+                                   if (event.target.value.length === 0) {
+                                       setTokenAmount('0');
+                                   }
                                }}
                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                   setTokenAmount(parseFloat(event.target.value));
-                               }}>0</TextField>
+                                   if (!/^([0-9]*[.])?[0-9]*$/.test(event.target.value)) {
+                                       return;
+                                   }
+                                   if (event.target.value.indexOf('.') === event.target.value.length - 1) {
+                                       // The user has entered a decimal point and needs to wait for the decimal part to be entered
+                                       setTokenAmount(event.target.value);
+                                       return;
+                                   }
+
+                                   let val = parseFloat(event.target.value);
+                                   if (isNaN(val)) {
+                                       val = 0;
+                                   } else if (val > selectedBalance.balance) {
+                                       val = selectedBalance.balance;
+                                   } else if (val < 0) {
+                                       val = 0;
+                                   } else {
+                                       // this is a special case for 0.000
+                                       setTokenAmount(event.target.value);
+                                       return;
+                                   }
+
+                                   setTokenAmount(val.toString());
+                               }}
+                    />
 
                 </div>
             </FormControl>
@@ -163,7 +206,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                            InputProps={{readOnly: true}}/>
             </div>
             <div className={'mf-dialog-item-padding'}>
-                <Button className={'mf-button-style-1'} onClick={startTipping}>Tip</Button>
+                <Button className={'mf-tipping-button mf-match-parent-width'} onClick={startTipping}>Tip</Button>
             </div>
 
             <Divider/>
