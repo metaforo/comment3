@@ -1,5 +1,5 @@
 import {useSnakeBarContext} from "../utils/SnackBar";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Storage} from "../utils/Storage";
 import {
     Button,
@@ -15,7 +15,7 @@ import {
     TextField
 } from "@mui/material";
 import {useUserContext} from "../context/UserContext";
-import tip from "./Everpay";
+import {tip, removeEverpayInstance, loadUserBalance, EverpayBalance} from "./Everpay";
 import {UserStatus} from "../utils/Constants";
 import {saveEverpayLog} from "../api/ApiService";
 import {useTipWidgetContext} from "../context/TipWidgetContext";
@@ -35,9 +35,26 @@ export function EverpayDialog(props: EverpayDialogProps) {
     const [loading, setLoading] = useState(false);
     const [tokenType, setTokenType] = useState('USDC');
     const [tokenAmount, setTokenAmount] = useState(0);
+    const [balanceList, setBalanceList] = useState([] as EverpayBalance[]);
+
+    useEffect(() => {
+        initEverpayInfo();
+        // eslint-disable-next-line
+    }, []);
 
     const handleClose = () => {
         onClose('');
+    }
+
+    const initEverpayInfo = async () => {
+        setLoading(true);
+
+        const balances = await loadUserBalance(userInfoState);
+        if (balances != null) {
+            setBalanceList(balances!);
+        }
+
+        setLoading(false);
     }
 
     const startTipping = async () => {
@@ -72,6 +89,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
 
     const logout = () => {
         Storage.removeAll();
+        removeEverpayInstance();
         setUserState({
             loginStatus: UserStatus.notLogin,
             username: undefined,
@@ -93,6 +111,16 @@ export function EverpayDialog(props: EverpayDialogProps) {
             <CircularProgress/>
         </div>);
     } else {
+
+        const menuItems = balanceList.map((balance) => {
+            return (<MenuItem key={balance.symbol} value={balance.symbol}>
+                <div className='mf-balance-menu-item'>
+                    <p>{balance.symbol}</p>
+                    <p>{balance.balance}</p>
+                </div>
+            </MenuItem>);
+        });
+
         content = (<Stack direction={'column'} spacing={2} className={'mf-dialog-padding'}>
             <FormControl>
                 <div className={'mf-dialog-item-padding'}>
@@ -104,32 +132,26 @@ export function EverpayDialog(props: EverpayDialogProps) {
                             onChange={(event: SelectChangeEvent) => {
                                 setTokenType(event.target.value)
                             }}
+                            renderValue={(selected) => (
+                                <>{selected}</>
+                            )}
+                            MenuProps={{
+                                PaperProps: {
+                                    style: {
+                                        maxHeight: 520,
+                                    }
+                                }
+                            }}
                         >
-                            <MenuItem value={"BNB"}>BNB</MenuItem>
-                            <MenuItem value={"DODO"}>DODO</MenuItem>
-                            <MenuItem value={"LAT"}>LAT</MenuItem>
-                            <MenuItem value={"USDC"}>USDC</MenuItem>
-                            <MenuItem value={"XSGD"}>XSGD</MenuItem>
-                            <MenuItem value={"AR"}>AR</MenuItem>
-                            <MenuItem value={"ETH"}>ETH</MenuItem>
-                            <MenuItem value={"GLMR"}>GLMR</MenuItem>
-                            <MenuItem value={"CFX"}>CFX</MenuItem>
-                            <MenuItem value={"USDT"}>USDT</MenuItem>
-                            <MenuItem value={"FOX"}>FOX</MenuItem>
-                            <MenuItem value={"ARDRIVE"}>ARDRIVE</MenuItem>
-                            <MenuItem value={"SOS"}>SOS</MenuItem>
-                            <MenuItem value={"T4EVER"}>T4EVER</MenuItem>
-                            <MenuItem value={"WBTC"}>WBTC</MenuItem>
-                            <MenuItem value={"ZLK"}>ZLK</MenuItem>
-                            <MenuItem value={"BANK"}>BANK</MenuItem>
-                            <MenuItem value={"VRT"}>VRT</MenuItem>
-                            <MenuItem value={"MASK"}>MASK</MenuItem>
-                            <MenuItem value={"UNI"}>UNI</MenuItem>
-                            <MenuItem value={"DAI"}>DAI</MenuItem>
+                            {menuItems}
                         </Select>
                     </div>
 
                     <TextField className={'mf-token-amount'} label={'Amount'}
+                               inputProps={{
+                                   inputMode: 'numeric',
+                                   pattern: '[0-9】*',
+                               }}
                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                    setTokenAmount(parseFloat(event.target.value));
                                }}>0</TextField>
@@ -147,7 +169,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
             <Divider/>
             <div className={'mf-dialog-item-padding'}>
                 <Button className={'mf-button-style-1'} onClick={logout}>Log out</Button>
-                <Button className={'mf-button-style-1'} onClick={showWallet}>Show Wallet Address</Button>
+                <Button className={'mf-button-style-1'} onClick={showWallet}>Show Transaction History</Button>
             </div>
         </Stack>);
     }
