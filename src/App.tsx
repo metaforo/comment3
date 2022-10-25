@@ -14,7 +14,7 @@ function App(props: any) {
     if (htmlAttrs && htmlAttrs['debug']) {
         Global.isDebug = true;
         log('---- Metaforo Tipping Widget ----');
-        log('Version : ', process.env.REACT_APP_VERSION);
+        log('Version : ' + process.env.REACT_APP_VERSION);
         log('Props : ');
         for (let i = 0; i < htmlAttrs.length; i++) {
             log(htmlAttrs[i]);

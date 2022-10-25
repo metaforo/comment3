@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import "./css/common.css";
-import log from './utils/LogUtil';
 
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
@@ -13,13 +12,14 @@ if (elements) {
         if (e && e instanceof HTMLElement) {
             e.addEventListener('click', (event) => {
                 if (event.target && event.target instanceof HTMLElement) {
-                    if (!e.attributes.getNamedItem('siteName')
-                        || !e.attributes.getNamedItem('pageId')
-                        || !e.attributes.getNamedItem('receiverAddress')
-                        || !e.attributes.getNamedItem('receiverUsername')
-                        || !e.attributes.getNamedItem('receiverChainId')
-                    ) {
-                        log('Missing attributes for metaforo-tip. element is ' + e.id);
+                    let missingAttrs = [];
+                    if (!e.attributes.getNamedItem('siteName')) missingAttrs.push('siteName');
+                    if (!e.attributes.getNamedItem('pageId')) missingAttrs.push('pageId');
+                    if (!e.attributes.getNamedItem('receiverAddress')) missingAttrs.push('receiverAddress');
+                    if (!e.attributes.getNamedItem('receiverUsername')) missingAttrs.push('receiverUsername');
+                    if (!e.attributes.getNamedItem('receiverChainId')) missingAttrs.push('sireceiverChainIdteName');
+                    if (missingAttrs.length > 0) {
+                        console.warn('Missing attributes ' + missingAttrs.join(',') + ' for metaforo-tip. element is ', e);
                         return;
                     }
 
