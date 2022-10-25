@@ -17,6 +17,7 @@ import {
 import {useUserContext} from "../context/UserContext";
 import tip from "./Everpay";
 import {UserStatus} from "../utils/Constants";
+import {saveEverpayLog} from "../api/ApiService";
 
 export interface EverpayDialogProps {
     open: boolean,
@@ -55,7 +56,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
             // log to metaforo api.
             closeDialog();
             snakeBarDispatch({open: true, message: 'Tipping Success'});
-            // TODO: 发送后端请求，记录 tip 结果
+            saveEverpayLog(everpayResponse);
         } else if (everpayResponse['error']) {
             snakeBarDispatch({open: true, message: everpayResponse['error']});
         } else {

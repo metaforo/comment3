@@ -5,18 +5,21 @@ import {createThemeFromAttr} from "./utils/ThemeUtil";
 import {SnackBarContextProvider} from "./utils/SnackBar";
 import {UserContextProvider} from "./context/UserContext";
 import {TipWidgetContextProvider} from "./context/TipWidgetContext";
+import {Global} from "./utils/GlobalVariables";
+import log from "./utils/LogUtil";
 
 function App(props: any) {
     const htmlAttrs = props.props;
 
     if (htmlAttrs && htmlAttrs['debug']) {
-        console.log('---- Metaforo Tipping Widget ----');
-        console.log('Version : ' + process.env.REACT_APP_VERSION);
-        console.log('Props : ');
+        Global.isDebug = true;
+        log('---- Metaforo Tipping Widget ----');
+        log('Version : ', process.env.REACT_APP_VERSION);
+        log('Props : ');
         for (let i = 0; i < htmlAttrs.length; i++) {
-            console.log(htmlAttrs[i]);
+            log(htmlAttrs[i]);
         }
-        console.log('---- Metaforo Tipping Widget ----');
+        log('---- Metaforo Tipping Widget ----');
     }
 
     if (!htmlAttrs
@@ -34,23 +37,32 @@ function App(props: any) {
         paletteMode = htmlAttrs['theme'].value;
     }
 
+    const StateProviders = composeProviders(
+        SnackBarContextProvider,
+        TipWidgetContextProvider,
+        UserContextProvider,
+    );
+
     return (
         <ThemeProvider theme={createThemeFromAttr(paletteMode)}>
-            <SnackBarContextProvider>
-                <TipWidgetContextProvider>
-                    <UserContextProvider>
-                        <TipWidget
-                            siteName={htmlAttrs['siteName'].value}
-                            pageId={htmlAttrs['pageId'].value}
-                            receiver={{
-                                address: htmlAttrs['receiverAddress'].value,
-                                chainId: htmlAttrs['receiverChainId'].value,
-                                username: htmlAttrs['receiverUsername'].value,
-                            }}/>
-                    </UserContextProvider>
-                </TipWidgetContextProvider>
-            </SnackBarContextProvider>
+            <StateProviders>
+                <TipWidget
+                    siteName={htmlAttrs['siteName'].value}
+                    pageId={htmlAttrs['pageId'].value}
+                    receiver={{
+                        address: htmlAttrs['receiverAddress'].value,
+                        chainId: htmlAttrs['receiverChainId'].value,
+                        username: htmlAttrs['receiverUsername'].value,
+                    }}/>
+            </StateProviders>
         </ThemeProvider>
+    );
+}
+
+function composeProviders(...providers: any) {
+    return ({children}: { children: JSX.Element }) => providers.reduce(
+        (prev: any, Provider: any) => <Provider>{prev}</Provider>,
+        children,
     );
 }
 

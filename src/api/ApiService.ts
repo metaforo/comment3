@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from "axios";
+import log from "../utils/LogUtil";
 import {Storage} from "../utils/Storage";
 
 const apiHost = 'https://test-chao.metaforo.io/api';
@@ -9,7 +10,7 @@ let instance = axios.create({
     baseURL: apiHost,
     headers: {
         common: {
-            'mf-api-key': 'metaqus',
+            'mf-api-key': 'mf-sdk',
         }
     },
 })
@@ -22,14 +23,15 @@ export function initStatus(token: string) {
 
 function handleResponse(res: AxiosResponse) {
     if (res.status !== 200) {
-        console.log(res);
+        log(res);
     } else {
         if (res.data.data && res.data.data.api_token) {
-            console.log('---- response start ----');
-            console.log(res.data.data);
-            console.log(res.data.data.api_token);
-            console.log('---- response end ----');
+            log('---- response start ----');
+            log(res.data.data);
+            log(res.data.data.api_token);
+            log('---- response end ----');
             Storage.saveItem(Storage.userToken, res.data.data.api_token);
+            initStatus(res.data.data.api_token);
         }
         return res.data;
     }
@@ -95,9 +97,26 @@ export function loginToAr(account: string, publicKey: string, sign: string, sign
     });
 }
 
+export function saveEverpayLog(everpayResponse: any) {
+    return post('/everpay/init', {
+        'hash': everpayResponse.everHash,
+        'symbol': everpayResponse.everpayTx.tokenSymbol,
+        'from': everpayResponse.everpayTx.from,
+        'to': everpayResponse.everpayTx.to,
+        'amount': everpayResponse.everpayTx.amount,
+        'chain_type': everpayResponse.everpayTx.chainType,
+        'token_id': everpayResponse.everpayTx.tokenID,
+        'group_name': 'MetaforoOfficialDiscussionGroup',
+        'post_id': '0',
+    }).then(res => {
+        // console.log(res);
+        // do nothing.
+    });
+}
+
 export function getCurrentUser() {
     return get('/me').then(res => {
-        console.log('get current user ' + res.data + ' , ' + res.data.user);
+        log('get current user ' + res.data + ' , ' + res.data.user);
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
         }
@@ -107,7 +126,6 @@ export function getCurrentUser() {
 
 function saveUserInfoToStorage(user: any) {
     Storage.saveItem(Storage.userName, user.username);
-    Storage.saveItem(Storage.userAvatar, user.photo_url);
     Storage.saveItem(Storage.userAvatar, user.photo_url);
     user.web3_public_keys.forEach((web3Key: any) => {
         switch (web3Key.type) {

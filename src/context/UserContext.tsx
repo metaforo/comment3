@@ -1,6 +1,7 @@
 import React, {Dispatch, useContext, useReducer} from "react";
 import {UserStatus} from "../utils/Constants";
 import {Storage} from "../utils/Storage";
+import {initStatus} from "../api/ApiService";
 
 export interface UserInfoState {
     loginStatus: number,
@@ -35,6 +36,7 @@ export function updateUserStatusByLocalStorage(userInfoState: UserInfoState, dis
     userInfoState.ethAddress = Storage.getItem(Storage.userEthAddress) ?? '';
     userInfoState.arAddress = Storage.getItem(Storage.userArAddress) ?? '';
     dispatch(userInfoState);
+    initStatus(Storage.getItem(Storage.userToken) ?? '');
 }
 
 export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<UserInfoState>) {

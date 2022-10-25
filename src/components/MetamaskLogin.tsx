@@ -4,6 +4,7 @@ import {loginToEth} from "../api/ApiService";
 import {LoginType} from "../utils/Constants";
 import {Storage} from "../utils/Storage";
 import {Dispatch} from "react";
+import log from "../utils/LogUtil";
 
 export async function connectToMetamask(setUserState: Dispatch<UserInfoState>) {
     // @ts-ignore
@@ -18,7 +19,7 @@ export async function connectToMetamask(setUserState: Dispatch<UserInfoState>) {
         method: 'eth_signTypedData_v4',
         params: [account.toLowerCase(), signMsg],
     }).then((res: any) => {
-        console.log(JSON.stringify(res));
+        log(JSON.stringify(res));
         return res;
     });
 

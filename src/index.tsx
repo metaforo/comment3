@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import "./css/common.css";
+import log from './utils/LogUtil';
 
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
@@ -18,7 +19,7 @@ if (elements) {
                         || !e.attributes.getNamedItem('receiverUsername')
                         || !e.attributes.getNamedItem('receiverChainId')
                     ) {
-                        console.log('Missing attributes for metaforo-tip. element is ' + e.id);
+                        log('Missing attributes for metaforo-tip. element is ' + e.id);
                         return;
                     }
 
