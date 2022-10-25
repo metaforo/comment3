@@ -18,13 +18,12 @@ import {useUserContext} from "../context/UserContext";
 import tip from "./Everpay";
 import {UserStatus} from "../utils/Constants";
 import {saveEverpayLog} from "../api/ApiService";
+import {useTipWidgetContext} from "../context/TipWidgetContext";
 
 export interface EverpayDialogProps {
     open: boolean,
     onClose: (value: string) => void,
     closeDialog: () => void,
-    toUsername: string,
-    toAddress: string,
 }
 
 export function EverpayDialog(props: EverpayDialogProps) {
@@ -32,6 +31,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
 
     const {snakeBarDispatch} = useSnakeBarContext();
     const {userInfoState, setUserState} = useUserContext();
+    const {tipWidgetState} = useTipWidgetContext();
     const [loading, setLoading] = useState(false);
     const [tokenType, setTokenType] = useState('USDC');
     const [tokenAmount, setTokenAmount] = useState(0);
@@ -44,7 +44,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
         setLoading(true);
 
         const everpayResponse = await tip({
-            toAccount: props.toAddress,
+            toAccount: tipWidgetState.receiver.address,
             tokenType: tokenType,
             amount: tokenAmount,
             userInfoState: userInfoState,
@@ -56,7 +56,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
             // log to metaforo api.
             closeDialog();
             snakeBarDispatch({open: true, message: 'Tipping Success'});
-            saveEverpayLog(everpayResponse);
+            saveEverpayLog(everpayResponse, tipWidgetState);
         } else if (everpayResponse['error']) {
             snakeBarDispatch({open: true, message: everpayResponse['error']});
         } else {
@@ -137,7 +137,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                 </div>
             </FormControl>
             <div className={'mf-dialog-item-padding'}>
-                <TextField className={'mf-token-address'} label={'Address'} value={props.toAddress}
+                <TextField className={'mf-token-address'} label={'Address'} value={tipWidgetState.receiver.address}
                            InputProps={{readOnly: true}}/>
             </div>
             <div className={'mf-dialog-item-padding'}>
@@ -156,7 +156,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth={'sm'}>
-            <DialogTitle>Tip to {props.toUsername}</DialogTitle>
+            <DialogTitle>Tip to {tipWidgetState.receiver.username}</DialogTitle>
             {content}
         </Dialog>
     );

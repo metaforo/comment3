@@ -23,7 +23,7 @@ export async function connectToMetamask(setUserState: Dispatch<UserInfoState>) {
         return res;
     });
 
-    loginToEth(account, sign, signMsg).then(res => {
+    await loginToEth(account, sign, signMsg).then(res => {
         updateUserStatusByLoginResponse(res, setUserState);
         Storage.saveItem(Storage.lastLoginType, LoginType.eth);
     });

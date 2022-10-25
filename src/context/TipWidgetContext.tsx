@@ -1,7 +1,7 @@
 import {createContext, Dispatch, useContext, useReducer} from "react";
 import {TipAccount} from "../model/TipAccount";
 
-interface TipWidgetState {
+export interface TipWidgetState {
     siteName: string,
     pageId: string,
     receiver: TipAccount,

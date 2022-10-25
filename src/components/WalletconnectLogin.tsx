@@ -20,7 +20,7 @@ export async function connectToWalletconnect(setUserState: Dispatch<UserInfoStat
         let msg = JSON.stringify(typedData(account));
         let sign = await requestSignData(account, msg);
 
-        loginToEth(account, sign, msg).then(res => {
+        await loginToEth(account, sign, msg).then(res => {
             updateUserStatusByLoginResponse(res, setUserState);
             Storage.saveItem(Storage.lastLoginType, LoginType.walletConnect);
         });

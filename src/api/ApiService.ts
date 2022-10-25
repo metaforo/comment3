@@ -1,6 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 import log from "../utils/LogUtil";
 import {Storage} from "../utils/Storage";
+import {TipWidgetState} from "../context/TipWidgetContext";
 
 const apiHost = 'https://test-chao.metaforo.io/api';
 
@@ -97,7 +98,7 @@ export function loginToAr(account: string, publicKey: string, sign: string, sign
     });
 }
 
-export function saveEverpayLog(everpayResponse: any) {
+export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState) {
     return post('/everpay/init', {
         'hash': everpayResponse.everHash,
         'symbol': everpayResponse.everpayTx.tokenSymbol,
@@ -106,8 +107,8 @@ export function saveEverpayLog(everpayResponse: any) {
         'amount': everpayResponse.everpayTx.amount,
         'chain_type': everpayResponse.everpayTx.chainType,
         'token_id': everpayResponse.everpayTx.tokenID,
-        'group_name': 'MetaforoOfficialDiscussionGroup',
-        'post_id': '0',
+        'group_name': tipWidgetState.siteName,
+        'post_id': tipWidgetState.pageId,
     }).then(res => {
         // console.log(res);
         // do nothing.
