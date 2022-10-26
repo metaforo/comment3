@@ -14,16 +14,11 @@ interface TipEverpayProps {
     userInfoState: UserInfoState,
 }
 
-
-export interface EverpayToken {
-    tag: string,
-    symbol: string,
-    decimals: number,
-}
-
 export interface EverpayBalance {
     symbol: string,
     balance: number,
+    decimals: number,
+    tag: string,
 }
 
 // region ---- init everpay ----
@@ -88,21 +83,31 @@ export async function loadUserBalance(userInfoState: UserInfoState) {
         return null;
     }
 
-    const symbolSortList = await everpayInstance.info()
-        .then((response: EverpayInfo) => response.tokenList.map((k: Token) => k.symbol));
+    const tokenList = await everpayInstance.info()
+        .then((response: EverpayInfo) => response.tokenList);
 
     return await everpayInstance?.balances()
         .then((response: BalanceItem[]) => {
-            return response.map((item: BalanceItem) => {
+            const balanceMap = response.reduce((map: any, item: BalanceItem) => {
+                map[item.symbol] = item.balance;
+                return map;
+            }, {});
+            return tokenList.map((token: Token) => {
+                let balance = 0;
+                if (balanceMap[token.symbol]) {
+                    balance = parseFloat(balanceMap[token.symbol]);
+                }
                 return {
-                    symbol: item.symbol,
-                    balance: parseFloat(item.balance),
+                    balance: balance,
+                    decimals: token.decimals,
+                    symbol: token.symbol,
+                    tag: token.tag,
                 } as EverpayBalance;
             });
         }).then((balanceList: EverpayBalance[]) => {
             return balanceList.sort((n1, n2) => {
                 if ((n1.balance === 0 && n2.balance === 0) || (n1.balance !== 0 && n2.balance !== 0)) {
-                    return symbolSortList.indexOf(n1.symbol) > symbolSortList.indexOf(n2.symbol) ? 1 : -1;
+                    return 0;
                 } else {
                     if (n1.balance !== 0) {
                         return -1;
