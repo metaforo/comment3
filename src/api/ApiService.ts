@@ -98,13 +98,13 @@ export function loginToAr(account: string, publicKey: string, sign: string, sign
     });
 }
 
-export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState) {
+export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: String) {
     return post('/everpay/init', {
         'hash': everpayResponse.everHash,
         'symbol': everpayResponse.everpayTx.tokenSymbol,
         'from': everpayResponse.everpayTx.from,
         'to': everpayResponse.everpayTx.to,
-        'amount': everpayResponse.everpayTx.amount,
+        'amount': amount, // everpay.everpayTx.amount should divide by decimal.
         'chain_type': everpayResponse.everpayTx.chainType,
         'token_id': everpayResponse.everpayTx.tokenID,
         'group_name': tipWidgetState.siteName,

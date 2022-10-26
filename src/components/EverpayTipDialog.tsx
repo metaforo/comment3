@@ -80,7 +80,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
             snakeBarDispatch({open: true, message: 'Tipping Success'});
             // no need wait for log api.
             // noinspection ES6MissingAwait
-            saveEverpayLog(everpayResponse, tipWidgetState);
+            saveEverpayLog(everpayResponse, tipWidgetState, parseFloat(tokenAmount).toString(),);
         } else if (everpayResponse['error']) {
             snakeBarDispatch({open: true, message: everpayResponse['error']});
         } else {
