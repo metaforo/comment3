@@ -19,6 +19,7 @@ import {tip, removeEverpayInstance, loadUserBalance, EverpayBalance} from "./Eve
 import {UserStatus} from "../utils/Constants";
 import {saveEverpayLog} from "../api/ApiService";
 import {useTipWidgetContext} from "../context/TipWidgetContext";
+import {Global} from "../utils/GlobalVariables";
 
 export interface EverpayDialogProps {
     open: boolean,
@@ -63,6 +64,12 @@ export function EverpayDialog(props: EverpayDialogProps) {
     }
 
     const startTipping = async () => {
+
+        if (!Global.isDemo && parseFloat(tokenAmount) === 0) {
+            snakeBarDispatch({open: true, message: 'Tipping amount must larger than 0'});
+            return;
+        }
+
         setLoading(true);
 
         const everpayResponse = await tip({
@@ -80,7 +87,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
             snakeBarDispatch({open: true, message: 'Tipping Success'});
             // no need wait for log api.
             // noinspection ES6MissingAwait
-            saveEverpayLog(everpayResponse, tipWidgetState);
+            saveEverpayLog(everpayResponse, tipWidgetState, parseFloat(tokenAmount).toString(),);
         } else if (everpayResponse['error']) {
             snakeBarDispatch({open: true, message: everpayResponse['error']});
         } else {
@@ -176,10 +183,18 @@ export function EverpayDialog(props: EverpayDialogProps) {
                                    if (!/^([0-9]*[.])?[0-9]*$/.test(event.target.value)) {
                                        return;
                                    }
-                                   if (event.target.value.indexOf('.') === event.target.value.length - 1) {
-                                       // The user has entered a decimal point and needs to wait for the decimal part to be entered
-                                       setTokenAmount(event.target.value);
-                                       return;
+                                   const pointIndex = event.target.value.indexOf('.');
+                                   if (pointIndex >= 0) {
+                                       const fractionDigits = event.target.value.length - 1 - pointIndex;
+                                       if (fractionDigits === 0) {
+                                           // The user has entered a decimal point and needs to wait for the decimal part to be entered
+                                           setTokenAmount(event.target.value);
+                                           return;
+                                       } else {
+                                           if (fractionDigits > selectedBalance.decimals) {
+                                               return;
+                                           }
+                                       }
                                    }
 
                                    let val = parseFloat(event.target.value);

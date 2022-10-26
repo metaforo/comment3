@@ -10,6 +10,7 @@
     <link rel="manifest" href="/manifest.json"/>
     <title>Metaforo Tipping Sample</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script defer="defer" src="https://cdn.jsdelivr.net/gh/metaforo/comment3@0.1.4/dist/metaforo-sdk.min.js"></script>
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -33,11 +34,10 @@
          style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none"
          siteName="INPUT_SITE_NAME"
          pageId="INPUT_PAGE_ID"
-         receiverAddress="%REACT_APP_SAMPLE_ADDRESS%"
-         receiverUsername="%REACT_APP_SAMPLE_USERNAME%"
+         receiverAddress="INPUT_ADDRESS"
+         receiverUsername="INPUT_USERNAME"
          receiverChainId="1"
          theme="dark"
-         demo
     >
         Metaforo Tipping
     </div>
