@@ -31,6 +31,7 @@
   "scripts": {
     "start": "PUBLIC_URL=/ GENERATE_SOURCEMAP=false react-app-rewired start",
     "build": "PUBLIC_URL=/ GENERATE_SOURCEMAP=false react-app-rewired build",
+    "publish": "npm run build && cp build/metaforo-sdk.min.js dist && cp build/metaforo-sdk.min.js.LICENSE.txt dist",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "build:clean": "cd build && cp static/js/*.js main.js && cp static/css/*.css main.css"
