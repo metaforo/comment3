@@ -13,7 +13,7 @@ Based on Everpay
 ## Sample Code
 
 ```html
-<script defer="defer" src="https://cdn.jsdelivr.net/gh/metaforo/comment3@0.1.4/dist/main.min.js"></script>
+<script defer="defer" src="https://cdn.jsdelivr.net/gh/metaforo/comment3/dist/main.min.js"></script>
 
 <div class="metaforo-tip"
      style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none"
