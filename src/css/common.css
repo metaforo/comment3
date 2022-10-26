@@ -57,6 +57,8 @@
 .mf-match-parent-width {
     width: 100%;
     width: -moz-available;
+    /*noinspection CssInvalidPropertyValue*/
     width: fill-available;
+    /*noinspection CssInvalidPropertyValue*/
     width: -webkit-fill-available;
 }
