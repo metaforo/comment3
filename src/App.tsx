@@ -22,6 +22,10 @@ function App(props: any) {
         log('---- Metaforo Tipping Widget ----');
     }
 
+    if (htmlAttrs && htmlAttrs['demo']) {
+        Global.isDemo = true;
+    }
+
     if (!htmlAttrs
         || !htmlAttrs['siteName']
         || !htmlAttrs['pageId']

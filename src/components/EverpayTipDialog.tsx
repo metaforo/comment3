@@ -19,6 +19,7 @@ import {tip, removeEverpayInstance, loadUserBalance, EverpayBalance} from "./Eve
 import {UserStatus} from "../utils/Constants";
 import {saveEverpayLog} from "../api/ApiService";
 import {useTipWidgetContext} from "../context/TipWidgetContext";
+import {Global} from "../utils/GlobalVariables";
 
 export interface EverpayDialogProps {
     open: boolean,
@@ -63,6 +64,12 @@ export function EverpayDialog(props: EverpayDialogProps) {
     }
 
     const startTipping = async () => {
+
+        if (!Global.isDemo && parseFloat(tokenAmount) === 0) {
+            snakeBarDispatch({open: true, message: 'Tipping amount must larger than 0'});
+            return;
+        }
+
         setLoading(true);
 
         const everpayResponse = await tip({
