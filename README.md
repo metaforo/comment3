@@ -8,8 +8,9 @@ Metaforo sdk is a widget for tipping specified wallet addresses. Currently suppo
 
 Based on Everpay
 
-## Sample Code
+[DEMO](https://test-static.metaforo.io/tipping/)
 
+## Sample Code
 
 ```html
 <script defer="defer" src="https://cdn.jsdelivr.net/gh/metaforo/comment3@0.1.3/dist/main.min.js"></script>
