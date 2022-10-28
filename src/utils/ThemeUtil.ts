@@ -10,6 +10,7 @@ const components = {
                 borderRadius: 24,
                 paddingTop: 16,
                 paddingBottom: 16,
+                backgroundImage: "none",
             },
         }
     },
@@ -50,7 +51,7 @@ const darkTheme = createTheme({
             main: '#702AF1',
         },
         background: {
-            paper: '#1D1D20'
+            paper: '#1D1D20',
         },
         text: {
             primary: '#DDDADA',
