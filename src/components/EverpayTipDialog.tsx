@@ -2,6 +2,7 @@ import {useSnakeBarContext} from "../utils/SnackBar";
 import React, {useEffect, useState} from "react";
 import {Storage} from "../utils/Storage";
 import {
+    Avatar,
     Button,
     CircularProgress,
     Dialog,
@@ -11,8 +12,8 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent,
-    Stack,
-    TextField
+    Stack, SxProps,
+    TextField, Theme
 } from "@mui/material";
 import {useUserContext} from "../context/UserContext";
 import {tip, removeEverpayInstance, loadUserBalance, EverpayBalance} from "./Everpay";
@@ -20,6 +21,7 @@ import {UserStatus} from "../utils/Constants";
 import {saveEverpayLog} from "../api/ApiService";
 import {useTipWidgetContext} from "../context/TipWidgetContext";
 import {Global} from "../utils/GlobalVariables";
+import {loginIconSize} from "../utils/ThemeUtil";
 
 export interface EverpayDialogProps {
     open: boolean,
@@ -126,11 +128,16 @@ export function EverpayDialog(props: EverpayDialogProps) {
         </div>);
     } else {
 
+        const avatarSxProps: SxProps<Theme> = {width: 20, height: 20, mr: '4px'};
         const menuItems = balanceList.map((balance) => {
             return (<MenuItem key={balance.symbol} value={balance.symbol}>
                 <div className='mf-balance-menu-item'>
+                    <Avatar alt={balance.symbol}
+                            src={'https://cdn.metaforo.io/images/token/' + balance.symbol.toLowerCase() + '_thumb.png'}
+                            sx={avatarSxProps}
+                    />
                     <p>{balance.symbol}</p>
-                    <p>{balance.balance}</p>
+                    <p>{balance.balance.toString()}</p>
                 </div>
             </MenuItem>);
         });

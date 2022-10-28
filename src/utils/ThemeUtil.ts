@@ -1,28 +1,50 @@
 import {createTheme} from '@mui/material/styles';
 import {Button, styled} from "@mui/material";
+import {Components} from "@mui/material/styles/components";
+import {Theme} from "@mui/material/styles/createTheme";
+
+const components = {
+    MuiDialog: {
+        styleOverrides: {
+            paper: {
+                borderRadius: 24,
+            },
+        }
+    },
+    MuiDialogTitle: {
+        styleOverrides: {
+            root: {
+                alignSelf: 'center',
+            },
+        }
+    }
+
+} as Components<Omit<Theme, 'components'>>;
 
 const lightTheme = createTheme({
     palette: {
         primary: {
-            main: '#5200ff',
+            main: '#702AF1',
         },
         background: {
             paper: '#ffffff'
         },
         text: {
-            primary: '#000000DE',
-            secondary: '#00000099',
+            primary: '#222222',
+            secondary: '#71717A',
         },
     },
+    components: components,
 });
 
 const darkTheme = createTheme({
     palette: {
         mode: 'dark',
         primary: {
-            main: '#00E8B0',
+            main: '#702AF1',
         },
-    }
+    },
+    components: components,
 });
 
 export const loginIconSize = 36;
