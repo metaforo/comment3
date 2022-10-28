@@ -23,3 +23,10 @@ export const isArConnectInstalled = () => {
     const {arweaveWallet} = window;
     return Boolean(arweaveWallet);
 }
+
+export function floatToString(num: number, decimal: number) {
+    return num.toLocaleString('fullwide', {
+        useGrouping: false,
+        maximumFractionDigits: decimal,
+    },);
+}

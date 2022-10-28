@@ -50,7 +50,6 @@
 
 .mf-balance-menu-item {
     display: flex;
-    justify-content: space-between;
     width: 280px;
 }
 

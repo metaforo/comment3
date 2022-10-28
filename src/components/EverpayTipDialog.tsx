@@ -22,6 +22,7 @@ import {saveEverpayLog} from "../api/ApiService";
 import {useTipWidgetContext} from "../context/TipWidgetContext";
 import {Global} from "../utils/GlobalVariables";
 import {loginIconSize} from "../utils/ThemeUtil";
+import {floatToString} from "../utils/Util";
 
 export interface EverpayDialogProps {
     open: boolean,
@@ -128,7 +129,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
         </div>);
     } else {
 
-        const avatarSxProps: SxProps<Theme> = {width: 20, height: 20, mr: '4px'};
+        const avatarSxProps: SxProps<Theme> = {width: 20, height: 20, mr: '12px'};
         const menuItems = balanceList.map((balance) => {
             return (<MenuItem key={balance.symbol} value={balance.symbol}>
                 <div className='mf-balance-menu-item'>
@@ -136,8 +137,8 @@ export function EverpayDialog(props: EverpayDialogProps) {
                             src={'https://cdn.metaforo.io/images/token/' + balance.symbol.toLowerCase() + '_thumb.png'}
                             sx={avatarSxProps}
                     />
-                    <p>{balance.symbol}</p>
-                    <p>{balance.balance.toString()}</p>
+                    <p style={{flexGrow: 1,}}>{balance.symbol}</p>
+                    <p>{floatToString(balance.balance, balance.decimals)}</p>
                 </div>
             </MenuItem>);
         });
@@ -174,7 +175,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     </div>
 
                     <TextField className={'mf-token-amount'}
-                               label={'Amount (You have ' + selectedBalance.balance + ' ' + selectedBalance.symbol + ')'}
+                               label={'Amount (You have ' + floatToString(selectedBalance.balance, selectedBalance.decimals) + ' ' + selectedBalance.symbol + ')'}
                                inputProps={{
                                    max: selectedBalance.balance,
                                    min: 0,
@@ -217,7 +218,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                                        return;
                                    }
 
-                                   setTokenAmount(val.toString());
+                                   setTokenAmount(floatToString(val, selectedBalance.decimals));
                                }}
                     />
 
