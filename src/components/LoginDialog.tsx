@@ -68,9 +68,11 @@ export function LoginDialog(props: LoginDialogProps) {
 
         setLoading(true);
 
-        await connectToMetamask(setUserState);
+        const result = await connectToMetamask(setUserState);
 
-        closeDialog();
+        if (result) {
+            closeDialog();
+        }
         setLoading(false);
     }
 
