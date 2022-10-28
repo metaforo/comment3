@@ -2,12 +2,12 @@ import {
     Avatar,
     CircularProgress,
     Dialog,
-    DialogTitle, IconButton,
     List,
     ListItemButton,
     ListItemText,
     SxProps,
-    Theme, Tooltip
+    Theme,
+    Tooltip
 } from "@mui/material";
 import {connectToAr} from "./ArconnectLogin";
 import {isArConnectInstalled, isMetamaskInstalled} from "../utils/Util";
@@ -17,8 +17,8 @@ import {useUserContext} from "../context/UserContext";
 import {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
 import {connectToWalletconnect} from "./WalletconnectLogin";
-import CloseIcon from '@mui/icons-material/Close';
 import {grey} from "@mui/material/colors";
+import {CloseableDialogTitle} from "./CloseableDialogTitle";
 
 export interface LoginDialogProps {
     open: boolean,
@@ -160,23 +160,9 @@ export function LoginDialog(props: LoginDialogProps) {
             open={open}
             maxWidth={"sm"}
             fullWidth={true}>
-            <DialogTitle>
+            <CloseableDialogTitle onClose={handleClose}>
                 {<p>Connect Wallet</p>}
-                {<IconButton
-                    aria-label="close"
-                    onClick={handleClose}
-                    sx={{
-                        position: 'absolute',
-                        right: 24,
-                        top: 24,
-                        width: 14,
-                        height: 14,
-                        color: (theme) => theme.palette.grey[500],
-                    }}
-                >
-                    <CloseIcon/>
-                </IconButton>}
-            </DialogTitle>
+            </CloseableDialogTitle>
             {content}
             {loadingWidget}
         </Dialog>
