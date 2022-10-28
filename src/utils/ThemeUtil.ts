@@ -8,6 +8,8 @@ const components = {
         styleOverrides: {
             paper: {
                 borderRadius: 24,
+                paddingTop: 16,
+                paddingBottom: 16,
             },
         }
     },
@@ -15,6 +17,10 @@ const components = {
         styleOverrides: {
             root: {
                 alignSelf: 'center',
+                marginTop: '6px',
+                marginBottom: '10px',
+                fontWeight: 'bold',
+                fontSize: '22px',
             },
         }
     }
@@ -33,6 +39,7 @@ const lightTheme = createTheme({
             primary: '#222222',
             secondary: '#71717A',
         },
+
     },
     components: components,
 });
@@ -47,7 +54,7 @@ const darkTheme = createTheme({
     components: components,
 });
 
-export const loginIconSize = 36;
+export const loginIconSize = 24;
 
 export const TipButton = styled(Button)(
     {

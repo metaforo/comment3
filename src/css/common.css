@@ -1,10 +1,10 @@
 .mf-dialog-circle-div {
-    height: 100px;
     display: flex;
     text-align: center;
+    height: 100%;
     width: 100%;
     justify-content: center;
-    align-items: baseline;
+    align-items: center;
     padding-top: 35px;
 }
 
