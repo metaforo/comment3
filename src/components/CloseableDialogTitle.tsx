@@ -5,7 +5,8 @@ import CloseIcon from "@mui/icons-material/Close";
 export interface DialogTitleProps {
     children?: React.ReactNode;
     onClose?: () => void;
-    [x:string]: any;
+
+    [x: string]: any;
 }
 
 export function CloseableDialogTitle(props: DialogTitleProps) {

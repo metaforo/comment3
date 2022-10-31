@@ -1,5 +1,4 @@
 import {createTheme} from '@mui/material/styles';
-import {Button, styled} from "@mui/material";
 import {Components} from "@mui/material/styles/components";
 import {Theme} from "@mui/material/styles/createTheme";
 
@@ -24,8 +23,7 @@ const components = {
                 fontSize: '22px',
             },
         }
-    }
-
+    },
 } as Components<Omit<Theme, 'components'>>;
 
 const lightTheme = createTheme({
@@ -62,12 +60,6 @@ const darkTheme = createTheme({
 });
 
 export const loginIconSize = 24;
-
-export const TipButton = styled(Button)(
-    {
-        textTransform: 'none',
-    }
-);
 
 export function createThemeFromAttr(paletteMode: string | undefined | null) {
     let theme;

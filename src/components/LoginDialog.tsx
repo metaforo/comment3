@@ -1,24 +1,15 @@
-import {
-    Avatar,
-    CircularProgress,
-    Dialog,
-    List,
-    ListItemButton,
-    ListItemText,
-    SxProps,
-    Theme,
-    Tooltip
-} from "@mui/material";
+import {Avatar, Dialog, List, ListItemButton, ListItemText, SxProps, Theme, Tooltip} from "@mui/material";
 import {connectToAr} from "./ArconnectLogin";
 import {isArConnectInstalled, isMetamaskInstalled} from "../utils/Util";
 import {loginIconSize} from "../utils/ThemeUtil";
 import {useSnakeBarContext} from "../utils/SnackBar";
 import {useUserContext} from "../context/UserContext";
-import {useState} from "react";
+import React, {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
 import {connectToWalletconnect} from "./WalletconnectLogin";
 import {grey} from "@mui/material/colors";
 import {CloseableDialogTitle} from "./CloseableDialogTitle";
+import LoadingWidget from "./LoadingWidget";
 
 export interface LoginDialogProps {
     open: boolean,
@@ -108,17 +99,6 @@ export function LoginDialog(props: LoginDialogProps) {
 
     const avatarSxProps: SxProps<Theme> = {width: loginIconSize, height: loginIconSize, position: 'absolute',};
 
-    let loadingWidget = (
-        <div className={'mf-dialog-circle-div'}
-             style={{
-                 visibility: !loading ? 'hidden' : 'visible',
-                 position: 'absolute',
-             }}
-        >
-            <CircularProgress/>
-        </div>
-    );
-
     let content = (<List sx={{visibility: loading ? 'hidden' : 'visible'}}>
         {loginList.map((loginType: LoginType) => {
             const btn = (
@@ -164,7 +144,7 @@ export function LoginDialog(props: LoginDialogProps) {
                 {<p>Connect Wallet</p>}
             </CloseableDialogTitle>
             {content}
-            {loadingWidget}
+            <LoadingWidget loading={loading}/>
         </Dialog>
     );
 }
