@@ -143,6 +143,10 @@
     height: 48px;
 }
 
+.mf-dialog-select .MuiSelect-select:focus {
+    border-radius: 0;
+}
+
 .mf-dialog-select .MuiOutlinedInput-notchedOutline {
     height: 48px;
     border: none;
@@ -176,4 +180,8 @@
     border-radius: 0;
     padding: 0 0 0 8px;
     border-right: 1px solid #4A4A53;
+}
+
+.mf-main .MuiDialog-container .MuiPaper-root {
+    overflow-y: hidden;
 }

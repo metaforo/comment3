@@ -18,7 +18,7 @@ const components = {
             root: {
                 alignSelf: 'center',
                 marginTop: '6px',
-                marginBottom: '10px',
+                paddingBottom: 0,
                 fontWeight: 'bold',
                 fontSize: '22px',
             },

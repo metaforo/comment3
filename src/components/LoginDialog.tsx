@@ -99,7 +99,10 @@ export function LoginDialog(props: LoginDialogProps) {
 
     const avatarSxProps: SxProps<Theme> = {width: loginIconSize, height: loginIconSize, position: 'absolute',};
 
-    let content = (<List sx={{visibility: loading ? 'hidden' : 'visible'}}>
+    let content = (<List sx={{
+        visibility: loading ? 'hidden' : 'visible',
+        marginTop: '24px',
+    }}>
         {loginList.map((loginType: LoginType) => {
             const btn = (
                 <ListItemButton
@@ -138,6 +141,7 @@ export function LoginDialog(props: LoginDialogProps) {
         <Dialog
             onClose={handleClose}
             open={open}
+            className={'mf-main'}
             maxWidth={"sm"}
             fullWidth={true}>
             <CloseableDialogTitle onClose={handleClose}>
