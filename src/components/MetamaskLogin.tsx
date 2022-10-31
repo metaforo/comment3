@@ -13,7 +13,13 @@ export async function connectToMetamask(setUserState: Dispatch<UserInfoState>) {
         method: 'eth_requestAccounts'
     }).then((res: any) => {
         return res[0];
+    }).catch((e: any) => {
+        console.warn(e);
+        return false;
     });
+    if (!account) {
+        return false;
+    }
     const signMsg = JSON.stringify(typedData(account));
     const sign = await ethereum.request({
         method: 'eth_signTypedData_v4',
@@ -21,8 +27,13 @@ export async function connectToMetamask(setUserState: Dispatch<UserInfoState>) {
     }).then((res: any) => {
         log(JSON.stringify(res));
         return res;
+    }).catch((e: any) => {
+        console.warn(e);
+        return false;
     });
-
+    if (!sign) {
+        return false;
+    }
     await loginToEth(account, sign, signMsg).then(res => {
         updateUserStatusByLoginResponse(res, setUserState);
         Storage.saveItem(Storage.lastLoginType, LoginType.eth);

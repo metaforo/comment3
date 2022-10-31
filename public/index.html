@@ -18,8 +18,19 @@
     window.mfTheme = {
         palette: {
             background: {
-                paper: '#232323',
+                // paper: '#232323',
             }
+        }
+    }
+</script>
+
+<script>
+    function changeDarkMode() {
+        let darkMode = document.getElementById('darkMode').checked;
+        if (darkMode) {
+            document.getElementById('tip-button').setAttribute('theme', 'dark');
+        } else {
+            document.getElementById('tip-button').setAttribute('theme', 'light');
         }
     }
 </script>
@@ -30,16 +41,27 @@
     </h1>
 
     <div class="metaforo-tip button"
+         id="tip-button"
          style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none"
          siteName="INPUT_SITE_NAME"
          pageId="INPUT_PAGE_ID"
          receiverAddress="%REACT_APP_SAMPLE_ADDRESS%"
          receiverUsername="%REACT_APP_SAMPLE_USERNAME%"
          receiverChainId="1"
-         theme="dark"
+         theme="light"
          demo
     >
         Metaforo Tipping
+    </div>
+
+    <div class="field"
+         style="margin-top: 24px; font-size: 20px"
+    >
+        <input id="darkMode" type="checkbox" name="darkMode" class="switch"
+               style="width: 16px; height: 16px"
+               onchange="changeDarkMode()"
+        >
+        <label for="darkMode">Dark Mode</label>
     </div>
 </section>
 

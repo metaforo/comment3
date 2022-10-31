@@ -1,30 +1,27 @@
-import {
-    Avatar,
-    CircularProgress,
-    Dialog,
-    DialogTitle,
-    List,
-    ListItemButton,
-    ListItemText,
-    SxProps,
-    Theme
-} from "@mui/material";
+import {Avatar, Dialog, List, ListItemButton, ListItemText, SxProps, Theme, Tooltip} from "@mui/material";
 import {connectToAr} from "./ArconnectLogin";
 import {isArConnectInstalled, isMetamaskInstalled} from "../utils/Util";
 import {loginIconSize} from "../utils/ThemeUtil";
 import {useSnakeBarContext} from "../utils/SnackBar";
 import {useUserContext} from "../context/UserContext";
-import {useState} from "react";
+import React, {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
 import {connectToWalletconnect} from "./WalletconnectLogin";
-import iconAr from "../assets/arconnect.png";
-import iconWc from "../assets/walletconnect.png";
-import iconMetamask from "../assets/metamask.png";
+import {grey} from "@mui/material/colors";
+import {CloseableDialogTitle} from "./CloseableDialogTitle";
+import LoadingWidget from "./LoadingWidget";
 
 export interface LoginDialogProps {
     open: boolean,
     onClose: (value: string) => void;
     closeDialog: () => void;
+}
+
+interface LoginType {
+    onClick: () => void;
+    logo: string,
+    text: string,
+    disableReason: string | null,
 }
 
 export function LoginDialog(props: LoginDialogProps) {
@@ -62,9 +59,11 @@ export function LoginDialog(props: LoginDialogProps) {
 
         setLoading(true);
 
-        await connectToMetamask(setUserState);
+        const result = await connectToMetamask(setUserState);
 
-        closeDialog();
+        if (result) {
+            closeDialog();
+        }
         setLoading(false);
     }
 
@@ -77,51 +76,79 @@ export function LoginDialog(props: LoginDialogProps) {
         setLoading(false);
     }
 
-    const avatarSxProps: SxProps<Theme> = {width: loginIconSize, height: loginIconSize, mr: '10px'};
+    const loginList: LoginType[] = [
+        {
+            text: "ArConnect",
+            logo: "https://cdn.metaforo.io/images/connect/arconnect_thumb.png",
+            onClick: startArConnect,
+            disableReason: isArConnectInstalled() ? null : 'You haven\'t install ArConnect plugin yet.',
+        },
+        {
+            text: "Metamask",
+            logo: "https://cdn.metaforo.io/images/connect/metamask_thumb.png",
+            onClick: startMetamaskConnect,
+            disableReason: isMetamaskInstalled() ? null : 'You haven\'t install Metamask plugin yet.',
+        },
+        {
+            text: "WalletConnect",
+            logo: "https://cdn.metaforo.io/images/connect/wc_thumb.png",
+            onClick: startWalletconnect,
+            disableReason: null,
+        },
+    ];
 
-    let content;
-    if (loading) {
-        content = (
-            <div className={'mf-dialog-circle-div'}>
-            <CircularProgress/>
-            </div>
-        );
-    } else {
-        content = (<List>
-            {/* ArConnect */}
-            <ListItemButton onClick={startArConnect}>
-                <Avatar alt={'ArConnect'}
-                        src={iconAr}
-                        sx={avatarSxProps}
-                />
-                <ListItemText primary={'ArConnect'}/>
-            </ListItemButton>
-            {/* Metamask */}
-            <ListItemButton onClick={startMetamaskConnect}>
-                <Avatar alt={'Metamask'}
-                        src={iconMetamask}
-                        sx={avatarSxProps}
-                />
-                <ListItemText primary={'Metamask'}/>
-            </ListItemButton>
-            {/* WalletConnect */}
-            <ListItemButton onClick={startWalletconnect}>
-                <Avatar alt={'WalletConnect'}
-                        src={iconWc}
-                        sx={avatarSxProps}
-                />
-                <ListItemText primary={'WalletConnect'}/>
-            </ListItemButton>
-        </List>);
-    }
+    const avatarSxProps: SxProps<Theme> = {width: loginIconSize, height: loginIconSize, position: 'absolute',};
+
+    let content = (<List sx={{
+        visibility: loading ? 'hidden' : 'visible',
+        marginTop: '24px',
+    }}>
+        {loginList.map((loginType: LoginType) => {
+            const btn = (
+                <ListItemButton
+                    key={loginType.text}
+                    onClick={loginType.onClick}
+                    disabled={loginType.disableReason != null}
+                    sx={{
+                        border: 1,
+                        borderRadius: '12px',
+                        borderColor: grey["400"],
+                        marginX: '36px',
+                        marginY: '10px',
+                        height: '54px',
+                    }}
+                >
+                    <Avatar alt={loginType.text}
+                            src={loginType.logo}
+                            sx={avatarSxProps}
+                    />
+                    <ListItemText
+                        primary={loginType.text}
+                        primaryTypographyProps={
+                            {fontWeight: 'bold', fontSize: 16, align: "center", flexGrow: 1}
+                        }/>
+                </ListItemButton>
+            );
+            if (loginType.disableReason == null) {
+                return btn;
+            } else {
+                return <Tooltip key={loginType.text}
+                                title={loginType.disableReason}><span>{btn}</span></Tooltip>;
+            }
+        })}
+    </List>);
     return (
         <Dialog
             onClose={handleClose}
             open={open}
+            className={'mf-main'}
             maxWidth={"sm"}
             fullWidth={true}>
-            <DialogTitle>Connect Wallet</DialogTitle>
+            <CloseableDialogTitle onClose={handleClose}>
+                {<p>Connect Wallet</p>}
+            </CloseableDialogTitle>
             {content}
+            <LoadingWidget loading={loading}/>
         </Dialog>
     );
 }
