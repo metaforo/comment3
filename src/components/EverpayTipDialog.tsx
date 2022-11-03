@@ -223,7 +223,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     color: 'green',
                 }}
             />
-            <Typography sx={{marginTop: '18px'}}>Tipped Success</Typography>
+            <Typography sx={{marginTop: '18px'}}>Tipping Success</Typography>
         </div>
     );
 
