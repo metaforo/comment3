@@ -1,32 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import "./css/common.css";
+import "./css/quill.css";
 import {TipWidgetContainer} from "./screens/TipWidget";
+import {CommentWidgetContainer} from "./screens/CommentWidget";
+import {initQuill} from "./utils/QuillUtil";
 
 window.Buffer = window.Buffer || require("buffer").Buffer;
 
-const metaforoTippingWidgets = document.getElementsByClassName('metaforo-tip');
-if (metaforoTippingWidgets) {
-    for (let i = 0; i < metaforoTippingWidgets.length; i++) {
-        const e = metaforoTippingWidgets.item(i);
-        if (e && e instanceof HTMLElement) {
-            e.addEventListener('click', (event) => {
-                if (event.target && event.target instanceof HTMLElement) {
-                    let missingAttrs = [];
-                    if (!e.attributes.getNamedItem('siteName')) missingAttrs.push('siteName');
-                    if (!e.attributes.getNamedItem('pageId')) missingAttrs.push('pageId');
-                    if (!e.attributes.getNamedItem('receiverAddress')) missingAttrs.push('receiverAddress');
-                    if (!e.attributes.getNamedItem('receiverUsername')) missingAttrs.push('receiverUsername');
-                    if (!e.attributes.getNamedItem('receiverChainId')) missingAttrs.push('receiverChainId');
-                    if (missingAttrs.length > 0) {
-                        console.warn('Missing attributes ' + missingAttrs.join(',') + ' for metaforo-tip. element is ', e);
-                        return;
-                    }
+// region ---- Tipping ----
 
-                    showTipDialog(event.target);
-                }
-            });
+const tippingWidgets = document.getElementsByClassName('metaforo-tip');
+if (tippingWidgets) {
+    for (let i = 0; i < tippingWidgets.length; i++) {
+        const e = tippingWidgets.item(i);
+        if (!(e && e instanceof HTMLElement)) {
+            continue;
         }
+        e.addEventListener('click', (event) => {
+            if (event.target && event.target instanceof HTMLElement) {
+                if (!checkAttrs(e, ['siteName', 'pageId', 'receiverAddress', 'receiverUsername', 'receiverChainId'])) {
+                    return;
+                }
+
+                showTipDialog(event.target);
+            }
+        });
     }
 }
 
@@ -36,3 +35,43 @@ function showTipDialog(element: HTMLElement) {
     const root = ReactDOM.createRoot(div);
     root.render(<TipWidgetContainer props={element.attributes}/>);
 }
+
+// endregion ---- Tipping ----
+
+// region ---- Comment ----
+
+const commentWidgets = document.getElementsByClassName('metaforo-comment');
+if (commentWidgets) {
+    for (let i = 0; i < commentWidgets.length; i++) {
+        const e = commentWidgets.item(i);
+        if (!(e && e instanceof HTMLElement)) {
+            continue;
+        }
+        if (!checkAttrs(e, ['siteName', 'pageId'])) {
+            continue;
+        }
+
+        showComment(e);
+    }
+}
+
+function checkAttrs(e: HTMLElement, attrs: string[]) {
+    let missingAttrs = [] as string[];
+    attrs.forEach((attr) => {
+        if (!e.attributes.getNamedItem(attr)) missingAttrs.push(attr);
+    })
+    if (missingAttrs.length > 0) {
+        console.warn('Missing attributes ' + missingAttrs.join(',') + ' for metaforo-tip. element is ', e);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function showComment(e: HTMLElement) {
+    initQuill();
+    const root = ReactDOM.createRoot(e);
+    root.render(<CommentWidgetContainer props={e.attributes}/>);
+}
+
+// endregion ---- Comment ----

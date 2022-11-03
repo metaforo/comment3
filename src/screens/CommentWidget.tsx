@@ -1,37 +1,34 @@
-import React, {Dispatch, useEffect} from "react";
-import {TipAccount} from "../model/TipAccount";
+import {Global} from "../utils/GlobalVariables";
+import log from "../utils/LogUtil";
+import {SnackBarContextProvider} from "../utils/SnackBar";
 import {
     updateUserStatusByLocalStorage,
     UserContextProvider,
     UserInfoState,
     useUserContext
 } from "../context/UserContext";
-import {UserStatus} from "../utils/Constants";
-import {Storage} from "../utils/Storage";
-import GuestView from "./GuestView";
-import MemberView from "./MemberView";
-import {TipWidgetContextProvider, useTipWidgetContext} from "../context/TipWidgetContext";
-import {Global} from "../utils/GlobalVariables";
-import log from "../utils/LogUtil";
-import {SnackBarContextProvider} from "../utils/SnackBar";
+import {composeProviders} from "../utils/Util";
+import {CommentWidgetContextProvider, useCommentWidgetContext} from "../context/CommentWidgetContext";
 import {ThemeProvider} from "@mui/material";
 import {createThemeFromAttr} from "../utils/ThemeUtil";
-import {composeProviders} from "../utils/Util";
+import React, {Dispatch, useEffect} from "react";
+import {UserStatus} from "../utils/Constants";
+import {Storage} from "../utils/Storage";
+import CommentList from "../components/comment/CommentList";
+import CreateCommentWidget from "../components/comment/CreateCommentWidget";
 
-// region ---- TipWidget  ----
-
-export function TipWidgetContainer(props: any) {
+export function CommentWidgetContainer(props: any) {
     const htmlAttrs = props.props;
 
     if (htmlAttrs && htmlAttrs['debug']) {
         Global.isDebug = true;
-        log('---- Metaforo Tipping Widget ----');
+        log('---- Metaforo Comment Widget ----');
         log('Version : ' + process.env.REACT_APP_VERSION);
         log('Props : ');
         for (let i = 0; i < htmlAttrs.length; i++) {
             log(htmlAttrs[i]);
         }
-        log('---- Metaforo Tipping Widget ----');
+        log('---- Metaforo Comment Widget ----');
     }
 
     if (htmlAttrs && htmlAttrs['demo']) {
@@ -41,9 +38,6 @@ export function TipWidgetContainer(props: any) {
     if (!htmlAttrs
         || !htmlAttrs['siteName']
         || !htmlAttrs['pageId']
-        || !htmlAttrs['receiverAddress']
-        || !htmlAttrs['receiverUsername']
-        || !htmlAttrs['receiverChainId']
     ) {
         return null;
     }
@@ -55,39 +49,34 @@ export function TipWidgetContainer(props: any) {
 
     const StateProviders = composeProviders(
         SnackBarContextProvider,
-        TipWidgetContextProvider,
+        CommentWidgetContextProvider,
         UserContextProvider,
     );
 
     return (
         <ThemeProvider theme={createThemeFromAttr(paletteMode)}>
             <StateProviders>
-                <TipWidget
+                <CommentWidget
                     siteName={htmlAttrs['siteName'].value}
                     pageId={htmlAttrs['pageId'].value}
-                    receiver={{
-                        address: htmlAttrs['receiverAddress'].value,
-                        chainId: htmlAttrs['receiverChainId'].value,
-                        username: htmlAttrs['receiverUsername'].value,
-                    }}/>
+                />
             </StateProviders>
         </ThemeProvider>
     );
 }
 
-// endregion ---- TipWidget  ----
-type TipWidgetProps = {
+type CommentWidgetProps = {
     siteName: string,
     pageId: string,
-    receiver: TipAccount,
+    needRefresh?: boolean,
 }
 
-function TipWidget(props: TipWidgetProps) {
+function CommentWidget(props: CommentWidgetProps) {
     const {userInfoState, setUserState} = useUserContext();
-    const {tipWidgetDispatch} = useTipWidgetContext();
+    const {commentWidgetDispatch} = useCommentWidgetContext();
 
     useEffect(() => {
-        tipWidgetDispatch(props);
+        commentWidgetDispatch(props);
 
         if (userInfoState.loginStatus === UserStatus.isChecking) {
             startChecking(userInfoState, setUserState);
@@ -105,13 +94,13 @@ function TipWidget(props: TipWidgetProps) {
         }
     }
 
-    switch (userInfoState.loginStatus) {
-        case UserStatus.login:
-            return (<MemberView/>);
-        case UserStatus.notLogin:
-            return (<GuestView/>);
-        case UserStatus.isChecking:
-        default:
-            return null;
-    }
+    // @ts-ignore
+    const link = `${process.env.REACT_APP_API_HOST.replace('/api', '/')}g/${props.siteName}/thread/${props.pageId}`;
+    return (
+        <>
+            <CreateCommentWidget/>
+            <a href={link}>Open Origin Thread</a>
+            <CommentList/>
+        </>
+    );
 }

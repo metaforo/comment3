@@ -1,6 +1,5 @@
 import {useSnakeBarContext} from "../../utils/SnackBar";
 import React, {useEffect, useState} from "react";
-import {Storage} from "../../utils/Storage";
 import {
     Avatar,
     Button,
@@ -18,9 +17,8 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import {useUserContext} from "../../context/UserContext";
-import {EverpayBalance, loadUserBalance, removeEverpayInstance, tip} from "./Everpay";
-import {UserStatus} from "../../utils/Constants";
+import {logout, useUserContext} from "../../context/UserContext";
+import {EverpayBalance, loadUserBalance, tip} from "./Everpay";
 import {saveEverpayLog} from "../../api/ApiService";
 import {useTipWidgetContext} from "../../context/TipWidgetContext";
 import {Global} from "../../utils/GlobalVariables";
@@ -113,18 +111,6 @@ export function EverpayDialog(props: EverpayDialogProps) {
         }
 
         setLoading(false);
-    }
-
-    const logout = () => {
-        Storage.removeAll();
-        removeEverpayInstance();
-        setUserState({
-            loginStatus: UserStatus.notLogin,
-            username: undefined,
-            avatar: undefined,
-            ethAddress: undefined,
-            arAddress: undefined,
-        });
     }
 
     const showWallet = () => {
@@ -316,7 +302,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                             <Button
                                 variant={"text"}
                                 sx={textButtonStyle}
-                                onClick={logout}
+                                onClick={() => logout(setUserState)}
                             >
                                 Log Out
                             </Button>

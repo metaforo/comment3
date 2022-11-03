@@ -2,6 +2,7 @@ import React, {Dispatch, useContext, useReducer} from "react";
 import {UserStatus} from "../utils/Constants";
 import {Storage} from "../utils/Storage";
 import {initStatus} from "../api/ApiService";
+import {removeEverpayInstance} from "../components/tip/Everpay";
 
 export interface UserInfoState {
     loginStatus: number,
@@ -63,6 +64,18 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
         arAddress: arAddress,
     } as UserInfoState;
     dispatch(user);
+}
+
+export const logout = (setUserState: Dispatch<UserInfoState>) => {
+    Storage.removeAll();
+    removeEverpayInstance();
+    setUserState({
+        loginStatus: UserStatus.notLogin,
+        username: undefined,
+        avatar: undefined,
+        ethAddress: undefined,
+        arAddress: undefined,
+    });
 }
 
 export const UserContextProvider = ({children}: { children: JSX.Element }) => {

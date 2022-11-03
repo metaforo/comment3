@@ -3,7 +3,7 @@ import log from "../utils/LogUtil";
 import {Storage} from "../utils/Storage";
 import {TipWidgetState} from "../context/TipWidgetContext";
 
-const apiHost = 'https://metaforo.io/api';
+const apiHost = process.env.REACT_APP_API_HOST;
 
 // region ---- init instance ----
 
@@ -45,24 +45,37 @@ function get(path: string, params?: any) {
 }
 
 function post(path: string, params?: any) {
-    return instance.post(path, params).then(handleResponse);
+    return instance.post(path, params,).then(handleResponse);
 }
 
 // endregion ---- init instance ----
 
-export function loadComment(groupName: string, thread: string) {
+export function loadComment(groupName: string, thread: string, startPostId: number) {
     const url = '/api_thread/' + thread;
     return get(url,
         {
             sort: 'new',
             page_size: 10,
-            start_post_id: 0,
+            start_post_id: startPostId,
             group_name: groupName,
         },
     )
         .then(res => {
             return res.data;
         });
+}
+
+export function submitPost(groupName: string, thread: string, content: any, loginType: number) {
+    const url = '/submit_post';
+    console.log(content);
+    return post(url, {
+        group_name: groupName,
+        thread_id: thread,
+        content: content,
+        login_type: loginType,
+        sign: '',
+        signMsg: '',
+    });
 }
 
 export function loginToEth(account: string, sign: string, signMsg: string) {
