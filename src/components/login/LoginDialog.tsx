@@ -1,15 +1,15 @@
 import {Avatar, Dialog, List, ListItemButton, ListItemText, SxProps, Theme, Tooltip} from "@mui/material";
 import {connectToAr} from "./ArconnectLogin";
-import {isArConnectInstalled, isMetamaskInstalled} from "../utils/Util";
-import {loginIconSize} from "../utils/ThemeUtil";
-import {useSnakeBarContext} from "../utils/SnackBar";
-import {useUserContext} from "../context/UserContext";
+import {isArConnectInstalled, isMetamaskInstalled} from "../../utils/Util";
+import {loginIconSize} from "../../utils/ThemeUtil";
+import {useSnakeBarContext} from "../../utils/SnackBar";
+import {useUserContext} from "../../context/UserContext";
 import React, {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
 import {connectToWalletconnect} from "./WalletconnectLogin";
 import {grey} from "@mui/material/colors";
-import {CloseableDialogTitle} from "./CloseableDialogTitle";
-import LoadingWidget from "./LoadingWidget";
+import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
+import LoadingWidget from "../common/LoadingWidget";
 
 export interface LoginDialogProps {
     open: boolean,

@@ -1,6 +1,6 @@
-import {useSnakeBarContext} from "../utils/SnackBar";
+import {useSnakeBarContext} from "../../utils/SnackBar";
 import React, {useEffect, useState} from "react";
-import {Storage} from "../utils/Storage";
+import {Storage} from "../../utils/Storage";
 import {
     Avatar,
     Button,
@@ -18,16 +18,16 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import {useUserContext} from "../context/UserContext";
+import {useUserContext} from "../../context/UserContext";
 import {EverpayBalance, loadUserBalance, removeEverpayInstance, tip} from "./Everpay";
-import {UserStatus} from "../utils/Constants";
-import {saveEverpayLog} from "../api/ApiService";
-import {useTipWidgetContext} from "../context/TipWidgetContext";
-import {Global} from "../utils/GlobalVariables";
-import {floatToString} from "../utils/Util";
-import {CloseableDialogTitle} from "./CloseableDialogTitle";
+import {UserStatus} from "../../utils/Constants";
+import {saveEverpayLog} from "../../api/ApiService";
+import {useTipWidgetContext} from "../../context/TipWidgetContext";
+import {Global} from "../../utils/GlobalVariables";
+import {floatToString} from "../../utils/Util";
+import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
 import {grey} from "@mui/material/colors";
-import LoadingWidget from "./LoadingWidget";
+import LoadingWidget from "../common/LoadingWidget";
 
 export interface EverpayDialogProps {
     open: boolean,

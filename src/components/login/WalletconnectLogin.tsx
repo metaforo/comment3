@@ -1,11 +1,11 @@
 import {Dispatch} from "react";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import {loginToEth} from "../api/ApiService";
-import {updateUserStatusByLoginResponse, UserInfoState} from "../context/UserContext";
-import {typedData} from "../utils/Util";
-import {Storage} from "../utils/Storage";
-import {LoginType} from "../utils/Constants";
+import {loginToEth} from "../../api/ApiService";
+import {updateUserStatusByLoginResponse, UserInfoState} from "../../context/UserContext";
+import {typedData} from "../../utils/Util";
+import {Storage} from "../../utils/Storage";
+import {LoginType} from "../../utils/Constants";
 
 export async function connectToWalletconnect(setUserState: Dispatch<UserInfoState>) {
     // region ---- functions ----

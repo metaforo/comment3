@@ -1,7 +1,7 @@
-import {updateUserStatusByLoginResponse, UserInfoState} from "../context/UserContext";
-import {loginToAr} from "../api/ApiService";
-import {Storage} from "../utils/Storage";
-import {LoginType} from "../utils/Constants";
+import {updateUserStatusByLoginResponse, UserInfoState} from "../../context/UserContext";
+import {loginToAr} from "../../api/ApiService";
+import {Storage} from "../../utils/Storage";
+import {LoginType} from "../../utils/Constants";
 import {Dispatch} from "react";
 
 export async function connectToAr(setUserState: Dispatch<UserInfoState>) {

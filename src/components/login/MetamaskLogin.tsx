@@ -1,10 +1,10 @@
-import {updateUserStatusByLoginResponse, UserInfoState} from "../context/UserContext";
-import {typedData} from "../utils/Util";
-import {loginToEth} from "../api/ApiService";
-import {LoginType} from "../utils/Constants";
-import {Storage} from "../utils/Storage";
+import {updateUserStatusByLoginResponse, UserInfoState} from "../../context/UserContext";
+import {typedData} from "../../utils/Util";
+import {loginToEth} from "../../api/ApiService";
+import {LoginType} from "../../utils/Constants";
+import {Storage} from "../../utils/Storage";
 import {Dispatch} from "react";
-import log from "../utils/LogUtil";
+import log from "../../utils/LogUtil";
 
 export async function connectToMetamask(setUserState: Dispatch<UserInfoState>) {
     // @ts-ignore
