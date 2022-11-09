@@ -14,6 +14,16 @@
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
 
+<style>
+    .hero.is-primary {
+        background-color: #702AF1;
+    }
+
+    .hero.is-primary .tabs li.is-active a {
+        color: #702AF1 !important;
+    }
+</style>
+
 <script>
     window.mfTheme = {
         palette: {
@@ -22,62 +32,115 @@
             }
         }
     }
-</script>
 
-<!-- region Comment -->
-<div class="metaforo-comment"
-     siteName="%REACT_APP_SAMPLE_SITE_NAME%"
-     pageId="%REACT_APP_SAMPLE_PAGE_ID%"
-     debug
-></div>
-<!-- endregion Comment -->
-
-<!-- region Tipping -->
-
-<script>
-    function changeDarkMode() {
-        let darkMode = document.getElementById('darkMode').checked;
-        if (darkMode) {
-            document.getElementById('tip-button').setAttribute('theme', 'dark');
-        } else {
-            document.getElementById('tip-button').setAttribute('theme', 'light');
+    function openTab(evt, tabName) {
+        let i, x, tabLinks;
+        x = document.getElementsByClassName("content-tab");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
         }
+        tabLinks = document.getElementsByClassName("tab");
+        for (i = 0; i < x.length; i++) {
+            tabLinks[i].className = tabLinks[i].className.replace(" is-active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " is-active";
     }
 </script>
 
-<section class="section">
-    <h1 class="title">
-        Metaforo Tipping Widget Example
-    </h1>
-
-    <div class="metaforo-tip button"
-         id="tip-button"
-         style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none"
-         siteName="%REACT_APP_SAMPLE_SITE_NAME%"
-         pageId="%REACT_APP_SAMPLE_PAGE_ID%"
-         receiverAddress="%REACT_APP_SAMPLE_ADDRESS%"
-         receiverUsername="%REACT_APP_SAMPLE_USERNAME%"
-         receiverChainId="1"
-         theme="light"
-         demo
-    >
-        Metaforo Tipping
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">
+                Metaforo SDK Sample
+            </h1>
+        </div>
     </div>
 
-    <div class="field"
-         style="margin-top: 24px; font-size: 20px"
-    >
-        <input id="darkMode" type="checkbox" name="darkMode" class="switch"
-               style="width: 16px; height: 16px"
-               onchange="changeDarkMode()"
-        >
-        <label for="darkMode">Dark Mode</label>
+    <div class="hero-foot">
+        <nav class="tabs is-boxed is-fullwidth is-large">
+            <div class="container">
+                <ul>
+                    <li class="tab is-active" onclick="openTab(event,'TippingSample')"><a>Tipping Sample</a></li>
+                    <li class="tab" onclick="openTab(event,'CommentSample')"><a>Comment Sample</a></li>
+                </ul>
+            </div>
+        </nav>
     </div>
 </section>
 
-<section class="section">
-    <h2 class="subtitle">Sample Code</h2>
-    <figure>
+<div class="container section">
+    <div id="CommentSample" class="content-tab" style="display:none">
+        <!-- region Comment -->
+        <section class="section">
+            <div class="metaforo-comment"
+                 style="width: 700px; min-height: 400px;overflow: auto; padding: 50px;"
+                 siteName="%REACT_APP_SAMPLE_SITE_NAME%"
+                 pageId="%REACT_APP_SAMPLE_PAGE_ID%"
+                 debug
+            ></div>
+        </section>
+
+        <section class="section">
+            <h2 class="subtitle">Sample Code</h2>
+            <figure>
+        <pre><code>&lt;div class=&quot;metaforo-comment&quot;
+     siteName=&quot;INPUT_SITE_NAME&quot;
+     pageId=&quot;INPUT_PAGE_ID&quot;
+&gt;&lt;/div&gt;</code></pre>
+                <!--                <figcaption>-->
+                <!--                    You can modify the theme attribute in the &lt;div&gt; tag to specify <b><i>light</i></b> or-->
+                <!--                    <b><i>dark</i></b> styles.-->
+                <!--                </figcaption>-->
+            </figure>
+        </section>
+
+        <!-- endregion Comment -->
+    </div>
+
+    <div id="TippingSample" class="content-tab">
+        <!-- region Tipping -->
+
+        <script>
+            function changeDarkMode() {
+                let darkMode = document.getElementById('darkMode').checked;
+                if (darkMode) {
+                    document.getElementById('tip-button').setAttribute('theme', 'dark');
+                } else {
+                    document.getElementById('tip-button').setAttribute('theme', 'light');
+                }
+            }
+        </script>
+
+        <section class="section">
+            <div class="metaforo-tip button"
+                 id="tip-button"
+                 style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none"
+                 siteName="%REACT_APP_SAMPLE_SITE_NAME%"
+                 pageId="%REACT_APP_SAMPLE_PAGE_ID%"
+                 receiverAddress="%REACT_APP_SAMPLE_ADDRESS%"
+                 receiverUsername="%REACT_APP_SAMPLE_USERNAME%"
+                 receiverChainId="1"
+                 theme="light"
+                 demo
+            >
+                Metaforo Tipping
+            </div>
+
+            <div class="field"
+                 style="margin-top: 24px; font-size: 20px"
+            >
+                <input id="darkMode" type="checkbox" name="darkMode" class="switch"
+                       style="width: 16px; height: 16px"
+                       onchange="changeDarkMode()"
+                >
+                <label for="darkMode">Dark Mode</label>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="subtitle">Sample Code</h2>
+            <figure>
         <pre><code>&lt;script defer=&quot;defer&quot; src=&quot;https://cdn.jsdelivr.net/gh/metaforo/comment3/dist/metaforo-sdk.min.js&quot;&gt;&lt;/script&gt;
 
 &lt;div class=&quot;metaforo-tip&quot;
@@ -90,22 +153,24 @@
      theme=&quot;dark&quot;&gt;
     Metaforo Tipping
 &lt;/div&gt;</code></pre>
-        <figcaption>
-            You can modify the theme attribute in the &lt;div&gt; tag to specify <b><i>light</i></b> or
-            <b><i>dark</i></b> styles.
-        </figcaption>
-    </figure>
-</section>
+                <figcaption>
+                    You can modify the theme attribute in the &lt;div&gt; tag to specify <b><i>light</i></b> or
+                    <b><i>dark</i></b> styles.
+                </figcaption>
+            </figure>
+        </section>
 
-<section class="section">
-    <h2 class="subtitle">Custom Style</h2>
-    <figure>
-        <figcaption>
-            We use mui as the component library. If you need to customize the style of the popup box, you can define a
-            variable in the window with the value of mui's theme definition in mfTheme. For the full definition format,
-            please refer to <a href="https://mui.com/material-ui/customization/default-theme/">this document</a>.
-        </figcaption>
-        <pre><code>&lt;script&gt;
+        <section class="section">
+            <h2 class="subtitle">Custom Style</h2>
+            <figure>
+                <figcaption>
+                    We use mui as the component library. If you need to customize the style of the popup box, you can
+                    define a
+                    variable in the window with the value of mui's theme definition in mfTheme. For the full definition
+                    format,
+                    please refer to <a href="https://mui.com/material-ui/customization/default-theme/">this document</a>.
+                </figcaption>
+                <pre><code>&lt;script&gt;
     window.mfTheme = {
         palette: {
             background: {
@@ -114,10 +179,12 @@
         }
     }
 &lt;/script&gt;</code></pre>
-    </figure>
-</section>
+            </figure>
+        </section>
 
-<!-- endregion Tipping -->
+        <!-- endregion Tipping -->
+    </div>
+</div>
 
 </body>
 </html>
