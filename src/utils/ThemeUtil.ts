@@ -32,7 +32,10 @@ const lightTheme = createTheme({
             main: '#702AF1',
         },
         background: {
-            paper: '#ffffff'
+            paper: '#ffffff',
+        },
+        inputField: {
+            background: '#F2F4F6',
         },
         text: {
             primary: '#222222',
@@ -40,7 +43,7 @@ const lightTheme = createTheme({
         },
     },
     components: components,
-});
+} as any);
 
 const darkTheme = createTheme({
     palette: {

@@ -1,106 +1,334 @@
-import {Global} from "../utils/GlobalVariables";
-import log from "../utils/LogUtil";
-import {SnackBarContextProvider} from "../utils/SnackBar";
-import {
-    updateUserStatusByLocalStorage,
-    UserContextProvider,
-    UserInfoState,
-    useUserContext
-} from "../context/UserContext";
-import {composeProviders} from "../utils/Util";
-import {CommentWidgetContextProvider, useCommentWidgetContext} from "../context/CommentWidgetContext";
-import {ThemeProvider} from "@mui/material";
-import {createThemeFromAttr} from "../utils/ThemeUtil";
-import React, {Dispatch, useEffect} from "react";
+import {updateUserStatusByLoginResponse, UserInfoState, useUserContext} from "../context/UserContext";
+import {useCommentWidgetContext} from "../context/CommentWidgetContext";
+import {Avatar, Card, List, ListItem, useTheme} from "@mui/material";
+import React, {Dispatch, useEffect, useState} from "react";
 import {UserStatus} from "../utils/Constants";
 import {Storage} from "../utils/Storage";
-import CommentList from "../components/comment/CommentList";
 import CreateCommentWidget from "../components/comment/CreateCommentWidget";
-
-export function CommentWidgetContainer(props: any) {
-    const htmlAttrs = props.props;
-
-    if (htmlAttrs && htmlAttrs['debug']) {
-        Global.isDebug = true;
-        log('---- Metaforo Comment Widget ----');
-        log('Version : ' + process.env.REACT_APP_VERSION);
-        log('Props : ');
-        for (let i = 0; i < htmlAttrs.length; i++) {
-            log(htmlAttrs[i]);
-        }
-        log('---- Metaforo Comment Widget ----');
-    }
-
-    if (htmlAttrs && htmlAttrs['demo']) {
-        Global.isDemo = true;
-    }
-
-    if (!htmlAttrs
-        || !htmlAttrs['siteName']
-        || !htmlAttrs['pageId']
-    ) {
-        return null;
-    }
-
-    let paletteMode = null;
-    if (htmlAttrs['theme']) {
-        paletteMode = htmlAttrs['theme'].value;
-    }
-
-    const StateProviders = composeProviders(
-        SnackBarContextProvider,
-        CommentWidgetContextProvider,
-        UserContextProvider,
-    );
-
-    return (
-        <ThemeProvider theme={createThemeFromAttr(paletteMode)}>
-            <StateProviders>
-                <CommentWidget
-                    siteName={htmlAttrs['siteName'].value}
-                    pageId={htmlAttrs['pageId'].value}
-                />
-            </StateProviders>
-        </ThemeProvider>
-    );
-}
+import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from "../api/ApiService";
+import CenterLoadingWidget from "../components/common/CenterLoadingWIdget";
+import {Thread} from "../model/Thread";
+import {grey} from "@mui/material/colors";
+import {LoginDialog} from "../components/login/LoginDialog";
+import {Post} from "../model/Post";
+import HeaderWidget from "../components/comment/HeaderWidget";
+import CommentListItem from "../components/comment/CommentListItem";
+import {LoadingButton} from "@mui/lab";
 
 type CommentWidgetProps = {
     siteName: string,
     pageId: string,
     needRefresh?: boolean,
+    variant?: string,
 }
 
-function CommentWidget(props: CommentWidgetProps) {
-    const {userInfoState, setUserState} = useUserContext();
-    const {commentWidgetDispatch} = useCommentWidgetContext();
+const ALL_CLOSED = -1;
+const ROOT_REPLY = 0;
 
+export default function CommentWidget(props: CommentWidgetProps) {
+    const {userInfoState, setUserState} = useUserContext();
+    const {commentWidgetState, commentWidgetDispatch} = useCommentWidgetContext();
+    /// user login & load thread
+    const [isInitializing, setIsInitializing] = useState(true);
+    const [isOpenLoginDialog, setIsOpenLoginDialog] = useState(false);
+    const closeLoginDialog = () => {
+        setIsOpenLoginDialog(false);
+    }
+    /// Comment List
+    const [thread, setThread] = useState(null as Thread | null);
+    const [postList, setPostList] = useState([] as Post[]);
+    const [showFullLoading, setShowFullLoading] = useState(false);
+    const [showTailLoading, setShowTailLoading] = useState(false);
+    const [showInnerLoading, setShowInnerLoading] = useState(new Set<number>());
+
+    /// Only one reply dialog can be shown
+    const [openReply, setOpenReply] = useState(ALL_CLOSED);
+
+    /// Check User Login Status
     useEffect(() => {
         commentWidgetDispatch(props);
-
         if (userInfoState.loginStatus === UserStatus.isChecking) {
-            startChecking(userInfoState, setUserState);
+            _initUserLoginStatus(userInfoState, setUserState).then(() => {
+                setIsInitializing(false);
+            });
+        } else {
+            setIsInitializing(false);
         }
         // eslint-disable-next-line
     }, []);
 
-    function startChecking(userInfoState: UserInfoState, dispatch: Dispatch<UserInfoState>) {
-        if (!Storage.getItem(Storage.userToken)) {
-            userInfoState.loginStatus = UserStatus.notLogin;
-            dispatch(userInfoState);
+    useEffect(() => {
+        if (commentWidgetState.needRefresh) {
+            commentWidgetDispatch({
+                siteName: commentWidgetState.siteName,
+                pageId: commentWidgetState.pageId,
+                needRefresh: false,
+            });
+            return;
+        }
+
+        setOpenReply(ALL_CLOSED);
+        if (commentWidgetState.siteName && commentWidgetState.pageId) {
+            loadNextPage(0);
+        }
+        // eslint-disable-next-line
+    }, [commentWidgetState]);
+
+    const hasMorePost = () => {
+        if (thread == null) {
+            return false;
         } else {
-            userInfoState.loginStatus = UserStatus.login;
-            updateUserStatusByLocalStorage(userInfoState, dispatch);
+            // firstLevelCount contains an empty "first_post".
+            return thread.firstLevelCount - 1 > postList.length;
         }
     }
 
-    // @ts-ignore
-    const link = `${process.env.REACT_APP_API_HOST.replace('/api', '/')}g/${props.siteName}/thread/${props.pageId}`;
-    return (
+    const loadNextPage = (startPostId: number) => {
+        if (showTailLoading) {
+            return;
+        }
+        if (startPostId === 0) {
+            setShowFullLoading(true);
+        } else {
+            setShowTailLoading(true);
+        }
+
+        loadThread(commentWidgetState.siteName, commentWidgetState.pageId, startPostId)
+            .then((res) => {
+                setShowFullLoading(false);
+                setShowTailLoading(false);
+
+                if (!res || !res['thread']) {
+                    setThread(null);
+                    return;
+                }
+
+                const thread = res['thread'] as Thread;
+                setThread(thread);
+                if (!thread.posts || thread.posts.length === 0) {
+                    return;
+                }
+
+                let newPostList;
+                if (startPostId === 0) {
+                    newPostList = thread.posts;
+                } else {
+                    newPostList = postList.concat(thread.posts);
+                }
+                setPostList(newPostList);
+            });
+    }
+
+    const loadMoreReplies = (post: Post) => {
+        showInnerLoading.add(post.id);
+        setShowInnerLoading(new Set(showInnerLoading));
+
+        return loadInnerComment(commentWidgetState.siteName, post.id, post.children.posts.last().id)
+            .then((res) => {
+                showInnerLoading.delete(post.id);
+                setShowInnerLoading(new Set(showInnerLoading));
+                if (!res || !res['post']) {
+                    return;
+                }
+
+                const newPost = res['post'] as Post;
+                if (newPost.children && newPost.children.posts) {
+                    post.children.posts = [...post.children.posts, ...newPost.children.posts];
+                    setPostList(postList);
+                }
+            });
+    }
+
+    function onReplyClick() {
+        if (userInfoState.loginStatus === UserStatus.login) {
+            setOpenReply(ROOT_REPLY);
+        } else {
+            setIsOpenLoginDialog(true);
+        }
+    }
+
+    // region ---- Comment List ----
+
+    const listItemList = [] as JSX.Element[];
+    postList.forEach((post) => {
+        listItemList.push(CommentListItem({
+            thread: thread!,
+            post: post,
+            level: 1,
+            onReply: () => {
+            },
+            openingReply: openReply,
+            onShowReplyClick: (post?: Post) => {
+                if (post) {
+                    setOpenReply(post.id);
+                } else {
+                    setOpenReply(ALL_CLOSED);
+                }
+            },
+            loadingChildren: showInnerLoading,
+            onLoadingChildrenClick: loadMoreReplies,
+        }));
+    });
+    if (hasMorePost()) {
+        listItemList.push(
+            <ListItem
+                key={'has-more'}
+                sx={{justifyContent: 'center',}}>
+                <LoadingButton
+                    loading={showTailLoading}
+                    onClick={() => loadNextPage(postList.last().id)}
+                    sx={{
+                        display: 'flex',
+                        textTransform: 'none',
+                    }}
+                >
+                    {showTailLoading ? 'Loading...' : 'Load More'}
+                </LoadingButton>
+            </ListItem>
+        );
+    }
+
+    // endregion ---- Comment List ----
+
+    const widget = (
         <>
-            <CreateCommentWidget/>
-            <a href={link}>Open Origin Thread</a>
-            <CommentList/>
+            <HeaderWidget thread={thread}/>
+            {ReplyPostWidget(userInfoState, openReply === ROOT_REPLY, (b: boolean) => {
+                if (b) {
+                    setOpenReply(ROOT_REPLY);
+                } else {
+                    setOpenReply(ALL_CLOSED);
+                }
+            }, onReplyClick,)}
+            {showFullLoading ?
+                <CenterLoadingWidget height={240}/> :
+                <List
+                    className={'mf-comment-list'}
+                    disablePadding={true}
+                    sx={{
+                        margin: 0,
+                        padding: 0,
+                    }}>
+                    {listItemList}
+                </List>
+            }
+
+            <LoginDialog open={isOpenLoginDialog} onClose={closeLoginDialog}
+                         closeDialog={closeLoginDialog}/>
         </>
+    );
+
+    return WidgetContainer(widget, isInitializing, props.variant);
+}
+
+async function _initUserLoginStatus(userInfoState: UserInfoState, dispatch: Dispatch<UserInfoState>) {
+    const userToken = Storage.getItem(Storage.userToken);
+    if (userToken) {
+        initApiService(userToken);
+        return refreshLoginStatus().then((res) => {
+            if (res.data && res.data.user) {
+                userInfoState.loginStatus = UserStatus.login;
+                updateUserStatusByLoginResponse(res.data, dispatch);
+                return true;
+            } else {
+                userInfoState.loginStatus = UserStatus.notLogin;
+                dispatch(userInfoState);
+                return false;
+            }
+        });
+    } else {
+        userInfoState.loginStatus = UserStatus.notLogin;
+        dispatch(userInfoState);
+        return false;
+    }
+}
+
+function WidgetContainer(widget: JSX.Element, isInitializing: boolean, variant?: string,): JSX.Element {
+    const loadingWidget = (
+        <>
+            <div style={{
+                display: !isInitializing ? 'none' : undefined,
+            }}>
+                <CenterLoadingWidget minHeight={'240px'}/>
+            </div>
+            <div style={{
+                display: isInitializing ? 'none' : undefined,
+            }}>
+                {widget}
+            </div>
+        </>
+    );
+
+
+    if (variant === 'plain') {
+        return loadingWidget;
+    } else {
+        return (
+            <Card
+                variant="outlined"
+                sx={{
+                    padding: '20px 18px',
+                }}
+            >
+                {loadingWidget}
+            </Card>
+        );
+    }
+}
+
+function ReplyPostWidget(
+    userInfoState: UserInfoState,
+    isOpenReply: boolean,
+    setIsOpenReply: (isOpen: boolean) => void,
+    onReplyClick: () => void,) {
+    const theme = useTheme();
+    let avatarSx = {
+        width: '40px',
+        height: '40px',
+        marginRight: '16px',
+        backgroundColor: grey[200],
+    }
+    let avatarWidget, replyWidget;
+    if (userInfoState.loginStatus === UserStatus.login) {
+        avatarWidget = (
+            <Avatar src={userInfoState.avatar} sx={avatarSx}></Avatar>
+        );
+    } else {
+        avatarWidget = (
+            <Avatar sx={avatarSx}/>
+        );
+    }
+    if (isOpenReply) {
+        replyWidget = (<CreateCommentWidget
+            replyPostId={0}
+            widgetKey={'quill-toolbar-header'}
+            onClose={() => {
+                setIsOpenReply(false)
+            }}/>);
+    } else {
+        replyWidget = (
+            <div className={'mf-reply-area'}
+                 style={{
+                     backgroundColor: (theme.palette as any).inputField.background,
+                     color: theme.palette.action.disabled,
+                     cursor: userInfoState.loginStatus === UserStatus.login ? 'text' : 'default',
+                 }}
+                 onClick={onReplyClick}
+            >
+                Write a reply
+            </div>
+        );
+    }
+
+    return (
+        <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            width: '100%',
+            marginTop: '22px',
+        }}>
+            {avatarWidget}
+            {replyWidget}
+        </div>
     );
 }

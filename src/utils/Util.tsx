@@ -104,3 +104,16 @@ export function serverDateToString(dateStr: string) {
 export const EMPTY_DELTA = () => {
     return {ops: []} as unknown as DeltaStatic;
 };
+
+declare global {
+    interface Array<T> {
+        last(): T;
+    }
+}
+
+if (!Array.prototype.last) {
+    // eslint-disable-next-line no-extend-native
+    Array.prototype.last = function <T>(this: T[]): T {
+        return this[(this.length - 1)];
+    }
+}

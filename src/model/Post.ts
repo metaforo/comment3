@@ -5,9 +5,9 @@ export type Post = {
     likeCount: number,
     createdAt: string,
     children: {
-        count: number,
         posts: Post[],
     },
+    childrenCount: number,
     user: {
         id: number,
         username: string,

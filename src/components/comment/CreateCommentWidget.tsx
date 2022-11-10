@@ -1,9 +1,4 @@
-import React, {useEffect, useState} from "react";
-import {Button} from "@mui/material";
-import {logout, useUserContext} from "../../context/UserContext";
-import {UserStatus} from "../../utils/Constants";
-import {grey} from "@mui/material/colors";
-import {LoginDialog} from "../login/LoginDialog";
+import React, {useState} from "react";
 import {submitPost} from "../../api/ApiService";
 import {useCommentWidgetContext} from "../../context/CommentWidgetContext";
 import QuillEditor from "./QuillEditor";
@@ -12,22 +7,17 @@ import {UnprivilegedEditor} from "react-quill";
 import {EMPTY_DELTA} from "../../utils/Util";
 import {LoadingButton} from "@mui/lab";
 
-export default function CreateCommentWidget() {
+interface CreateCommentWidgetProp {
+    onClose: () => void;
+    widgetKey: string;
+    replyPostId: number;
+}
+
+export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
     const [content, setContent] = useState('');
     const [quillContent, setQuillContent] = useState(EMPTY_DELTA);
-    const {userInfoState, setUserState} = useUserContext();
     const {commentWidgetState, commentWidgetDispatch} = useCommentWidgetContext();
-    const [isOpenLoginDialog, setIsOpenLoginDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const closeLoginDialog = () => {
-        setIsOpenLoginDialog(false);
-    }
-
-    const [needLogin, setNeedLogin] = useState(userInfoState.loginStatus !== UserStatus.login);
-
-    useEffect(() => {
-        setNeedLogin(userInfoState.loginStatus !== UserStatus.login);
-    }, [userInfoState]);
 
     const createThread = () => {
         if (!content) {
@@ -35,7 +25,7 @@ export default function CreateCommentWidget() {
         }
 
         setIsLoading(true);
-        submitPost(commentWidgetState.siteName, commentWidgetState.pageId, content, 0).then((res) => {
+        submitPost(commentWidgetState.siteName, commentWidgetState.pageId, content, props.replyPostId,).then((res) => {
             if (res.status) {
                 commentWidgetDispatch({
                     siteName: commentWidgetState.siteName,
@@ -59,59 +49,25 @@ export default function CreateCommentWidget() {
         setQuillContent(editor.getContents);
     }
 
-    const widget = (
+    const submitBtn = (
+        <LoadingButton
+            className='ql-submit'
+            variant={"contained"}
+            loading={isLoading}
+            onClick={createThread}
+        >Submit</LoadingButton>);
+    return (
         <div style={{
-            flexDirection: "column",
-            padding: "20px 12px 0px 12px",
+            width: '100%',
         }}>
             <QuillEditor
+                widgetKey={props.widgetKey}
                 disabled={isLoading}
                 onChange={handleChange}
                 value={quillContent}
+                toolbarWidgets={submitBtn}
+                onClose={(w) => props.onClose()}
             />
-
-            <div style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-            }}
-            >
-                <LoadingButton loading={isLoading} onClick={createThread}>Submit</LoadingButton>
-                <Button
-                    disabled={needLogin}
-                    onClick={() => logout(setUserState)}
-                    sx={{
-                        fontSize: '14px',
-                        color: grey['600'],
-                        textTransform: 'none',
-                    }}
-                >Logout</Button>
-            </div>
         </div>
     );
-
-    if (needLogin) {
-        return (
-            <>
-                <div
-                    style={{
-                        height: '120px',
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Button
-                        variant={"contained"}
-                        onClick={() => setIsOpenLoginDialog(true)}
-                    >Login to Comment</Button>
-                </div>
-                <LoginDialog open={isOpenLoginDialog} onClose={closeLoginDialog}
-                             closeDialog={closeLoginDialog}/>
-            </>
-        );
-    } else {
-        return widget;
-    }
 }

@@ -17,8 +17,8 @@ export const quillModules = (): StringMap => {
 
 export function initQuill() {
     // 3rd party
-    Quill.register('modules/markdownOptions', QuillMarkdown);
-    Quill.register('modules/mention', QuillMention);
+    Quill.register('modules/markdownOptions', QuillMarkdown, true);
+    Quill.register('modules/mention', QuillMention, true);
     Quill.register(emojiBlot(), true);
 }
 

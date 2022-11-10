@@ -2,6 +2,8 @@ import axios, {AxiosResponse} from "axios";
 import log from "../utils/LogUtil";
 import {Storage} from "../utils/Storage";
 import {TipWidgetState} from "../context/TipWidgetContext";
+import {camelCase} from "lodash";
+import {convertJsonKey} from "../utils/Util";
 
 const apiHost = process.env.REACT_APP_API_HOST;
 
@@ -11,12 +13,12 @@ let instance = axios.create({
     baseURL: apiHost,
     headers: {
         common: {
-            'mf-api-key': 'mf-sdk',
+            'mf-api-key': 'mf-web-sdk',
         }
     },
 })
 
-export function initStatus(token: string) {
+export function initApiService(token: string) {
     if (token) {
         instance.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     }
@@ -32,7 +34,7 @@ function handleResponse(res: AxiosResponse) {
             log(res.data.data.api_token);
             log('---- response end ----');
             Storage.saveItem(Storage.userToken, res.data.data.api_token);
-            initStatus(res.data.data.api_token);
+            initApiService(res.data.data.api_token);
         }
         return res.data;
     }
@@ -50,31 +52,53 @@ function post(path: string, params?: any) {
 
 // endregion ---- init instance ----
 
-export function loadComment(groupName: string, thread: string, startPostId: number) {
-    const url = '/api_thread/' + thread;
+export function loadThread(groupName: string, thread: string, startPostId: number) {
+    const url = '/get_thread/0';
     return get(url,
         {
             sort: 'new',
             page_size: 10,
             start_post_id: startPostId,
             group_name: groupName,
+            web_thread_name: thread,
         },
     )
         .then(res => {
-            return res.data;
+            return convertJsonKey(res.data, (k: string) => {
+                if (k === 'total_likes') {
+                    return 'likeCount';
+                }
+                return k;
+            }, camelCase);
         });
 }
 
-export function submitPost(groupName: string, thread: string, content: any, loginType: number) {
+export function loadInnerComment(groupName: string, parentPostId: number, startPostId: number,) {
+    const url = '/get_comment';
+    return get(url, {
+        group_name: groupName,
+        page_size: 5,
+        parent_post_id: parentPostId,
+        start_post_id: startPostId,
+        sort: 'new',
+    }).then(res => {
+        return convertJsonKey(res.data, (k: string) => {
+            if (k === 'total_likes') {
+                return 'likeCount';
+            }
+            return k;
+        }, camelCase);
+    });
+}
+
+export function submitPost(groupName: string, thread: string, content: any, replyId?: number) {
     const url = '/submit_post';
     console.log(content);
     return post(url, {
         group_name: groupName,
-        thread_id: thread,
+        web_thread_name: thread,
         content: content,
-        login_type: loginType,
-        sign: '',
-        signMsg: '',
+        reply_id: replyId && replyId > 0 ? replyId : undefined,
     });
 }
 
@@ -128,13 +152,13 @@ export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetSt
     });
 }
 
-export function getCurrentUser() {
+export function refreshLoginStatus() {
     return get('/me').then(res => {
         log('get current user ' + res.data + ' , ' + res.data.user);
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
         }
-        return res.data;
+        return res;
     });
 }
 

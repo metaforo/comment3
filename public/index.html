@@ -74,9 +74,11 @@
         <!-- region Comment -->
         <section class="section">
             <div class="metaforo-comment"
-                 style="width: 700px; min-height: 400px;overflow: auto; padding: 50px;"
+                 style="width: 700px; overflow: auto;"
+                 variant="card"
                  siteName="%REACT_APP_SAMPLE_SITE_NAME%"
                  pageId="%REACT_APP_SAMPLE_PAGE_ID%"
+                 theme="light"
                  debug
             ></div>
         </section>
@@ -185,6 +187,10 @@
         <!-- endregion Tipping -->
     </div>
 </div>
+
+<script>
+    openTab(event, 'CommentSample');
+</script>
 
 </body>
 </html>
