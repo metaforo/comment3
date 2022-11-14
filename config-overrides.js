@@ -10,7 +10,7 @@ module.exports = override((config) => {
 //     config.optimization.minimize = false;
 
     // JS
-    config.output.filename = 'metaforo-sdk.min.js';
+    // config.output.filename = 'metaforo-sdk.min.js';
 
     // // CSS. "5" is MiniCssPlugin
     // config.plugins[5].options.filename = '[name].min.css';

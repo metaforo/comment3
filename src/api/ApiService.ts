@@ -99,6 +99,8 @@ export function submitPost(groupName: string, thread: string, content: any, repl
         web_thread_name: thread,
         content: content,
         reply_id: replyId && replyId > 0 ? replyId : undefined,
+    }).then(res => {
+        return convertJsonKey(res, camelCase);
     });
 }
 

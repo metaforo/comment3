@@ -16,7 +16,7 @@ type CommentListItemProps = {
     thread: Thread,
     post: Post,
     level: number,
-    onReply: () => void,
+    onReplySuccess: (replyPostId: number, newPost: Post) => void;
     openingReply: number,
     onShowReplyClick: (post?: Post) => void,
     loadingChildren: Set<number>,
@@ -111,7 +111,9 @@ export default function CommentListItem(props: CommentListItemProps) {
                         <CreateCommentWidget
                             widgetKey={'quill-toolbar-' + post.id}
                             replyPostId={post.id}
-                            onClose={() => props.onShowReplyClick()}/>
+                            onClose={() => props.onShowReplyClick()}
+                            onReplySuccess={props.onReplySuccess}
+                        />
                     </div>
                 }
                 {children}

@@ -61,8 +61,8 @@
         <nav class="tabs is-boxed is-fullwidth is-large">
             <div class="container">
                 <ul>
-                    <li class="tab is-active" onclick="openTab(event,'TippingSample')"><a>Tipping Sample</a></li>
-                    <li class="tab" onclick="openTab(event,'CommentSample')"><a>Comment Sample</a></li>
+                    <li class="tab" onclick="openTab(event,'TippingSample')"><a>Tipping Sample</a></li>
+                    <li class="tab is-active" onclick="openTab(event,'CommentSample')"><a>Comment Sample</a></li>
                 </ul>
             </div>
         </nav>
@@ -70,17 +70,19 @@
 </section>
 
 <div class="container section">
-    <div id="CommentSample" class="content-tab" style="display:none">
+    <div id="CommentSample" class="content-tab">
         <!-- region Comment -->
         <section class="section">
-            <div class="metaforo-comment"
-                 style="width: 700px; overflow: auto;"
-                 variant="card"
-                 siteName="%REACT_APP_SAMPLE_SITE_NAME%"
-                 pageId="%REACT_APP_SAMPLE_PAGE_ID%"
-                 theme="light"
-                 debug
-            ></div>
+            <div style="display: flex; justify-content: center">
+                <div class="metaforo-comment"
+                     style="width: 700px; overflow: auto;"
+                     variant="card"
+                     siteName="%REACT_APP_SAMPLE_SITE_NAME%"
+                     pageId="%REACT_APP_SAMPLE_PAGE_ID%"
+                     theme="light"
+                     debug
+                ></div>
+            </div>
         </section>
 
         <section class="section">
@@ -100,7 +102,7 @@
         <!-- endregion Comment -->
     </div>
 
-    <div id="TippingSample" class="content-tab">
+    <div id="TippingSample" class="content-tab" style="display:none">
         <!-- region Tipping -->
 
         <script>
@@ -187,10 +189,6 @@
         <!-- endregion Tipping -->
     </div>
 </div>
-
-<script>
-    openTab(event, 'CommentSample');
-</script>
 
 </body>
 </html>

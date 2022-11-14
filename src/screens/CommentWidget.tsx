@@ -139,6 +139,50 @@ export default function CommentWidget(props: CommentWidgetProps) {
             });
     }
 
+    const handleReplyPost = (replyPostId: number, newPost: Post) => {
+        let newPostList;
+        if (replyPostId === 0) {
+            newPostList = [newPost].concat(postList);
+            if (thread) {
+                thread.firstLevelCount += 1;
+            }
+        } else {
+            const repliedPost = postList.find((p) => {
+                if (p.id === replyPostId) {
+                    return true;
+                }
+
+                if (!p.children || !p.children.posts) {
+                    return false;
+                }
+
+                return p.children.posts.find((child) => {
+                    return child.id === replyPostId;
+                }) !== undefined;
+            });
+
+            if (repliedPost) {
+                if (repliedPost.children.posts) {
+                    repliedPost.children.posts = [newPost].concat(repliedPost.children.posts);
+                    repliedPost.childrenCount += 1;
+                } else {
+                    repliedPost.children.posts = [newPost];
+                    repliedPost.childrenCount = 1;
+                }
+                newPostList = ([] as Post[]).concat(postList);
+            } else {
+                newPostList = [newPost].concat(postList);
+            }
+        }
+
+        if (thread) {
+            thread.postsCount += 1;
+            setThread(thread);
+        }
+        setOpenReply(ALL_CLOSED);
+        setPostList(newPostList);
+    }
+
     function onReplyClick() {
         if (userInfoState.loginStatus === UserStatus.login) {
             setOpenReply(ROOT_REPLY);
@@ -155,8 +199,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             thread: thread!,
             post: post,
             level: 1,
-            onReply: () => {
-            },
+            onReplySuccess: handleReplyPost,
             openingReply: openReply,
             onShowReplyClick: (post?: Post) => {
                 if (post) {
@@ -199,7 +242,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 } else {
                     setOpenReply(ALL_CLOSED);
                 }
-            }, onReplyClick,)}
+            }, onReplyClick, handleReplyPost,)}
             {showFullLoading ?
                 <CenterLoadingWidget height={240}/> :
                 <List
@@ -280,7 +323,9 @@ function ReplyPostWidget(
     userInfoState: UserInfoState,
     isOpenReply: boolean,
     setIsOpenReply: (isOpen: boolean) => void,
-    onReplyClick: () => void,) {
+    onReplyClick: () => void,
+    handleReplyPost: (replyPostId: number, newPost: Post) => void,
+) {
     const theme = useTheme();
     let avatarSx = {
         width: '40px',
@@ -304,7 +349,9 @@ function ReplyPostWidget(
             widgetKey={'quill-toolbar-header'}
             onClose={() => {
                 setIsOpenReply(false)
-            }}/>);
+            }}
+            onReplySuccess={handleReplyPost}
+        />);
     } else {
         replyWidget = (
             <div className={'mf-reply-area'}

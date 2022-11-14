@@ -6,17 +6,19 @@ import {DeltaStatic, Sources} from "quill";
 import {UnprivilegedEditor} from "react-quill";
 import {EMPTY_DELTA} from "../../utils/Util";
 import {LoadingButton} from "@mui/lab";
+import {Post} from "../../model/Post";
 
 interface CreateCommentWidgetProp {
     onClose: () => void;
     widgetKey: string;
     replyPostId: number;
+    onReplySuccess: (replyPostId: number, newPost: Post) => void;
 }
 
 export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
     const [content, setContent] = useState('');
     const [quillContent, setQuillContent] = useState(EMPTY_DELTA);
-    const {commentWidgetState, commentWidgetDispatch} = useCommentWidgetContext();
+    const {commentWidgetState} = useCommentWidgetContext();
     const [isLoading, setIsLoading] = useState(false);
 
     const createThread = () => {
@@ -27,12 +29,8 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
         setIsLoading(true);
         submitPost(commentWidgetState.siteName, commentWidgetState.pageId, content, props.replyPostId,).then((res) => {
             if (res.status) {
-                commentWidgetDispatch({
-                    siteName: commentWidgetState.siteName,
-                    pageId: commentWidgetState.pageId,
-                    needRefresh: true,
-                });
                 setQuillContent(EMPTY_DELTA);
+                props.onReplySuccess(props.replyPostId, res.data.post);
             }
             setIsLoading(false);
         });
