@@ -14,3 +14,7 @@ export type Post = {
         photoUrl: string,
     },
 }
+
+export const ROOT_POST = {
+    id: 0,
+} as Post;

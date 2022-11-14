@@ -10,7 +10,7 @@ import CenterLoadingWidget from "../components/common/CenterLoadingWIdget";
 import {Thread} from "../model/Thread";
 import {grey} from "@mui/material/colors";
 import {LoginDialog} from "../components/login/LoginDialog";
-import {Post} from "../model/Post";
+import {Post, ROOT_POST} from "../model/Post";
 import HeaderWidget from "../components/comment/HeaderWidget";
 import CommentListItem from "../components/comment/CommentListItem";
 import {LoadingButton} from "@mui/lab";
@@ -73,6 +73,10 @@ export default function CommentWidget(props: CommentWidgetProps) {
         }
         // eslint-disable-next-line
     }, [commentWidgetState]);
+
+    useEffect(() => {
+        setOpenReply(ALL_CLOSED);
+    }, [userInfoState]);
 
     const hasMorePost = () => {
         if (thread == null) {
@@ -183,9 +187,13 @@ export default function CommentWidget(props: CommentWidgetProps) {
         setPostList(newPostList);
     }
 
-    function onReplyClick() {
+    function handleReplyClick(post?: Post) {
         if (userInfoState.loginStatus === UserStatus.login) {
-            setOpenReply(ROOT_REPLY);
+            if (post) {
+                setOpenReply(post.id);
+            } else {
+                setOpenReply(ALL_CLOSED);
+            }
         } else {
             setIsOpenLoginDialog(true);
         }
@@ -201,13 +209,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             level: 1,
             onReplySuccess: handleReplyPost,
             openingReply: openReply,
-            onShowReplyClick: (post?: Post) => {
-                if (post) {
-                    setOpenReply(post.id);
-                } else {
-                    setOpenReply(ALL_CLOSED);
-                }
-            },
+            onShowReplyClick: handleReplyClick,
             loadingChildren: showInnerLoading,
             onLoadingChildrenClick: loadMoreReplies,
         }));
@@ -242,7 +244,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 } else {
                     setOpenReply(ALL_CLOSED);
                 }
-            }, onReplyClick, handleReplyPost,)}
+            }, handleReplyClick, handleReplyPost,)}
             {showFullLoading ?
                 <CenterLoadingWidget height={240}/> :
                 <List
@@ -323,7 +325,7 @@ function ReplyPostWidget(
     userInfoState: UserInfoState,
     isOpenReply: boolean,
     setIsOpenReply: (isOpen: boolean) => void,
-    onReplyClick: () => void,
+    onReplyClick: (post?: Post) => void,
     handleReplyPost: (replyPostId: number, newPost: Post) => void,
 ) {
     const theme = useTheme();
@@ -360,7 +362,7 @@ function ReplyPostWidget(
                      color: theme.palette.action.disabled,
                      cursor: userInfoState.loginStatus === UserStatus.login ? 'text' : 'default',
                  }}
-                 onClick={onReplyClick}
+                 onClick={() => onReplyClick(ROOT_POST)}
             >
                 Write a reply
             </div>
