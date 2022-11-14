@@ -3,7 +3,7 @@ import "../../css/quill.scss";
 import 'react-quill/dist/quill.snow.css';
 import {DeltaStatic, Sources} from "quill";
 import {quillModules} from "../../utils/QuillUtil";
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import {IconButton, useTheme} from "@mui/material";
 
@@ -22,6 +22,15 @@ export default function QuillEditor(props: QuillEditorProps) {
     modules.toolbar = {
         container: '#' + props.widgetKey,
     };
+
+    const inputRef = useRef(null);
+    useEffect(() => {
+        if (inputRef != null && inputRef.current != null) {
+            // @ts-ignore
+            const quill = (inputRef.current as ReactQuill);
+            quill.setEditorSelection(quill.getEditor(), {index: quill.getEditor().getLength(), length: 0});
+        }
+    }, []);
 
     const handleChange = (value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor) => {
         props.onChange(value, delta, source, editor);
@@ -49,6 +58,7 @@ export default function QuillEditor(props: QuillEditorProps) {
         </div>
     );
 
+    // @ts-ignore
     return (
         <div className={'mf-ql-editor'}
              style={{
@@ -62,6 +72,7 @@ export default function QuillEditor(props: QuillEditorProps) {
                 value={props.value}
                 onChange={handleChange}
                 modules={modules}
+                ref={inputRef}
             />
             {CustomToolbar()}
         </div>
