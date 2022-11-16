@@ -15,6 +15,7 @@ import HeaderWidget from "../components/comment/HeaderWidget";
 import CommentListItem from "../components/comment/CommentListItem";
 import {LoadingButton} from "@mui/lab";
 import {addItemToSetState} from "../utils/Util";
+import {getEns} from "../utils/EnsService";
 
 type CommentWidgetProps = {
     siteName: string,
@@ -25,6 +26,8 @@ type CommentWidgetProps = {
 
 const ALL_CLOSED = -1;
 const ROOT_REPLY = 0;
+
+const resolvedEnsMap = {} as any;
 
 export default function CommentWidget(props: CommentWidgetProps) {
     const {userInfoState, setUserState} = useUserContext();
@@ -45,6 +48,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
     /// Only one reply dialog can be shown
     const [openReply, setOpenReply] = useState(ALL_CLOSED);
+
 
     /// Check User Login Status
     useEffect(() => {
@@ -101,7 +105,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
         }
 
         loadThread(commentWidgetState.siteName, commentWidgetState.pageId, startPostId)
-            .then((res) => {
+            .then(async (res) => {
                 setShowFullLoading(false);
                 setShowTailLoading(false);
 
@@ -116,6 +120,8 @@ export default function CommentWidget(props: CommentWidgetProps) {
                     addItemToSetState(ROOT_REPLY, noMorePost, setNoMorePost);
                     return;
                 }
+
+                await loadEnsNameForPostList(thread.posts, resolvedEnsMap);
 
                 let newPostList;
                 if (startPostId === 0) {
@@ -132,7 +138,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
         setShowInnerLoading(new Set(showInnerLoading));
 
         return loadInnerComment(commentWidgetState.siteName, post.id, post.children.posts.last().id)
-            .then((res) => {
+            .then(async (res) => {
                 showInnerLoading.delete(post.id);
                 setShowInnerLoading(new Set(showInnerLoading));
                 if (!res || !res['post']) {
@@ -141,6 +147,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 }
 
                 const newPost = res['post'] as Post;
+                await loadEnsNameForPostList(newPost.children.posts, resolvedEnsMap);
                 if (newPost.children && newPost.children.posts) {
                     post.children.posts = [...post.children.posts, ...newPost.children.posts];
                     setPostList(postList);
@@ -150,7 +157,8 @@ export default function CommentWidget(props: CommentWidgetProps) {
             });
     }
 
-    const handleReplyPost = (replyPostId: number, newPost: Post) => {
+    const handleReplyPost = async (replyPostId: number, newPost: Post) => {
+        await loadEnsNameForPostList([newPost], resolvedEnsMap);
         let newPostList;
         if (replyPostId === 0) {
             newPostList = [newPost].concat(postList);
@@ -388,4 +396,67 @@ function ReplyPostWidget(
             {replyWidget}
         </div>
     );
+}
+
+async function loadEnsNameForPostList(postList: Post[], resolvedMap: any) {
+    // step 1: generic userId->address map
+    const addressMap = {} as any;
+    genericEnsResolvedMap(postList, addressMap);
+
+    // step 2: generic userId->ensName map
+    const futureList = [];
+    for (const userId of Object.keys(addressMap)) {
+        if (resolvedMap[userId]) {
+            return;
+        } else {
+            const ensNameFuture = getEns(addressMap[userId]).then((ensName) => {
+                if (ensName) {
+                    resolvedMap[userId] = ensName;
+                } else {
+                    resolvedMap[userId] = `${addressMap[userId].substring(0, 6)}...${addressMap[userId].substring(addressMap[userId].length - 4)}`;
+                }
+            });
+            futureList.push(ensNameFuture);
+        }
+    }
+    await Promise.all(futureList);
+
+    // step 3: assign ensName for post.
+    postList.forEach((post: Post) => {
+        if (post.children && post.children.posts) {
+            post.children.posts.forEach((subPost) => {
+                if (resolvedMap[subPost.user.id]) {
+                    subPost.user.ensName = resolvedMap[subPost.user.id];
+                }
+            });
+        }
+
+        if (resolvedMap[post.user.id]) {
+            if (resolvedMap[post.user.id].includes('...') && !post.user.username.startsWith('w_sso')) {
+                // No ens but has normal username, do nothing.
+            } else {
+                post.user.ensName = resolvedMap[post.user.id];
+            }
+        }
+    });
+}
+
+function genericEnsResolvedMap(postList: Post[], resolvedMap: any) {
+    postList.forEach((post: Post) => {
+        if (post.children && post.children.posts) {
+            genericEnsResolvedMap(post.children.posts, resolvedMap);
+        }
+        if (post.user && post.user.web3PublicKeys) {
+            if (resolvedMap[post.user.id]) {
+                return;
+            } else {
+                const pk = post.user.web3PublicKeys.find((pk) => {
+                    return pk.type === 0 || pk.type === 5;
+                });
+                if (pk) {
+                    resolvedMap[post.user.id] = pk.address;
+                }
+            }
+        }
+    });
 }

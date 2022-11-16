@@ -88,7 +88,7 @@ export default function CommentListItem(props: CommentListItemProps) {
                     alignItems: 'baseline',
                     marginBottom: '8px',
                 }}>
-                    <div className={'mf-username'}>{post.user.username}</div>
+                    <div className={'mf-username'}>{post.user.ensName ? post.user.ensName : post.user.username}</div>
                     <div className={'mf-datetime'} style={{
                         color: grey[600],
                     }}>

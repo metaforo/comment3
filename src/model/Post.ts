@@ -12,7 +12,16 @@ export type Post = {
         id: number,
         username: string,
         photoUrl: string,
+        ensName?: string,
+        web3PublicKeys?: UserPublicKey[],
     },
+}
+
+type UserPublicKey = {
+    userId: number,
+    address: string,
+    type: number,
+    ensName?: string,
 }
 
 export const ROOT_POST = {
