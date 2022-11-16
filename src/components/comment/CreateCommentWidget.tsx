@@ -32,6 +32,9 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
         submitPost(commentWidgetState.siteName, commentWidgetState.pageId, content, props.replyPostId,).then((res) => {
             if (res.status) {
                 setQuillContent(EMPTY_DELTA);
+                if (Global.quillDraft[props.replyPostId]) {
+                    Global.quillDraft[props.replyPostId] = '';
+                }
                 props.onReplySuccess(props.replyPostId, res.data.post);
             }
             setIsLoading(false);
