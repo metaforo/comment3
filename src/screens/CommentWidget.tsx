@@ -14,6 +14,7 @@ import {Post, ROOT_POST} from "../model/Post";
 import HeaderWidget from "../components/comment/HeaderWidget";
 import CommentListItem from "../components/comment/CommentListItem";
 import {LoadingButton} from "@mui/lab";
+import {addItemToSetState} from "../utils/Util";
 
 type CommentWidgetProps = {
     siteName: string,
@@ -40,6 +41,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
     const [showFullLoading, setShowFullLoading] = useState(false);
     const [showTailLoading, setShowTailLoading] = useState(false);
     const [showInnerLoading, setShowInnerLoading] = useState(new Set<number>());
+    const [noMorePost, setNoMorePost] = useState(new Set<number>());
 
     /// Only one reply dialog can be shown
     const [openReply, setOpenReply] = useState(ALL_CLOSED);
@@ -67,6 +69,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             return;
         }
 
+        setNoMorePost(new Set());
         setOpenReply(ALL_CLOSED);
         if (commentWidgetState.siteName && commentWidgetState.pageId) {
             loadNextPage(0);
@@ -110,6 +113,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 const thread = res['thread'] as Thread;
                 setThread(thread);
                 if (!thread.posts || thread.posts.length === 0) {
+                    addItemToSetState(ROOT_REPLY, noMorePost, setNoMorePost);
                     return;
                 }
 
@@ -132,6 +136,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 showInnerLoading.delete(post.id);
                 setShowInnerLoading(new Set(showInnerLoading));
                 if (!res || !res['post']) {
+                    addItemToSetState(post.id, noMorePost, setNoMorePost);
                     return;
                 }
 
@@ -139,6 +144,8 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 if (newPost.children && newPost.children.posts) {
                     post.children.posts = [...post.children.posts, ...newPost.children.posts];
                     setPostList(postList);
+                } else {
+                    addItemToSetState(post.id, noMorePost, setNoMorePost);
                 }
             });
     }
@@ -212,6 +219,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             onShowReplyClick: handleReplyClick,
             loadingChildren: showInnerLoading,
             onLoadingChildrenClick: loadMoreReplies,
+            noMorePostSet: noMorePost,
         }));
     });
     if (hasMorePost()) {
@@ -358,7 +366,7 @@ function ReplyPostWidget(
         replyWidget = (
             <div className={'mf-reply-area'}
                  style={{
-                     backgroundColor: (theme.palette as any).inputField.background,
+                     backgroundColor: (theme.palette as any).action.hover,
                      color: theme.palette.action.disabled,
                      cursor: userInfoState.loginStatus === UserStatus.login ? 'text' : 'default',
                  }}

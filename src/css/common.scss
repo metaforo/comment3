@@ -252,3 +252,8 @@
   padding: 0 16px;
   align-items: center;
 }
+
+// bulma.css override the strong color, need unset it so it can use color in ThemeUtil
+strong {
+  color: unset;
+}

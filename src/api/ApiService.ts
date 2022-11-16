@@ -93,7 +93,6 @@ export function loadInnerComment(groupName: string, parentPostId: number, startP
 
 export function submitPost(groupName: string, thread: string, content: any, replyId?: number) {
     const url = '/submit_post';
-    console.log(content);
     return post(url, {
         group_name: groupName,
         web_thread_name: thread,
@@ -149,7 +148,6 @@ export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetSt
         'group_name': tipWidgetState.siteName,
         'post_id': tipWidgetState.pageId,
     }).then(res => {
-        // console.log(res);
         // do nothing.
     });
 }

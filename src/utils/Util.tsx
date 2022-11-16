@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Dispatch} from "react";
 import {camelCase} from "lodash";
 import {DeltaStatic} from "quill";
 
@@ -99,6 +99,18 @@ export function serverDateToString(dateStr: string) {
         const hour = Math.floor(diff / 3600);
         return hour === 1 ? '1 hour ago' : hour + ' hours ago';
     }
+}
+
+export function addItemToSetState<T>(item: T, set: Set<T>, dispatch: Dispatch<Set<T>>) {
+    const newSet = new Set(set);
+    newSet.add(item);
+    dispatch(newSet);
+}
+
+export function removeItemFromSetState<T>(item: T, set: Set<T>, dispatch: Dispatch<Set<T>>) {
+    const newSet = new Set(set);
+    newSet.delete(item);
+    dispatch(newSet);
 }
 
 export const EMPTY_DELTA = () => {

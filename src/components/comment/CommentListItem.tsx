@@ -21,6 +21,7 @@ type CommentListItemProps = {
     onShowReplyClick: (post?: Post) => void,
     loadingChildren: Set<number>,
     onLoadingChildrenClick: (post: Post) => void,
+    noMorePostSet: Set<number>,
 }
 
 export default function CommentListItem(props: CommentListItemProps) {
@@ -45,7 +46,7 @@ export default function CommentListItem(props: CommentListItemProps) {
         </List>);
 
         const moreChildrenCount = post.childrenCount - post.children.posts.length;
-        if (moreChildrenCount > 0) {
+        if (moreChildrenCount > 0 && !props.noMorePostSet.has(post.id)) {
             let loadingBtnChildren;
             if (props.loadingChildren.has(post.id)) {
                 loadingBtnChildren = 'Loading...';

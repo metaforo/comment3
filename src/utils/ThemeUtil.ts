@@ -34,9 +34,6 @@ const lightTheme = createTheme({
         background: {
             paper: '#ffffff',
         },
-        inputField: {
-            background: '#F2F4F6',
-        },
         text: {
             primary: '#222222',
             secondary: '#71717A',
@@ -49,7 +46,7 @@ const darkTheme = createTheme({
     palette: {
         mode: 'dark',
         primary: {
-            main: '#702AF1',
+            main: '#00e8b0',
         },
         background: {
             paper: '#1D1D20',
@@ -60,7 +57,7 @@ const darkTheme = createTheme({
         },
     },
     components: components,
-});
+} as any);
 
 export const loginIconSize = 24;
 
