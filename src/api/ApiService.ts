@@ -52,6 +52,8 @@ function post(path: string, params?: any) {
 
 // endregion ---- init instance ----
 
+// region ---- Comment ----
+
 export function loadThread(groupName: string, thread: string, startPostId: number) {
     const url = '/get_thread/0';
     return get(url,
@@ -103,6 +105,10 @@ export function submitPost(groupName: string, thread: string, content: any, repl
     });
 }
 
+// endregion ---- Comment ----
+
+// region ---- User ----
+
 export function loginToEth(account: string, sign: string, signMsg: string) {
     return post('/wallet/sso',
         {
@@ -136,22 +142,6 @@ export function loginToAr(account: string, publicKey: string, sign: string, sign
     });
 }
 
-export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: String) {
-    return post('/everpay/init', {
-        'hash': everpayResponse.everHash,
-        'symbol': everpayResponse.everpayTx.tokenSymbol,
-        'from': everpayResponse.everpayTx.from,
-        'to': everpayResponse.everpayTx.to,
-        'amount': amount, // everpay.everpayTx.amount should divide by decimal.
-        'chain_type': everpayResponse.everpayTx.chainType,
-        'token_id': everpayResponse.everpayTx.tokenID,
-        'group_name': tipWidgetState.siteName,
-        'post_id': tipWidgetState.pageId,
-    }).then(res => {
-        // do nothing.
-    });
-}
-
 export function refreshLoginStatus() {
     return get('/me').then(res => {
         log('get current user ' + res.data + ' , ' + res.data.user);
@@ -179,3 +169,34 @@ function saveUserInfoToStorage(user: any) {
         }
     });
 }
+
+export function updateProfile(param: any) {
+    return post('/user/update_info', param).then(res => {
+        if (res.data && res.data.username) {
+            saveUserInfoToStorage(res.data);
+        }
+        return res;
+    });
+}
+
+// endregion ---- User ----
+
+// region ---- Tipping ----
+
+export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: String) {
+    return post('/everpay/init', {
+        'hash': everpayResponse.everHash,
+        'symbol': everpayResponse.everpayTx.tokenSymbol,
+        'from': everpayResponse.everpayTx.from,
+        'to': everpayResponse.everpayTx.to,
+        'amount': amount, // everpay.everpayTx.amount should divide by decimal.
+        'chain_type': everpayResponse.everpayTx.chainType,
+        'token_id': everpayResponse.everpayTx.tokenID,
+        'group_name': tipWidgetState.siteName,
+        'post_id': tipWidgetState.pageId,
+    }).then(res => {
+        // do nothing.
+    });
+}
+
+// endregion ---- Tipping ----

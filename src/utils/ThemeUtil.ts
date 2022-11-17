@@ -24,6 +24,15 @@ const components = {
             },
         }
     },
+    MuiButton: {
+        styleOverrides: {
+            contained: {
+                borderRadius: '1000px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+            },
+        },
+    },
 } as Components<Omit<Theme, 'components'>>;
 
 const lightTheme = createTheme({

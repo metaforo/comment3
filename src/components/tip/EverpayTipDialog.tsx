@@ -192,6 +192,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
 
     let successWidget = (
         <div
+            className={'mf-dialog-content'}
             style={{
                 display: !success ? 'none' : 'flex',
                 visibility: !success ? 'hidden' : 'visible',
@@ -326,12 +327,10 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     <Button
                         onClick={startTipping}
                         variant={"contained"}
+                        className={'mf-contained-button'}
                         sx={{
-                            borderRadius: '100px',
                             width: '120px',
                             height: '44px',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
                             marginTop: '24px',
                             marginBottom: '20px',
                         }}

@@ -129,3 +129,7 @@ if (!Array.prototype.last) {
         return this[(this.length - 1)];
     }
 }
+
+export const sleep = (ms: number) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

@@ -8,6 +8,15 @@
   padding-top: 35px;
 }
 
+.mf-dialog-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
 .mf-dialog-padding {
   padding: 0 24px;
   /*margin-inside: 0 24px;*/

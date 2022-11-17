@@ -1,10 +1,6 @@
-import {updateUserStatusByLoginResponse, UserInfoState} from "../../context/UserContext";
 import {loginToAr} from "../../api/ApiService";
-import {Storage} from "../../utils/Storage";
-import {LoginType} from "../../utils/Constants";
-import {Dispatch} from "react";
 
-export async function connectToAr(setUserState: Dispatch<UserInfoState>) {
+export async function connectToAr() {
     // @ts-ignore
     const {arweaveWallet} = window;
     await arweaveWallet.connect([
@@ -25,10 +21,4 @@ export async function connectToAr(setUserState: Dispatch<UserInfoState>) {
     });
 
     return await loginToAr(account, publicKey, signResult, signMsg,);
-    // await loginToAr(account, publicKey, signResult, signMsg,).then(res => {
-    //     updateUserStatusByLoginResponse(res, setUserState);
-    //     Storage.saveItem(Storage.lastLoginType, LoginType.ar);
-    // });
-    //
-    // return true;
 }

@@ -16,6 +16,7 @@ import CommentListItem from "../components/comment/CommentListItem";
 import {LoadingButton} from "@mui/lab";
 import {addItemToSetState} from "../utils/Util";
 import {getEns} from "../utils/EnsService";
+import EditProfileDialog from "../components/login/EditProfileDialog";
 
 type CommentWidgetProps = {
     siteName: string,
@@ -30,14 +31,20 @@ const ROOT_REPLY = 0;
 const resolvedEnsMap = {} as any;
 
 export default function CommentWidget(props: CommentWidgetProps) {
+    const theme = useTheme();
+
     const {userInfoState, setUserState} = useUserContext();
     const {commentWidgetState, commentWidgetDispatch} = useCommentWidgetContext();
+    const isLogin = userInfoState.loginStatus === UserStatus.login;
     /// user login & load thread
     const [isInitializing, setIsInitializing] = useState(true);
     const [isOpenLoginDialog, setIsOpenLoginDialog] = useState(false);
     const closeLoginDialog = () => {
         setIsOpenLoginDialog(false);
     }
+    /// user profile
+    const [showUpdateProfileDialog, setShowUpdateProfileDialog] = useState(false);
+
     /// Comment List
     const [thread, setThread] = useState(null as Thread | null);
     const [postList, setPostList] = useState([] as Post[]);
@@ -48,7 +55,6 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
     /// Only one reply dialog can be shown
     const [openReply, setOpenReply] = useState(ALL_CLOSED);
-
 
     /// Check User Login Status
     useEffect(() => {
@@ -83,6 +89,10 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
     useEffect(() => {
         setOpenReply(ALL_CLOSED);
+
+        if (userInfoState.isNew) {
+            setShowUpdateProfileDialog(true);
+        }
     }, [userInfoState]);
 
     const hasMorePost = () => {
@@ -204,8 +214,8 @@ export default function CommentWidget(props: CommentWidgetProps) {
         setPostList(newPostList);
     }
 
-    function handleReplyClick(post?: Post) {
-        if (userInfoState.loginStatus === UserStatus.login) {
+    function clickReply(post?: Post) {
+        if (isLogin) {
             if (post) {
                 setOpenReply(post.id);
             } else {
@@ -226,7 +236,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             level: 1,
             onReplySuccess: handleReplyPost,
             openingReply: openReply,
-            onShowReplyClick: handleReplyClick,
+            onShowReplyClick: clickReply,
             loadingChildren: showInnerLoading,
             onLoadingChildrenClick: loadMoreReplies,
             noMorePostSet: noMorePost,
@@ -253,16 +263,65 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
     // endregion ---- Comment List ----
 
+    const editProfile = () => {
+        if (isLogin) {
+            setShowUpdateProfileDialog(true);
+        } else {
+            setIsOpenLoginDialog(true);
+        }
+    }
+
+    const rootReplyWidget = () => {
+        let avatarSx = {
+            width: '40px',
+            height: '40px',
+            marginRight: '16px',
+            backgroundColor: grey[200],
+        }
+        let replyWidget;
+        if (openReply === ROOT_REPLY) {
+            replyWidget = (<CreateCommentWidget
+                replyPostId={0}
+                widgetKey={'quill-toolbar-header'}
+                onClose={() => setOpenReply(ALL_CLOSED)}
+                onReplySuccess={handleReplyPost}
+            />);
+        } else {
+            replyWidget = (
+                <div className={'mf-reply-area'}
+                     style={{
+                         backgroundColor: (theme.palette as any).action.hover,
+                         color: theme.palette.action.disabled,
+                         cursor: isLogin ? 'text' : 'default',
+                     }}
+                     onClick={() => clickReply(ROOT_POST)}
+                >
+                    Write a reply
+                </div>
+            );
+        }
+
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                width: '100%',
+                marginTop: '22px',
+            }}>
+                <Avatar
+                    src={isLogin ? userInfoState.avatar : ''}
+                    sx={avatarSx}
+                    onClick={editProfile}
+                />
+                {replyWidget}
+            </div>
+        );
+    }
+
     const widget = (
         <>
             <HeaderWidget thread={thread}/>
-            {ReplyPostWidget(userInfoState, openReply === ROOT_REPLY, (b: boolean) => {
-                if (b) {
-                    setOpenReply(ROOT_REPLY);
-                } else {
-                    setOpenReply(ALL_CLOSED);
-                }
-            }, handleReplyClick, handleReplyPost,)}
+            {rootReplyWidget()}
             {showFullLoading ?
                 <CenterLoadingWidget height={240}/> :
                 <List
@@ -276,8 +335,13 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 </List>
             }
 
-            <LoginDialog open={isOpenLoginDialog} onClose={closeLoginDialog}
-                         closeDialog={closeLoginDialog}/>
+            <LoginDialog
+                open={isOpenLoginDialog}
+                onClose={closeLoginDialog}
+                closeDialog={closeLoginDialog}/>
+            <EditProfileDialog open={showUpdateProfileDialog} closeDialog={() => {
+                setShowUpdateProfileDialog(false);
+            }}/>
         </>
     );
 
@@ -291,7 +355,7 @@ async function _initUserLoginStatus(userInfoState: UserInfoState, dispatch: Disp
         return refreshLoginStatus().then((res) => {
             if (res.data && res.data.user) {
                 userInfoState.loginStatus = UserStatus.login;
-                updateUserStatusByLoginResponse(res.data, dispatch);
+                updateUserStatusByLoginResponse(res.data.user, dispatch);
                 return true;
             } else {
                 userInfoState.loginStatus = UserStatus.notLogin;
@@ -337,67 +401,6 @@ function WidgetContainer(widget: JSX.Element, isInitializing: boolean, variant?:
             </Card>
         );
     }
-}
-
-function ReplyPostWidget(
-    userInfoState: UserInfoState,
-    isOpenReply: boolean,
-    setIsOpenReply: (isOpen: boolean) => void,
-    onReplyClick: (post?: Post) => void,
-    handleReplyPost: (replyPostId: number, newPost: Post) => void,
-) {
-    const theme = useTheme();
-    let avatarSx = {
-        width: '40px',
-        height: '40px',
-        marginRight: '16px',
-        backgroundColor: grey[200],
-    }
-    let avatarWidget, replyWidget;
-    if (userInfoState.loginStatus === UserStatus.login) {
-        avatarWidget = (
-            <Avatar src={userInfoState.avatar} sx={avatarSx}></Avatar>
-        );
-    } else {
-        avatarWidget = (
-            <Avatar sx={avatarSx}/>
-        );
-    }
-    if (isOpenReply) {
-        replyWidget = (<CreateCommentWidget
-            replyPostId={0}
-            widgetKey={'quill-toolbar-header'}
-            onClose={() => {
-                setIsOpenReply(false)
-            }}
-            onReplySuccess={handleReplyPost}
-        />);
-    } else {
-        replyWidget = (
-            <div className={'mf-reply-area'}
-                 style={{
-                     backgroundColor: (theme.palette as any).action.hover,
-                     color: theme.palette.action.disabled,
-                     cursor: userInfoState.loginStatus === UserStatus.login ? 'text' : 'default',
-                 }}
-                 onClick={() => onReplyClick(ROOT_POST)}
-            >
-                Write a reply
-            </div>
-        );
-    }
-
-    return (
-        <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            width: '100%',
-            marginTop: '22px',
-        }}>
-            {avatarWidget}
-            {replyWidget}
-        </div>
-    );
 }
 
 async function loadEnsNameForPostList(postList: Post[], resolvedMap: any) {

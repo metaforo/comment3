@@ -2,7 +2,6 @@ import {Avatar, Dialog, List, ListItemButton, ListItemText, SxProps, Theme, Tool
 import {connectToAr} from "./ArconnectLogin";
 import {isArConnectInstalled, isMetamaskInstalled} from "../../utils/Util";
 import {loginIconSize} from "../../utils/ThemeUtil";
-import {useSnakeBarContext} from "../../utils/SnackBar";
 import {updateUserStatusByLoginResponse, useUserContext} from "../../context/UserContext";
 import React, {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
@@ -15,7 +14,7 @@ import {LoginType} from "../../utils/Constants";
 
 export interface LoginDialogProps {
     open: boolean,
-    onClose: (value: string) => void;
+    onClose: () => void;
     closeDialog: () => void;
 }
 
@@ -28,32 +27,32 @@ interface LoginMethodItem {
 
 export function LoginDialog(props: LoginDialogProps) {
     const {open, onClose, closeDialog} = props;
-    let selectedValue = '';
-
-    const {snakeBarDispatch} = useSnakeBarContext();
-    const {setUserState} = useUserContext();
+    const {userInfoState, setUserState} = useUserContext();
     const [loading, setLoading] = useState(false);
 
     const handleClose = () => {
-        onClose(selectedValue);
+        onClose();
+        // If there's no timeout, the dialog size will be changed before it closed.
+        new Promise(resolve => setTimeout(resolve, 300))
+            .then(() => {
+                setLoading(false);
+            });
     }
 
-    // region ---- ArConnect ----
+    // region ---- Login Dialog ----
+
     const startArConnect = async () => {
         if (!isArConnectInstalled()) {
-            snakeBarDispatch({open: true, message: 'You haven\'t install ArConnect plugin yet.'});
             return;
         }
         setLoading(true);
 
-        const result = await connectToAr(setUserState);
+        const result = await connectToAr();
         handleSsoResponse(result, LoginType.ar);
     }
-    // endregion ---- ArConnect ----
 
     const startMetamaskConnect = async () => {
         if (!isMetamaskInstalled()) {
-            snakeBarDispatch({open: true, message: 'You haven\'t install Metamask plugin yet.'});
             return;
         }
 
@@ -76,11 +75,11 @@ export function LoginDialog(props: LoginDialogProps) {
             return;
         }
 
-        updateUserStatusByLoginResponse(ssoResponse, setUserState);
+        updateUserStatusByLoginResponse(ssoResponse.user, setUserState);
         Storage.saveItem(Storage.lastLoginType, loginType);
 
-        closeDialog();
         setLoading(false);
+        closeDialog();
     }
 
     const loginList: LoginMethodItem[] = [
@@ -103,10 +102,13 @@ export function LoginDialog(props: LoginDialogProps) {
             disableReason: null,
         },
     ];
+    // endregion ---- Login Dialog ----
 
     const avatarSxProps: SxProps<Theme> = {width: loginIconSize, height: loginIconSize, position: 'absolute',};
 
-    let content = (<List sx={{
+    let title, content; // Login Dialog or Update Profile Dialog
+    title = 'Connect Wallet';
+    content = (<List sx={{
         visibility: loading ? 'hidden' : 'visible',
         marginTop: '24px',
     }}>
@@ -144,18 +146,21 @@ export function LoginDialog(props: LoginDialogProps) {
             }
         })}
     </List>);
+
     return (
-        <Dialog
-            onClose={handleClose}
-            open={open}
-            className={'mf-main'}
-            maxWidth={"sm"}
-            fullWidth={true}>
-            <CloseableDialogTitle onClose={handleClose}>
-                {<p>Connect Wallet</p>}
-            </CloseableDialogTitle>
-            {content}
-            <LoadingWidget loading={loading}/>
-        </Dialog>
+        <>
+            <Dialog
+                onClose={handleClose}
+                open={open}
+                className={'mf-main'}
+                maxWidth={"sm"}
+                fullWidth={true}>
+                <CloseableDialogTitle onClose={handleClose}>
+                    {<p>{title}</p>}
+                </CloseableDialogTitle>
+                {content}
+                <LoadingWidget loading={loading}/>
+            </Dialog>
+        </>
     );
 }

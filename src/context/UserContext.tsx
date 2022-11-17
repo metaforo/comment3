@@ -10,6 +10,7 @@ export interface UserInfoState {
     avatar?: string,
     ethAddress?: string,
     arAddress?: string,
+    isNew: boolean,
 }
 
 function initialUserState() {
@@ -19,6 +20,7 @@ function initialUserState() {
         avatar: undefined,
         ethAddress: undefined,
         arAddress: undefined,
+        isNew: false,
     };
 }
 
@@ -42,7 +44,7 @@ export function updateUserStatusByLocalStorage(userInfoState: UserInfoState, dis
 
 export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<UserInfoState>) {
     let ethAddress, arAddress;
-    res.user.web3_public_keys.forEach((web3Key: any) => {
+    res.web3_public_keys.forEach((web3Key: any) => {
         switch (web3Key.type) {
             case 5:
                 ethAddress = web3Key.address;
@@ -58,10 +60,11 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
 
     const user = {
         loginStatus: UserStatus.login,
-        username: res.user.username,
-        avatar: res.user.photo_url,
+        username: res.username,
+        avatar: res.photo_url,
         ethAddress: ethAddress,
         arAddress: arAddress,
+        isNew: res.isNew ?? true,
     } as UserInfoState;
     dispatch(user);
 }
@@ -75,6 +78,7 @@ export const logout = (setUserState: Dispatch<UserInfoState>) => {
         avatar: undefined,
         ethAddress: undefined,
         arAddress: undefined,
+        isNew: false,
     });
 }
 
