@@ -106,9 +106,6 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
         loadThread(commentWidgetState.siteName, commentWidgetState.pageId, startPostId)
             .then(async (res) => {
-                setShowFullLoading(false);
-                setShowTailLoading(false);
-
                 if (!res || !res['thread']) {
                     setThread(null);
                     return;
@@ -130,6 +127,10 @@ export default function CommentWidget(props: CommentWidgetProps) {
                     newPostList = postList.concat(thread.posts);
                 }
                 setPostList(newPostList);
+            })
+            .finally(() => {
+                setShowFullLoading(false);
+                setShowTailLoading(false);
             });
     }
 
@@ -139,8 +140,6 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
         return loadInnerComment(commentWidgetState.siteName, post.id, post.children.posts.last().id)
             .then(async (res) => {
-                showInnerLoading.delete(post.id);
-                setShowInnerLoading(new Set(showInnerLoading));
                 if (!res || !res['post']) {
                     addItemToSetState(post.id, noMorePost, setNoMorePost);
                     return;
@@ -154,6 +153,9 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 } else {
                     addItemToSetState(post.id, noMorePost, setNoMorePost);
                 }
+            }).finally(() => {
+                showInnerLoading.delete(post.id);
+                setShowInnerLoading(new Set(showInnerLoading));
             });
     }
 
