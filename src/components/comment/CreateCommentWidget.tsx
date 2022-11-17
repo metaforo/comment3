@@ -8,6 +8,7 @@ import {EMPTY_DELTA} from "../../utils/Util";
 import {LoadingButton} from "@mui/lab";
 import {Post} from "../../model/Post";
 import {Global} from "../../utils/GlobalVariables";
+import log from "../../utils/LogUtil";
 
 interface CreateCommentWidgetProp {
     onClose: () => void;
@@ -34,6 +35,14 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
                 setQuillContent(EMPTY_DELTA);
                 if (Global.quillDraft[props.replyPostId]) {
                     Global.quillDraft[props.replyPostId] = '';
+                }
+                try {
+                    res.data.post.children = {
+                        posts: [],
+                    }
+                    res.data.post.childrenCount = 0;
+                } catch (e) {
+                    log(e);
                 }
                 props.onReplySuccess(props.replyPostId, res.data.post);
             }
