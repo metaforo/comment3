@@ -3,13 +3,15 @@ import {connectToAr} from "./ArconnectLogin";
 import {isArConnectInstalled, isMetamaskInstalled} from "../../utils/Util";
 import {loginIconSize} from "../../utils/ThemeUtil";
 import {useSnakeBarContext} from "../../utils/SnackBar";
-import {useUserContext} from "../../context/UserContext";
+import {updateUserStatusByLoginResponse, useUserContext} from "../../context/UserContext";
 import React, {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
-import {connectToWalletconnect} from "./WalletconnectLogin";
+import {connectToWalletConnectByProvider,} from "./WalletconnectLogin";
 import {grey} from "@mui/material/colors";
 import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
 import LoadingWidget from "../common/LoadingWidget";
+import {Storage} from "../../utils/Storage";
+import {LoginType} from "../../utils/Constants";
 
 export interface LoginDialogProps {
     open: boolean,
@@ -17,7 +19,7 @@ export interface LoginDialogProps {
     closeDialog: () => void;
 }
 
-interface LoginType {
+interface LoginMethodItem {
     onClick: () => void;
     logo: string,
     text: string,
@@ -44,10 +46,8 @@ export function LoginDialog(props: LoginDialogProps) {
         }
         setLoading(true);
 
-        await connectToAr(setUserState);
-
-        closeDialog();
-        setLoading(false);
+        const result = await connectToAr(setUserState);
+        handleSsoResponse(result, LoginType.ar);
     }
     // endregion ---- ArConnect ----
 
@@ -60,23 +60,30 @@ export function LoginDialog(props: LoginDialogProps) {
         setLoading(true);
 
         const result = await connectToMetamask(setUserState);
-
-        if (result) {
-            closeDialog();
-        }
-        setLoading(false);
+        handleSsoResponse(result, LoginType.eth);
     }
 
     const startWalletconnect = async () => {
         setLoading(true);
 
-        await connectToWalletconnect(setUserState);
+        const result = await connectToWalletConnectByProvider();
+        handleSsoResponse(result, LoginType.walletConnect);
+    }
+
+    const handleSsoResponse = (ssoResponse: any, loginType: string) => {
+        if (!ssoResponse) {
+            setLoading(false);
+            return;
+        }
+
+        updateUserStatusByLoginResponse(ssoResponse, setUserState);
+        Storage.saveItem(Storage.lastLoginType, loginType);
 
         closeDialog();
         setLoading(false);
     }
 
-    const loginList: LoginType[] = [
+    const loginList: LoginMethodItem[] = [
         {
             text: "ArConnect",
             logo: "https://cdn.metaforo.io/images/connect/arconnect_thumb.png",
@@ -103,7 +110,7 @@ export function LoginDialog(props: LoginDialogProps) {
         visibility: loading ? 'hidden' : 'visible',
         marginTop: '24px',
     }}>
-        {loginList.map((loginType: LoginType) => {
+        {loginList.map((loginType: LoginMethodItem) => {
             const btn = (
                 <ListItemButton
                     key={loginType.text}

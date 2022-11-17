@@ -24,10 +24,11 @@ export async function connectToAr(setUserState: Dispatch<UserInfoState>) {
         return JSON.stringify(Object.values(res));
     });
 
-    await loginToAr(account, publicKey, signResult, signMsg,).then(res => {
-        updateUserStatusByLoginResponse(res, setUserState);
-        Storage.saveItem(Storage.lastLoginType, LoginType.ar);
-    });
-
-    return true;
+    return await loginToAr(account, publicKey, signResult, signMsg,);
+    // await loginToAr(account, publicKey, signResult, signMsg,).then(res => {
+    //     updateUserStatusByLoginResponse(res, setUserState);
+    //     Storage.saveItem(Storage.lastLoginType, LoginType.ar);
+    // });
+    //
+    // return true;
 }

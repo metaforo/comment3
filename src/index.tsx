@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import "./utils/GlobalImport";
 import "./css/common.scss";
 import "./css/quill.scss";
 import {TipWidgetContainer} from "./screens/TipWidget";
 import {initQuill} from "./utils/QuillUtil";
 import {CommentWidgetContainer} from "./screens/CommentWIdgetContainer";
-
-window.Buffer = window.Buffer || require("buffer").Buffer;
 
 // region ---- Tipping ----
 
