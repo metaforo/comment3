@@ -11,4 +11,5 @@ export type Thread = {
 
 export const EMPTY_THREAD = {
     postsCount: 0,
+    firstLevelCount: 0,
 } as Thread;

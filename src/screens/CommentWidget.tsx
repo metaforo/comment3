@@ -7,7 +7,7 @@ import {Storage} from "../utils/Storage";
 import CreateCommentWidget from "../components/comment/CreateCommentWidget";
 import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from "../api/ApiService";
 import CenterLoadingWidget from "../components/common/CenterLoadingWIdget";
-import {Thread} from "../model/Thread";
+import {EMPTY_THREAD, Thread} from "../model/Thread";
 import {grey} from "@mui/material/colors";
 import {LoginDialog} from "../components/login/LoginDialog";
 import {Post, ROOT_POST} from "../model/Post";
@@ -107,7 +107,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
         loadThread(commentWidgetState.siteName, commentWidgetState.pageId, startPostId)
             .then(async (res) => {
                 if (!res || !res['thread']) {
-                    setThread(null);
+                    setThread(EMPTY_THREAD);
                     return;
                 }
 
