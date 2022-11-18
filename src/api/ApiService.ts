@@ -179,6 +179,26 @@ export function updateProfile(param: any) {
     });
 }
 
+export function loadNftAvatar(address: string) {
+    return axios.get(`https://api.opensea.io/api/v1/assets?limit=100&owner=${address}`).then(res => {
+        return res.data;
+    }).then(res => {
+        if (!res.assets) {
+            return [];
+        }
+
+        const result: any[] = [];
+        (res.assets as []).forEach((asset) => {
+            if (asset['image_preview_url']) {
+                result.push(asset['image_preview_url']);
+            }
+        });
+        return result;
+    }).catch(() => {
+        return [];
+    });
+}
+
 // endregion ---- User ----
 
 // region ---- Tipping ----

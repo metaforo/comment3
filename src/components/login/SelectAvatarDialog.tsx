@@ -3,6 +3,7 @@ import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
 import React, {useEffect, useState} from "react";
 import LoadingWidget from "../common/LoadingWidget";
 import {useUserContext} from "../../context/UserContext";
+import {loadNftAvatar} from "../../api/ApiService";
 
 type SelectAvatarDialogProp = {
     open: boolean,
@@ -14,6 +15,7 @@ type UserAvatar = {
     url: string,
     isDefault: boolean,
     isSelect: boolean,
+    isNft: boolean,
 }
 
 const avatarSize = 72;
@@ -32,6 +34,12 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
         init();
     }, [props]);
 
+    useEffect(() => {
+        setAvatarList([]);
+        initAvatar();
+    }, [userInfoState]);
+
+
     const init = () => {
         setLoading(false);
         setSelectedAvatarAvatar(null);
@@ -45,22 +53,67 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
         }
     }
 
-    const initAvatar = () => {
+    const initAvatar = async () => {
+        if (!props.open) {
+            return;
+        }
+
         setLoading(true);
 
-        const avatarList = [];
+        // Avoid duplicate avatar. (Between current & nft)
+        const avatarUrlSet = new Set<string>();
+        const avatarList = [] as UserAvatar[];
+
+        // 1. current avatar
+        if (userInfoState.avatar && !userInfoState.avatar.includes('img/default_avatar_')) {
+            avatarList.push({
+                url: userInfoState.avatar,
+                isDefault: false,
+                isSelect: true,
+                isNft: false,
+            } as UserAvatar);
+            avatarUrlSet.add(userInfoState.avatar);
+        }
+
+        // 2. nft avatar
+        if (userInfoState.ethAddress) {
+            await loadNftAvatar(userInfoState.ethAddress).then((result) => {
+                result.forEach((nftUrl) => {
+                    if (avatarUrlSet.has(nftUrl)) {
+                        return;
+                    }
+
+                    avatarUrlSet.add(nftUrl);
+                    avatarList.push(
+                        {
+                            url: nftUrl,
+                            isDefault: false,
+                            isSelect: false,
+                            isNft: true,
+                        } as UserAvatar
+                    );
+                });
+            })
+        }
+
+        // 3. default avatar
         for (let i = 1; i < 25; i++) {
             avatarList.push(
                 {
                     url: `https://metaforo.io/img/default_avatar_${i}.png`,
                     isDefault: true,
                     isSelect: false,
+                    isNft: false,
                 } as UserAvatar
             );
         }
 
-        setAvatarList(([] as UserAvatar[]).concat(avatarList));
+        const currentAvatar = avatarList.find((item) => item.url === userInfoState.avatar);
+        if (currentAvatar) {
+            currentAvatar.isSelect = true;
+        }
 
+        setAvatarList(avatarList);
         setLoading(false);
     }
 
