@@ -240,6 +240,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             loadingChildren: showInnerLoading,
             onLoadingChildrenClick: loadMoreReplies,
             noMorePostSet: noMorePost,
+            theme: theme,
         }));
     });
     if (hasMorePost()) {

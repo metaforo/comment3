@@ -12,7 +12,7 @@ export default function SvgIcon(props: SvgIconProps) {
         style += `width: ${props.size}px; height: ${props.size}px;`;
     }
     if (props.color) {
-        style += `fill: "${props.color}"`;
+        style += `fill: ${props.color}`;
     }
     return (<ReactSVG src={props.src} beforeInjection={(svg) => {
         svg.setAttribute('style', style);

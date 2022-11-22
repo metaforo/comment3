@@ -1,7 +1,6 @@
 import {Post} from "../../model/Post";
 import {Thread} from "../../model/Thread";
 import {Avatar, IconButton, List, ListItem} from "@mui/material";
-import {grey} from "@mui/material/colors";
 import {serverDateToString} from "../../utils/Util";
 import QuillViewer from "./QuillViewer";
 import ReplyIcon from "../../assets/reply.svg";
@@ -11,6 +10,7 @@ import CreateCommentWidget from "./CreateCommentWidget";
 import {LoadingButton} from "@mui/lab";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SvgIcon from "../common/SvgIcon";
+import {Theme} from "@mui/material/styles/createTheme";
 
 type CommentListItemProps = {
     thread: Thread,
@@ -22,10 +22,12 @@ type CommentListItemProps = {
     loadingChildren: Set<number>,
     onLoadingChildrenClick: (post: Post) => void,
     noMorePostSet: Set<number>,
+    theme: Theme,
 }
 
 export default function CommentListItem(props: CommentListItemProps) {
-    const {level, post, ...restProps} = props;
+    const {level, post, theme, ...restProps} = props;
+
     const isSmallSize = level > 1;
     let clsName;
     if (isSmallSize) {
@@ -40,6 +42,7 @@ export default function CommentListItem(props: CommentListItemProps) {
                 return CommentListItem({
                     post: subPost,
                     level: level + 1,
+                    theme: theme,
                     ...restProps,
                 });
             })}
@@ -90,7 +93,7 @@ export default function CommentListItem(props: CommentListItemProps) {
                 }}>
                     <div className={'mf-username'}>{post.user.ensName ? post.user.ensName : post.user.username}</div>
                     <div className={'mf-datetime'} style={{
-                        color: grey[600],
+                        color: theme.palette.text.secondary,
                     }}>
                         {serverDateToString(post.createdAt)}
                     </div>
@@ -101,10 +104,10 @@ export default function CommentListItem(props: CommentListItemProps) {
                     <IconButton onClick={() => {
                         props.onShowReplyClick(props.openingReply === post.id ? undefined : post);
                     }}>
-                        <SvgIcon src={ReplyIcon} size={14}/>
+                        <SvgIcon src={ReplyIcon} size={14} color={theme.palette.text.secondary}/>
                     </IconButton>
                     <IconButton sx={{display: "none"}}>
-                        <SvgIcon src={LikeIcon} size={14}/>
+                        <SvgIcon src={LikeIcon} size={14} color={theme.palette.text.secondary}/>
                     </IconButton>
                 </div>
                 {props.openingReply === post.id &&
