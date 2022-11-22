@@ -2,8 +2,10 @@ import axios, {AxiosResponse} from "axios";
 import log from "../utils/LogUtil";
 import {Storage} from "../utils/Storage";
 import {TipWidgetState} from "../context/TipWidgetContext";
+import {camelCase} from "lodash";
+import {convertJsonKey} from "../utils/Util";
 
-const apiHost = 'https://metaforo.io/api';
+const apiHost = process.env.REACT_APP_API_HOST;
 
 // region ---- init instance ----
 
@@ -11,12 +13,12 @@ let instance = axios.create({
     baseURL: apiHost,
     headers: {
         common: {
-            'mf-api-key': 'mf-sdk',
+            'mf-api-key': 'mf-web-sdk',
         }
     },
 })
 
-export function initStatus(token: string) {
+export function initApiService(token: string) {
     if (token) {
         instance.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     }
@@ -32,7 +34,7 @@ function handleResponse(res: AxiosResponse) {
             log(res.data.data.api_token);
             log('---- response end ----');
             Storage.saveItem(Storage.userToken, res.data.data.api_token);
-            initStatus(res.data.data.api_token);
+            initApiService(res.data.data.api_token);
         }
         return res.data;
     }
@@ -45,25 +47,67 @@ function get(path: string, params?: any) {
 }
 
 function post(path: string, params?: any) {
-    return instance.post(path, params).then(handleResponse);
+    return instance.post(path, params,).then(handleResponse);
 }
 
 // endregion ---- init instance ----
 
-export function loadComment(groupName: string, thread: string) {
-    const url = '/api_thread/' + thread;
+// region ---- Comment ----
+
+export function loadThread(groupName: string, thread: string, startPostId: number) {
+    const url = '/get_thread/0';
     return get(url,
         {
             sort: 'new',
             page_size: 10,
-            start_post_id: 0,
+            start_post_id: startPostId,
             group_name: groupName,
+            web_thread_name: thread,
         },
     )
         .then(res => {
-            return res.data;
+            return convertJsonKey(res.data, (k: string) => {
+                if (k === 'total_likes') {
+                    return 'likeCount';
+                }
+                return k;
+            }, camelCase);
         });
 }
+
+export function loadInnerComment(groupName: string, parentPostId: number, startPostId: number,) {
+    const url = '/get_comment';
+    return get(url, {
+        group_name: groupName,
+        page_size: 5,
+        parent_post_id: parentPostId,
+        start_post_id: startPostId,
+        sort: 'new',
+    }).then(res => {
+        return convertJsonKey(res.data, (k: string) => {
+            if (k === 'total_likes') {
+                return 'likeCount';
+            }
+            return k;
+        }, camelCase);
+    });
+}
+
+export function submitPost(groupName: string, thread: string, content: any, replyId?: number) {
+    const url = '/submit_post';
+    return post(url, {
+        group_name: groupName,
+        web_thread_name: thread,
+        content: content,
+        reply_id: replyId && replyId > 0 ? replyId : undefined,
+    }).then(res => {
+        return convertJsonKey(res, camelCase);
+    });
+}
+
+// endregion ---- Comment ----
+
+// region ---- User ----
 
 export function loginToEth(account: string, sign: string, signMsg: string) {
     return post('/wallet/sso',
@@ -98,30 +142,13 @@ export function loginToAr(account: string, publicKey: string, sign: string, sign
     });
 }
 
-export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: String) {
-    return post('/everpay/init', {
-        'hash': everpayResponse.everHash,
-        'symbol': everpayResponse.everpayTx.tokenSymbol,
-        'from': everpayResponse.everpayTx.from,
-        'to': everpayResponse.everpayTx.to,
-        'amount': amount, // everpay.everpayTx.amount should divide by decimal.
-        'chain_type': everpayResponse.everpayTx.chainType,
-        'token_id': everpayResponse.everpayTx.tokenID,
-        'group_name': tipWidgetState.siteName,
-        'post_id': tipWidgetState.pageId,
-    }).then(res => {
-        // console.log(res);
-        // do nothing.
-    });
-}
-
-export function getCurrentUser() {
+export function refreshLoginStatus() {
     return get('/me').then(res => {
         log('get current user ' + res.data + ' , ' + res.data.user);
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
         }
-        return res.data;
+        return res;
     });
 }
 
@@ -142,3 +169,54 @@ function saveUserInfoToStorage(user: any) {
         }
     });
 }
+
+export function updateProfile(param: any) {
+    return post('/user/update_info', param).then(res => {
+        if (res.data && res.data.username) {
+            saveUserInfoToStorage(res.data);
+        }
+        return res;
+    });
+}
+
+export function loadNftAvatar(address: string) {
+    return axios.get(`https://api.opensea.io/api/v1/assets?limit=100&owner=${address}`).then(res => {
+        return res.data;
+    }).then(res => {
+        if (!res.assets) {
+            return [];
+        }
+
+        const result: any[] = [];
+        (res.assets as []).forEach((asset) => {
+            if (asset['image_preview_url']) {
+                result.push(asset['image_preview_url']);
+            }
+        });
+        return result;
+    }).catch(() => {
+        return [];
+    });
+}
+
+// endregion ---- User ----
+
+// region ---- Tipping ----
+
+export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: String) {
+    return post('/everpay/init', {
+        'hash': everpayResponse.everHash,
+        'symbol': everpayResponse.everpayTx.tokenSymbol,
+        'from': everpayResponse.everpayTx.from,
+        'to': everpayResponse.everpayTx.to,
+        'amount': amount, // everpay.everpayTx.amount should divide by decimal.
+        'chain_type': everpayResponse.everpayTx.chainType,
+        'token_id': everpayResponse.everpayTx.tokenID,
+        'group_name': tipWidgetState.siteName,
+        'post_id': tipWidgetState.pageId,
+    }).then(res => {
+        // do nothing.
+    });
+}
+
+// endregion ---- Tipping ----

@@ -1,0 +1,259 @@
+.mf-dialog-circle-div {
+  display: flex;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding-top: 35px;
+}
+
+.mf-dialog-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.mf-dialog-padding {
+  padding: 0 24px;
+  /*margin-inside: 0 24px;*/
+}
+
+.mf-dialog-item-padding {
+  display: flex;
+  justify-content: space-around;
+}
+
+.mf-position-relative {
+  position: relative;
+}
+
+.mf-token-info .MuiInputBase-root {
+  width: 160px;
+}
+
+.mf-token-amount {
+  margin-left: 20px !important;
+  flex-grow: 1;
+}
+
+.mf-token-address {
+  flex-grow: 1;
+  margin-top: 10px;
+}
+
+.mf-token-address input {
+  cursor: not-allowed;
+}
+
+.mf-button-style-1 {
+  margin: auto !important;
+}
+
+.mf-tipping-button {
+  margin: auto !important;
+}
+
+.mf-balance-menu-item {
+  display: flex;
+  width: 280px;
+}
+
+.mf-dialog-main {
+  text-align: center;
+}
+
+.mf-dialog-top {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.mf-dialog-top .mf-dialog-top-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 36px;
+}
+
+.mf-dialog-tip-address {
+  text-align: center;
+}
+
+.mf-dialog-address-text {
+  display: inline-block;
+  font-size: 13px;
+  margin-right: 8px;
+}
+
+.mf-dialog-address-icon {
+  height: 10px;
+  width: 10px;
+}
+
+.mf-dialog-bottom {
+  display: flex;
+}
+
+.mf-dialog-balance-info {
+  justify-content: flex-start;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 18px;
+}
+
+.mf-dialog-bottom-balance {
+  color: #267FF1;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.mf-dialog-bottom-link {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.mf-dialog-link-info {
+  font-size: 14px;
+}
+
+.mf-dialog-link-info-margin {
+  margin-right: 16px;
+}
+
+.mf-dialog-select-main {
+  margin-top: 30px;
+}
+
+.mf-dialog-input .MuiInputBase-root {
+  height: 48px;
+  border-radius: 12px;
+}
+
+.mf-dialog-select {
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+}
+
+.mf-dialog-select .MuiSelect-select {
+  height: 48px;
+}
+
+.mf-dialog-select .MuiSelect-select:focus {
+  border-radius: 0;
+}
+
+.mf-dialog-select .MuiOutlinedInput-notchedOutline {
+  height: 48px;
+  border: none;
+}
+
+.mf-dialog-select .MuiInputBase-root {
+  height: 48px;
+  border-radius: 12px;
+  width: 135px;
+}
+
+.mf-dialog-input .MuiFormControl-root {
+  width: 100%;
+}
+
+.mf-dialog-input .MuiInputBase-input {
+  padding-left: 150px;
+}
+
+.mf-balance-select-item {
+  display: flex;
+  font-size: 15px;
+}
+
+.mf-balance-select-item div {
+  margin-right: 8px;
+}
+
+.mf-dialog-select .MuiSelect-select {
+  width: 135px;
+  border-radius: 0;
+  padding: 0 0 0 8px;
+  border-right: 1px solid #4A4A53;
+}
+
+.mf-main .MuiDialog-container .MuiPaper-root {
+  overflow-y: hidden;
+}
+
+.mf-comment-list {
+  .MuiListItem-root {
+    padding: 0;
+    margin: 0;
+  }
+
+  .mf-outer-reply {
+    margin-top: 24px;
+
+    .MuiListItemAvatar-root,
+    .MuiAvatar-root {
+      height: 40px;
+      width: 40px;
+      min-width: 40px;
+      margin-right: 16px;
+    }
+  }
+
+  .mf-inner-reply {
+    margin-top: 16px;
+
+    .MuiListItemAvatar-root,
+    .MuiAvatar-root {
+      height: 24px;
+      width: 24px;
+      min-width: 24px;
+      margin-right: 16px;
+    }
+  }
+
+  .mf-comment-operation {
+    display: flex;
+    margin-top: 12px;
+    align-items: baseline;
+
+    button {
+      margin-right: 30px;
+      line-height: 1;
+      padding: 0;
+      font-size: 1em;
+    }
+  }
+
+  .mf-username {
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+
+  .mf-datetime {
+    font-size: 12px;
+  }
+
+  .mf-reply-comment {
+    margin-top: 8px;
+  }
+}
+
+.mf-reply-area {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  border-radius: 12px;
+  padding: 0 16px;
+  align-items: center;
+}
+
+// bulma.css override the strong color, need unset it so it can use color in ThemeUtil
+strong {
+  color: unset;
+}

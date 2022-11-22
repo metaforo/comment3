@@ -1,23 +1,24 @@
 import {Avatar, Dialog, List, ListItemButton, ListItemText, SxProps, Theme, Tooltip} from "@mui/material";
 import {connectToAr} from "./ArconnectLogin";
-import {isArConnectInstalled, isMetamaskInstalled} from "../utils/Util";
-import {loginIconSize} from "../utils/ThemeUtil";
-import {useSnakeBarContext} from "../utils/SnackBar";
-import {useUserContext} from "../context/UserContext";
+import {isArConnectInstalled, isMetamaskInstalled} from "../../utils/Util";
+import {loginIconSize} from "../../utils/ThemeUtil";
+import {updateUserStatusByLoginResponse, useUserContext} from "../../context/UserContext";
 import React, {useState} from "react";
 import {connectToMetamask} from "./MetamaskLogin";
-import {connectToWalletconnect} from "./WalletconnectLogin";
+import {connectToWalletConnectByProvider,} from "./WalletconnectLogin";
 import {grey} from "@mui/material/colors";
-import {CloseableDialogTitle} from "./CloseableDialogTitle";
-import LoadingWidget from "./LoadingWidget";
+import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
+import LoadingWidget from "../common/LoadingWidget";
+import {Storage} from "../../utils/Storage";
+import {LoginType} from "../../utils/Constants";
 
 export interface LoginDialogProps {
     open: boolean,
-    onClose: (value: string) => void;
+    onClose: () => void;
     closeDialog: () => void;
 }
 
-interface LoginType {
+interface LoginMethodItem {
     onClick: () => void;
     logo: string,
     text: string,
@@ -26,57 +27,62 @@ interface LoginType {
 
 export function LoginDialog(props: LoginDialogProps) {
     const {open, onClose, closeDialog} = props;
-    let selectedValue = '';
-
-    const {snakeBarDispatch} = useSnakeBarContext();
     const {setUserState} = useUserContext();
     const [loading, setLoading] = useState(false);
 
     const handleClose = () => {
-        onClose(selectedValue);
+        onClose();
+        // If there's no timeout, the dialog size will be changed before it closed.
+        new Promise(resolve => setTimeout(resolve, 300))
+            .then(() => {
+                setLoading(false);
+            });
     }
 
-    // region ---- ArConnect ----
+    // region ---- Login Dialog ----
+
     const startArConnect = async () => {
         if (!isArConnectInstalled()) {
-            snakeBarDispatch({open: true, message: 'You haven\'t install ArConnect plugin yet.'});
             return;
         }
         setLoading(true);
 
-        await connectToAr(setUserState);
-
-        closeDialog();
-        setLoading(false);
+        const result = await connectToAr();
+        handleSsoResponse(result, LoginType.ar);
     }
-    // endregion ---- ArConnect ----
 
     const startMetamaskConnect = async () => {
         if (!isMetamaskInstalled()) {
-            snakeBarDispatch({open: true, message: 'You haven\'t install Metamask plugin yet.'});
             return;
         }
 
         setLoading(true);
 
         const result = await connectToMetamask(setUserState);
-
-        if (result) {
-            closeDialog();
-        }
-        setLoading(false);
+        handleSsoResponse(result, LoginType.eth);
     }
 
     const startWalletconnect = async () => {
         setLoading(true);
 
-        await connectToWalletconnect(setUserState);
-
-        closeDialog();
-        setLoading(false);
+        const result = await connectToWalletConnectByProvider();
+        handleSsoResponse(result, LoginType.walletConnect);
     }
 
-    const loginList: LoginType[] = [
+    const handleSsoResponse = (ssoResponse: any, loginType: string) => {
+        if (!ssoResponse) {
+            setLoading(false);
+            return;
+        }
+
+        updateUserStatusByLoginResponse(ssoResponse.user, setUserState);
+        Storage.saveItem(Storage.lastLoginType, loginType);
+
+        setLoading(false);
+        closeDialog();
+    }
+
+    const loginList: LoginMethodItem[] = [
         {
             text: "ArConnect",
             logo: "https://cdn.metaforo.io/images/connect/arconnect_thumb.png",
@@ -96,14 +102,17 @@ export function LoginDialog(props: LoginDialogProps) {
             disableReason: null,
         },
     ];
+    // endregion ---- Login Dialog ----
 
     const avatarSxProps: SxProps<Theme> = {width: loginIconSize, height: loginIconSize, position: 'absolute',};
 
-    let content = (<List sx={{
+    let title, content; // Login Dialog or Update Profile Dialog
+    title = 'Connect Wallet';
+    content = (<List sx={{
         visibility: loading ? 'hidden' : 'visible',
         marginTop: '24px',
     }}>
-        {loginList.map((loginType: LoginType) => {
+        {loginList.map((loginType: LoginMethodItem) => {
             const btn = (
                 <ListItemButton
                     key={loginType.text}
@@ -137,18 +146,21 @@ export function LoginDialog(props: LoginDialogProps) {
             }
         })}
     </List>);
+
     return (
-        <Dialog
-            onClose={handleClose}
-            open={open}
-            className={'mf-main'}
-            maxWidth={"sm"}
-            fullWidth={true}>
-            <CloseableDialogTitle onClose={handleClose}>
-                {<p>Connect Wallet</p>}
-            </CloseableDialogTitle>
-            {content}
-            <LoadingWidget loading={loading}/>
-        </Dialog>
+        <>
+            <Dialog
+                onClose={handleClose}
+                open={open}
+                className={'mf-main'}
+                maxWidth={"sm"}
+                fullWidth={true}>
+                <CloseableDialogTitle onClose={handleClose}>
+                    {<p>{title}</p>}
+                </CloseableDialogTitle>
+                {content}
+                <LoadingWidget loading={loading}/>
+            </Dialog>
+        </>
     );
 }

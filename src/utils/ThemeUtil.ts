@@ -24,6 +24,15 @@ const components = {
             },
         }
     },
+    MuiButton: {
+        styleOverrides: {
+            contained: {
+                borderRadius: '1000px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+            },
+        },
+    },
 } as Components<Omit<Theme, 'components'>>;
 
 const lightTheme = createTheme({
@@ -32,7 +41,7 @@ const lightTheme = createTheme({
             main: '#702AF1',
         },
         background: {
-            paper: '#ffffff'
+            paper: '#ffffff',
         },
         text: {
             primary: '#222222',
@@ -40,13 +49,13 @@ const lightTheme = createTheme({
         },
     },
     components: components,
-});
+} as any);
 
 const darkTheme = createTheme({
     palette: {
         mode: 'dark',
         primary: {
-            main: '#702AF1',
+            main: '#00e8b0',
         },
         background: {
             paper: '#1D1D20',
@@ -57,7 +66,7 @@ const darkTheme = createTheme({
         },
     },
     components: components,
-});
+} as any);
 
 export const loginIconSize = 24;
 

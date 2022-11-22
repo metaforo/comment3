@@ -1,7 +1,8 @@
 import React, {Dispatch, useContext, useReducer} from "react";
 import {UserStatus} from "../utils/Constants";
 import {Storage} from "../utils/Storage";
-import {initStatus} from "../api/ApiService";
+import {initApiService} from "../api/ApiService";
+import {removeEverpayInstance} from "../components/tip/Everpay";
 
 export interface UserInfoState {
     loginStatus: number,
@@ -9,6 +10,7 @@ export interface UserInfoState {
     avatar?: string,
     ethAddress?: string,
     arAddress?: string,
+    isNew: boolean,
 }
 
 function initialUserState() {
@@ -18,6 +20,7 @@ function initialUserState() {
         avatar: undefined,
         ethAddress: undefined,
         arAddress: undefined,
+        isNew: false,
     };
 }
 
@@ -36,12 +39,12 @@ export function updateUserStatusByLocalStorage(userInfoState: UserInfoState, dis
     userInfoState.ethAddress = Storage.getItem(Storage.userEthAddress) ?? '';
     userInfoState.arAddress = Storage.getItem(Storage.userArAddress) ?? '';
     dispatch(userInfoState);
-    initStatus(Storage.getItem(Storage.userToken) ?? '');
+    initApiService(Storage.getItem(Storage.userToken) ?? '');
 }
 
 export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<UserInfoState>) {
     let ethAddress, arAddress;
-    res.user.web3_public_keys.forEach((web3Key: any) => {
+    res.web3_public_keys.forEach((web3Key: any) => {
         switch (web3Key.type) {
             case 5:
                 ethAddress = web3Key.address;
@@ -57,12 +60,26 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
 
     const user = {
         loginStatus: UserStatus.login,
-        username: res.user.username,
-        avatar: res.user.photo_url,
+        username: res.username,
+        avatar: res.photo_url,
         ethAddress: ethAddress,
         arAddress: arAddress,
+        isNew: res.isNew ?? false,
     } as UserInfoState;
     dispatch(user);
+}
+
+export const logout = (setUserState: Dispatch<UserInfoState>) => {
+    Storage.removeAll();
+    removeEverpayInstance();
+    setUserState({
+        loginStatus: UserStatus.notLogin,
+        username: undefined,
+        avatar: undefined,
+        ethAddress: undefined,
+        arAddress: undefined,
+        isNew: false,
+    });
 }
 
 export const UserContextProvider = ({children}: { children: JSX.Element }) => {

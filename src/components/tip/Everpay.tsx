@@ -1,8 +1,8 @@
 import Everpay, {ChainType, Token} from "everpay";
-import {UserInfoState} from "../context/UserContext";
-import {LoginType, UserStatus} from "../utils/Constants";
+import {UserInfoState} from "../../context/UserContext";
+import {LoginType, UserStatus} from "../../utils/Constants";
 import {ethers} from "ethers";
-import {Storage} from "../utils/Storage";
+import {Storage} from "../../utils/Storage";
 import {BalanceItem, EverpayInfo} from "everpay/cjs/types";
 
 let everpayInstance: Everpay | null = null;

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {EverpayDialog} from "../components/EverpayTipDialog";
+import {EverpayDialog} from "../components/tip/EverpayTipDialog";
 
 export default function MemberView() {
     const [isOpenLoginDialog, setIsOpenLoginDialog] = useState(true);

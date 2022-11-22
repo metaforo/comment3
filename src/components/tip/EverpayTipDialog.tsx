@@ -1,6 +1,5 @@
-import {useSnakeBarContext} from "../utils/SnackBar";
+import {useSnakeBarContext} from "../../utils/SnackBar";
 import React, {useEffect, useState} from "react";
-import {Storage} from "../utils/Storage";
 import {
     Avatar,
     Button,
@@ -18,16 +17,15 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import {useUserContext} from "../context/UserContext";
-import {EverpayBalance, loadUserBalance, removeEverpayInstance, tip} from "./Everpay";
-import {UserStatus} from "../utils/Constants";
-import {saveEverpayLog} from "../api/ApiService";
-import {useTipWidgetContext} from "../context/TipWidgetContext";
-import {Global} from "../utils/GlobalVariables";
-import {floatToString} from "../utils/Util";
-import {CloseableDialogTitle} from "./CloseableDialogTitle";
+import {logout, useUserContext} from "../../context/UserContext";
+import {EverpayBalance, loadUserBalance, tip} from "./Everpay";
+import {saveEverpayLog} from "../../api/ApiService";
+import {useTipWidgetContext} from "../../context/TipWidgetContext";
+import {Global} from "../../utils/GlobalVariables";
+import {floatToString} from "../../utils/Util";
+import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
 import {grey} from "@mui/material/colors";
-import LoadingWidget from "./LoadingWidget";
+import LoadingWidget from "../common/LoadingWidget";
 
 export interface EverpayDialogProps {
     open: boolean,
@@ -115,18 +113,6 @@ export function EverpayDialog(props: EverpayDialogProps) {
         setLoading(false);
     }
 
-    const logout = () => {
-        Storage.removeAll();
-        removeEverpayInstance();
-        setUserState({
-            loginStatus: UserStatus.notLogin,
-            username: undefined,
-            avatar: undefined,
-            ethAddress: undefined,
-            arAddress: undefined,
-        });
-    }
-
     const showWallet = () => {
         window.open('https://metaforo.io/my/wallet', '_blank', 'noopener,noreferrer');
     }
@@ -206,6 +192,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
 
     let successWidget = (
         <div
+            className={'mf-dialog-content'}
             style={{
                 display: !success ? 'none' : 'flex',
                 visibility: !success ? 'hidden' : 'visible',
@@ -223,7 +210,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     color: 'green',
                 }}
             />
-            <Typography sx={{marginTop: '18px'}}>Tipped Success</Typography>
+            <Typography sx={{marginTop: '18px'}}>Tipping Success</Typography>
         </div>
     );
 
@@ -316,7 +303,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                             <Button
                                 variant={"text"}
                                 sx={textButtonStyle}
-                                onClick={logout}
+                                onClick={() => logout(setUserState)}
                             >
                                 Log Out
                             </Button>
@@ -340,12 +327,10 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     <Button
                         onClick={startTipping}
                         variant={"contained"}
+                        className={'mf-contained-button'}
                         sx={{
-                            borderRadius: '100px',
                             width: '120px',
                             height: '44px',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
                             marginTop: '24px',
                             marginBottom: '20px',
                         }}

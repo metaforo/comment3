@@ -1,16 +1,29 @@
 const {override, adjustStyleLoaders} = require('customize-cra');
+const {webpack} = require("react-app-rewired/config-overrides");
+// const {webpack} = require("webpack");
 module.exports = override((config) => {
+    config.resolve.fallback = {
+        url: require.resolve('url'),
+        assert: require.resolve('assert'),
+        crypto: require.resolve('crypto-browserify'),
+        http: require.resolve('stream-http'),
+        https: require.resolve('https-browserify'),
+        os: require.resolve('os-browserify/browser'),
+        buffer: require.resolve('buffer'),
+        stream: require.resolve('stream-browserify')
+    };
+
     config.optimization.splitChunks = {
         cacheGroups: {
             default: false,
         },
     };
 // Move runtime into bundle instead of separate file
-//     config.optimization.runtimeChunk = false;
-//     config.optimization.minimize = false;
+    config.optimization.runtimeChunk = false;
+    config.optimization.minimize = false;
 
     // JS
-    config.output.filename = 'metaforo-sdk.min.js';
+    // config.output.filename = 'metaforo-sdk.min.js';
 
     // // CSS. "5" is MiniCssPlugin
     // config.plugins[5].options.filename = '[name].min.css';

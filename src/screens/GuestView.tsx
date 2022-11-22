@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {LoginDialog} from "../components/LoginDialog";
+import {LoginDialog} from "../components/login/LoginDialog";
 
 export default function GuestView() {
     const [isOpenLoginDialog, setIsOpenLoginDialog] = useState(true);
