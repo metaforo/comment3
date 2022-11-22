@@ -27,7 +27,7 @@ interface LoginMethodItem {
 
 export function LoginDialog(props: LoginDialogProps) {
     const {open, onClose, closeDialog} = props;
-    const {userInfoState, setUserState} = useUserContext();
+    const {setUserState} = useUserContext();
     const [loading, setLoading] = useState(false);
 
     const handleClose = () => {

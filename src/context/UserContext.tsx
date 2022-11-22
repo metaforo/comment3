@@ -64,7 +64,7 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
         avatar: res.photo_url,
         ethAddress: ethAddress,
         arAddress: arAddress,
-        isNew: res.isNew ?? true,
+        isNew: res.isNew ?? false,
     } as UserInfoState;
     dispatch(user);
 }

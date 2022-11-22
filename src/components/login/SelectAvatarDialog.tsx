@@ -32,11 +32,13 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
 
     useEffect(() => {
         init();
+        // eslint-disable-next-line
     }, [props]);
 
     useEffect(() => {
         setAvatarList([]);
-        initAvatar();
+        void initAvatar();
+        // eslint-disable-next-line
     }, [userInfoState]);
 
 
@@ -44,7 +46,7 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
         setLoading(false);
         setSelectedAvatarAvatar(null);
         if (avatarList.length === 0) {
-            initAvatar();
+            void initAvatar();
         } else {
             avatarList.forEach(item => {
                 item.isSelect = item.url === props.currentAvatarUrl;

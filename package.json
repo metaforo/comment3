@@ -1,6 +1,6 @@
 {
   "name": "metaforo-sdk",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -53,6 +53,7 @@
   "keywords": [
     "metaforo",
     "tipping",
+    "comment",
     "web3"
   ],
   "eslintConfig": {
