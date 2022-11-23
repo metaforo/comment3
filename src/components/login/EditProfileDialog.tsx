@@ -52,7 +52,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
     // region ---- Profile Dialog ----
 
     const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        let inputVal = event.target.value;
+        const inputVal = event.target.value;
         setUsername(inputVal);
     }
 

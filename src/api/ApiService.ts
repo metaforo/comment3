@@ -9,7 +9,7 @@ const apiHost = process.env.REACT_APP_API_HOST;
 
 // region ---- init instance ----
 
-let instance = axios.create({
+const instance = axios.create({
     baseURL: apiHost,
     headers: {
         common: {
@@ -203,7 +203,7 @@ export function loadNftAvatar(address: string) {
 
 // region ---- Tipping ----
 
-export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: String) {
+export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: string) {
     return post('/everpay/init', {
         'hash': everpayResponse.everHash,
         'symbol': everpayResponse.everpayTx.tokenSymbol,
@@ -214,8 +214,6 @@ export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetSt
         'token_id': everpayResponse.everpayTx.tokenID,
         'group_name': tipWidgetState.siteName,
         'post_id': tipWidgetState.pageId,
-    }).then(res => {
-        // do nothing.
     });
 }
 

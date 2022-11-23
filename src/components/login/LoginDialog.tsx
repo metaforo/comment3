@@ -58,7 +58,7 @@ export function LoginDialog(props: LoginDialogProps) {
 
         setLoading(true);
 
-        const result = await connectToMetamask(setUserState);
+        const result = await connectToMetamask();
         handleSsoResponse(result, LoginType.eth);
     }
 
@@ -106,9 +106,7 @@ export function LoginDialog(props: LoginDialogProps) {
 
     const avatarSxProps: SxProps<Theme> = {width: loginIconSize, height: loginIconSize, position: 'absolute',};
 
-    let title, content; // Login Dialog or Update Profile Dialog
-    title = 'Connect Wallet';
-    content = (<List sx={{
+    const content = (<List sx={{
         visibility: loading ? 'hidden' : 'visible',
         marginTop: '24px',
     }}>
@@ -156,7 +154,7 @@ export function LoginDialog(props: LoginDialogProps) {
                 maxWidth={"sm"}
                 fullWidth={true}>
                 <CloseableDialogTitle onClose={handleClose}>
-                    {<p>{title}</p>}
+                    {<p>Connect Wallet</p>}
                 </CloseableDialogTitle>
                 {content}
                 <LoadingWidget loading={loading}/>

@@ -273,7 +273,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
     }
 
     const rootReplyWidget = () => {
-        let avatarSx = {
+        const avatarSx = {
             width: '40px',
             height: '40px',
             marginRight: '16px',

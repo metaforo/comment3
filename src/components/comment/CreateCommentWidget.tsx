@@ -82,7 +82,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
                 onChange={handleChange}
                 value={quillContent}
                 toolbarWidgets={submitBtn}
-                onClose={(w) => props.onClose()}
+                onClose={() => props.onClose()}
             />
         </div>
     );

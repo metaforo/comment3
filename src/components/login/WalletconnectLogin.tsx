@@ -1,21 +1,22 @@
-import {loginToEth} from "../../api/ApiService";
-import {typedData} from "../../utils/Util";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import { loginToEth } from '../../api/ApiService';
+import { typedData } from '../../utils/Util';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
 export async function connectToWalletConnectByProvider() {
     const getProvider = () => new WalletConnectProvider(
-        {infuraId: "27804223e321460cb5682ca4b676f224",}
+        { infuraId: '27804223e321460cb5682ca4b676f224' },
     );
     try {
         await getProvider().wc.killSession();
     } catch (e) {
+        // do nothing
     }
     // return false;
     const provider = getProvider();
 
     const connectResult = await provider.enable().then((value) => {
         return value;
-    }).catch((e) => {
+    }).catch(() => {
         return null;
     });
 
@@ -24,13 +25,13 @@ export async function connectToWalletConnectByProvider() {
     }
 
     const account = connectResult[0];
-    let msg = JSON.stringify(typedData(account));
-    let sign = await provider.request({
+    const msg = JSON.stringify(typedData(account));
+    const sign = await provider.request({
         method: 'eth_signTypedData_v4',
         params: [account, msg],
     }).then((value) => {
         return value;
-    }).catch((e) => {
+    }).catch(() => {
         return null;
     });
 

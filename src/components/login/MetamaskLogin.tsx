@@ -1,19 +1,17 @@
-import {UserInfoState} from "../../context/UserContext";
-import {typedData} from "../../utils/Util";
-import {loginToEth} from "../../api/ApiService";
-import {Dispatch} from "react";
-import log from "../../utils/LogUtil";
+import { typedData } from '../../utils/Util';
+import { loginToEth } from '../../api/ApiService';
+import log from '../../utils/LogUtil';
 
-export async function connectToMetamask(setUserState: Dispatch<UserInfoState>) {
+export async function connectToMetamask() {
     // @ts-ignore
     const {ethereum} = window;
     const targetNetworkId = '0x1';
     const chainSwitch = await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{chainId: targetNetworkId}],
-    }).then((res: any) => {
+    }).then(() => {
         return true;
-    }).catch((e: any) => {
+    }).catch(() => {
         return false;
     });
     if (!chainSwitch) {

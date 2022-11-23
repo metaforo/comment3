@@ -190,7 +190,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
         </MenuItem>);
     });
 
-    let successWidget = (
+    const successWidget = (
         <div
             className={'mf-dialog-content'}
             style={{
@@ -214,7 +214,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
         </div>
     );
 
-    let content = (
+    const content = (
         <Stack direction={'column'} spacing={2} className={'mf-dialog-padding'}
                sx={{
                    visibility: loading || success ? 'hidden' : 'visible',
