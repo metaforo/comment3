@@ -1,4 +1,4 @@
-import {Global} from "./GlobalVariables";
+import {Global} from './GlobalVariables';
 
 export default function log(message?: any, ...optionalParams: any[]) {
     if (Global.isDebug) {

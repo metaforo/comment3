@@ -1,16 +1,16 @@
-import React, {Dispatch, useContext, useReducer} from "react";
-import {UserStatus} from "../utils/Constants";
-import {Storage} from "../utils/Storage";
-import {initApiService} from "../api/ApiService";
-import {removeEverpayInstance} from "../components/tip/Everpay";
+import React, {Dispatch, useContext, useReducer} from 'react';
+import {UserStatus} from '../utils/Constants';
+import {Storage} from '../utils/Storage';
+import {initApiService} from '../api/ApiService';
+import {removeEverpayInstance} from '../components/tip/Everpay';
 
 export interface UserInfoState {
-    loginStatus: number,
-    username?: string,
-    avatar?: string,
-    ethAddress?: string,
-    arAddress?: string,
-    isNew: boolean,
+    loginStatus: number;
+    username?: string;
+    avatar?: string;
+    ethAddress?: string;
+    arAddress?: string;
+    isNew: boolean;
 }
 
 function initialUserState() {
@@ -24,7 +24,7 @@ function initialUserState() {
     };
 }
 
-const UserContext = React.createContext<{ userInfoState: UserInfoState, setUserState: Dispatch<UserInfoState> }>({
+const UserContext = React.createContext<{userInfoState: UserInfoState; setUserState: Dispatch<UserInfoState>}>({
     userInfoState: initialUserState(),
     setUserState: () => null,
 });
@@ -80,15 +80,17 @@ export const logout = (setUserState: Dispatch<UserInfoState>) => {
         arAddress: undefined,
         isNew: false,
     });
-}
+};
 
-export const UserContextProvider = ({children}: { children: JSX.Element }) => {
-    const [state, dispatch] = useReducer((state: UserInfoState, newState: Partial<UserInfoState>) => ({
-        ...state, ...newState
-    }), initialUserState());
+export const UserContextProvider = ({children}: {children: JSX.Element}) => {
+    const [state, dispatch] = useReducer(
+        (state: UserInfoState, newState: Partial<UserInfoState>) => ({
+            ...state,
+            ...newState,
+        }),
+        initialUserState(),
+    );
     return (
-        <UserContext.Provider value={{userInfoState: state, setUserState: dispatch}}>
-            {children}
-        </UserContext.Provider>
-    )
-}
+        <UserContext.Provider value={{userInfoState: state, setUserState: dispatch}}>{children}</UserContext.Provider>
+    );
+};

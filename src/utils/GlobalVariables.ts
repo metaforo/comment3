@@ -3,4 +3,4 @@ export const Global = {
     isDemo: false,
 
     quillDraft: {} as any,
-}
+};

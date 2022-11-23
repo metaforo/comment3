@@ -1,5 +1,5 @@
 export type TipAccount = {
-    address: string,
-    chainId: number,
-    username: string,
-}
+    address: string;
+    chainId: number;
+    username: string;
+};

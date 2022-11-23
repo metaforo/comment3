@@ -1,49 +1,61 @@
-import React, {Dispatch} from "react";
-import {camelCase} from "lodash";
-import {DeltaStatic} from "quill";
+import React, {Dispatch} from 'react';
+import {camelCase} from 'lodash';
+import {DeltaStatic} from 'quill';
 
 export function typedData(address: string) {
     return {
         types: {
-            EIP712Domain: [{name: "name", type: "string"}, {name: "version", type: "string"}, {
-                name: "chainId", type: "uint256"
-            },], Login: [{name: "account", type: "address"}, {name: "message", type: "string"},],
-        }, primaryType: "Login", domain: {
-            name: "Metaqus", version: "1.0", chainId: 1
-        }, message: {
-            account: address, message: "Login to Metaqus",
+            EIP712Domain: [
+                {name: 'name', type: 'string'},
+                {name: 'version', type: 'string'},
+                {
+                    name: 'chainId',
+                    type: 'uint256',
+                },
+            ],
+            Login: [
+                {name: 'account', type: 'address'},
+                {name: 'message', type: 'string'},
+            ],
         },
-    }
+        primaryType: 'Login',
+        domain: {
+            name: 'Metaqus',
+            version: '1.0',
+            chainId: 1,
+        },
+        message: {
+            account: address,
+            message: 'Login to Metaqus',
+        },
+    };
 }
 
 export const isMetamaskInstalled = () => {
     // @ts-ignore
     const {ethereum} = window;
     return Boolean(ethereum && ethereum.isMetaMask);
-}
+};
 
 export const isArConnectInstalled = () => {
     // @ts-ignore
     const {arweaveWallet} = window;
     return Boolean(arweaveWallet);
-}
+};
 
 export function floatToString(num: number, decimal: number) {
     return num.toLocaleString('fullwide', {
         useGrouping: false,
         maximumFractionDigits: decimal,
-    },);
+    });
 }
 
 // region ---- Container ----
 
 export function composeProviders(...providers: any) {
-    return ({children}: { children: JSX.Element }) => providers.reduce(
-        (prev: any, Provider: any) => <Provider>{prev}</Provider>,
-        children,
-    );
+    return ({children}: {children: JSX.Element}) =>
+        providers.reduce((prev: any, Provider: any) => <Provider>{prev}</Provider>, children);
 }
-
 
 // endregion ---- Container ----
 
@@ -52,18 +64,19 @@ export function getPureContent(content: string) {
     const quill = JSON.parse(content);
     quill.forEach((item: any) => {
         result += item['insert'];
-    })
+    });
     return result;
 }
 
 export function convertJsonKey(obj: any, ...keyTransformers: ((value: string) => string)[]): any {
     if (Array.isArray(obj)) {
-        return obj.map(v => convertJsonKey(v, ...keyTransformers));
+        return obj.map((v) => convertJsonKey(v, ...keyTransformers));
     } else if (obj != null && obj.constructor === Object) {
         return Object.keys(obj).reduce(
             (result, key) => ({
                 ...result,
-                [keyTransformers.reduce((key: string, func: (value: string) => string) => func(key), key)]: convertJsonKey(obj[key], ...keyTransformers),
+                [keyTransformers.reduce((key: string, func: (value: string) => string) => func(key), key)]:
+                    convertJsonKey(obj[key], ...keyTransformers),
             }),
             {},
         );
@@ -91,7 +104,7 @@ export function serverDateToString(dateStr: string) {
     }
 
     if (diff < 60) {
-        return "just now";
+        return 'just now';
     } else if (diff < 3600) {
         const minute = Math.floor(diff / 60);
         return minute === 1 ? '1 minute ago' : minute + ' minutes ago';
@@ -126,10 +139,10 @@ declare global {
 if (!Array.prototype.last) {
     // eslint-disable-next-line no-extend-native
     Array.prototype.last = function <T>(this: T[]): T {
-        return this[(this.length - 1)];
-    }
+        return this[this.length - 1];
+    };
 }
 
 export const sleep = (ms: number) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};

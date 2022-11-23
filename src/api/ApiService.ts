@@ -1,9 +1,9 @@
-import axios, {AxiosResponse} from "axios";
-import log from "../utils/LogUtil";
-import {Storage} from "../utils/Storage";
-import {TipWidgetState} from "../context/TipWidgetContext";
-import {camelCase} from "lodash";
-import {convertJsonKey} from "../utils/Util";
+import axios, {AxiosResponse} from 'axios';
+import log from '../utils/LogUtil';
+import {Storage} from '../utils/Storage';
+import {TipWidgetState} from '../context/TipWidgetContext';
+import {camelCase} from 'lodash';
+import {convertJsonKey} from '../utils/Util';
 
 const apiHost = process.env.REACT_APP_API_HOST;
 
@@ -14,9 +14,9 @@ const instance = axios.create({
     headers: {
         common: {
             'mf-api-key': 'mf-web-sdk',
-        }
+        },
     },
-})
+});
 
 export function initApiService(token: string) {
     if (token) {
@@ -41,13 +41,15 @@ function handleResponse(res: AxiosResponse) {
 }
 
 function get(path: string, params?: any) {
-    return instance.get(path, {
-        params: params,
-    }).then(handleResponse);
+    return instance
+        .get(path, {
+            params: params,
+        })
+        .then(handleResponse);
 }
 
 function post(path: string, params?: any) {
-    return instance.post(path, params,).then(handleResponse);
+    return instance.post(path, params).then(handleResponse);
 }
 
 // endregion ---- init instance ----
@@ -56,26 +58,27 @@ function post(path: string, params?: any) {
 
 export function loadThread(groupName: string, thread: string, startPostId: number) {
     const url = '/get_thread/0';
-    return get(url,
-        {
-            sort: 'new',
-            page_size: 10,
-            start_post_id: startPostId,
-            group_name: groupName,
-            web_thread_name: thread,
-        },
-    )
-        .then(res => {
-            return convertJsonKey(res.data, (k: string) => {
+    return get(url, {
+        sort: 'new',
+        page_size: 10,
+        start_post_id: startPostId,
+        group_name: groupName,
+        web_thread_name: thread,
+    }).then((res) => {
+        return convertJsonKey(
+            res.data,
+            (k: string) => {
                 if (k === 'total_likes') {
                     return 'likeCount';
                 }
                 return k;
-            }, camelCase);
-        });
+            },
+            camelCase,
+        );
+    });
 }
 
-export function loadInnerComment(groupName: string, parentPostId: number, startPostId: number,) {
+export function loadInnerComment(groupName: string, parentPostId: number, startPostId: number) {
     const url = '/get_comment';
     return get(url, {
         group_name: groupName,
@@ -83,13 +86,17 @@ export function loadInnerComment(groupName: string, parentPostId: number, startP
         parent_post_id: parentPostId,
         start_post_id: startPostId,
         sort: 'new',
-    }).then(res => {
-        return convertJsonKey(res.data, (k: string) => {
-            if (k === 'total_likes') {
-                return 'likeCount';
-            }
-            return k;
-        }, camelCase);
+    }).then((res) => {
+        return convertJsonKey(
+            res.data,
+            (k: string) => {
+                if (k === 'total_likes') {
+                    return 'likeCount';
+                }
+                return k;
+            },
+            camelCase,
+        );
     });
 }
 
@@ -100,7 +107,7 @@ export function submitPost(groupName: string, thread: string, content: any, repl
         web_thread_name: thread,
         content: content,
         reply_id: replyId && replyId > 0 ? replyId : undefined,
-    }).then(res => {
+    }).then((res) => {
         return convertJsonKey(res, camelCase);
     });
 }
@@ -110,14 +117,12 @@ export function submitPost(groupName: string, thread: string, content: any, repl
 // region ---- User ----
 
 export function loginToEth(account: string, sign: string, signMsg: string) {
-    return post('/wallet/sso',
-        {
-            web3_public_key: account,
-            wallet_type: 5,
-            sign: sign,
-            signMsg: signMsg,
-        }
-    ).then(res => {
+    return post('/wallet/sso', {
+        web3_public_key: account,
+        wallet_type: 5,
+        sign: sign,
+        signMsg: signMsg,
+    }).then((res) => {
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
         }
@@ -126,15 +131,13 @@ export function loginToEth(account: string, sign: string, signMsg: string) {
 }
 
 export function loginToAr(account: string, publicKey: string, sign: string, signMsg: string) {
-    return post('/wallet/sso',
-        {
-            web3_public_key: account,
-            web3_address: publicKey,
-            wallet_type: 3,
-            sign: sign,
-            signMsg: signMsg,
-        }
-    ).then(res => {
+    return post('/wallet/sso', {
+        web3_public_key: account,
+        web3_address: publicKey,
+        wallet_type: 3,
+        sign: sign,
+        signMsg: signMsg,
+    }).then((res) => {
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
         }
@@ -143,7 +146,7 @@ export function loginToAr(account: string, publicKey: string, sign: string, sign
 }
 
 export function refreshLoginStatus() {
-    return get('/me').then(res => {
+    return get('/me').then((res) => {
         log('get current user ' + res.data + ' , ' + res.data.user);
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
@@ -171,7 +174,7 @@ function saveUserInfoToStorage(user: any) {
 }
 
 export function updateProfile(param: any) {
-    return post('/user/update_info', param).then(res => {
+    return post('/user/update_info', param).then((res) => {
         if (res.data && res.data.username) {
             saveUserInfoToStorage(res.data);
         }
@@ -180,23 +183,27 @@ export function updateProfile(param: any) {
 }
 
 export function loadNftAvatar(address: string) {
-    return axios.get(`https://api.opensea.io/api/v1/assets?limit=100&owner=${address}`).then(res => {
-        return res.data;
-    }).then(res => {
-        if (!res.assets) {
-            return [];
-        }
-
-        const result: any[] = [];
-        (res.assets as []).forEach((asset) => {
-            if (asset['image_preview_url']) {
-                result.push(asset['image_preview_url']);
+    return axios
+        .get(`https://api.opensea.io/api/v1/assets?limit=100&owner=${address}`)
+        .then((res) => {
+            return res.data;
+        })
+        .then((res) => {
+            if (!res.assets) {
+                return [];
             }
+
+            const result: any[] = [];
+            (res.assets as []).forEach((asset) => {
+                if (asset['image_preview_url']) {
+                    result.push(asset['image_preview_url']);
+                }
+            });
+            return result;
+        })
+        .catch(() => {
+            return [];
         });
-        return result;
-    }).catch(() => {
-        return [];
-    });
 }
 
 // endregion ---- User ----
@@ -205,15 +212,15 @@ export function loadNftAvatar(address: string) {
 
 export function saveEverpayLog(everpayResponse: any, tipWidgetState: TipWidgetState, amount: string) {
     return post('/everpay/init', {
-        'hash': everpayResponse.everHash,
-        'symbol': everpayResponse.everpayTx.tokenSymbol,
-        'from': everpayResponse.everpayTx.from,
-        'to': everpayResponse.everpayTx.to,
-        'amount': amount, // everpay.everpayTx.amount should divide by decimal.
-        'chain_type': everpayResponse.everpayTx.chainType,
-        'token_id': everpayResponse.everpayTx.tokenID,
-        'group_name': tipWidgetState.siteName,
-        'post_id': tipWidgetState.pageId,
+        hash: everpayResponse.everHash,
+        symbol: everpayResponse.everpayTx.tokenSymbol,
+        from: everpayResponse.everpayTx.from,
+        to: everpayResponse.everpayTx.to,
+        amount: amount, // everpay.everpayTx.amount should divide by decimal.
+        chain_type: everpayResponse.everpayTx.chainType,
+        token_id: everpayResponse.everpayTx.tokenID,
+        group_name: tipWidgetState.siteName,
+        post_id: tipWidgetState.pageId,
     });
 }
 

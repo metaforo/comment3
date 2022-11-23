@@ -1,12 +1,12 @@
-import ReactQuill, {UnprivilegedEditor, Value} from "react-quill";
-import "../../css/quill.scss";
-import "../../css/quill.snow.css";
-import {DeltaStatic, Sources} from "quill";
-import {quillModules} from "../../utils/QuillUtil";
-import React, {useEffect, useRef} from "react";
+import ReactQuill, {UnprivilegedEditor, Value} from 'react-quill';
+import '../../css/quill.scss';
+import '../../css/quill.snow.css';
+import {DeltaStatic, Sources} from 'quill';
+import {quillModules} from '../../utils/QuillUtil';
+import React, {useEffect, useRef} from 'react';
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
-import {IconButton, useTheme} from "@mui/material";
-import {boldIcon, italicIcon, olIcon, ulIcon, underlineIcon} from "../../assets/SvgAssets";
+import {IconButton, useTheme} from '@mui/material';
+import {boldIcon, italicIcon, olIcon, ulIcon, underlineIcon} from '../../assets/SvgAssets';
 
 const icons = ReactQuill.Quill.import('ui/icons');
 
@@ -18,11 +18,11 @@ icons['list']['ordered'] = olIcon(iconSize);
 icons['list']['bullet'] = ulIcon(iconSize);
 
 interface QuillEditorProps {
-    widgetKey: string,
+    widgetKey: string;
     onChange: (value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor) => void;
-    value?: Value,
-    disabled?: boolean,
-    toolbarWidgets?: JSX.Element,
+    value?: Value;
+    disabled?: boolean;
+    toolbarWidgets?: JSX.Element;
     onClose?: (widgetKey: string) => void;
 }
 
@@ -37,14 +37,14 @@ export default function QuillEditor(props: QuillEditorProps) {
     useEffect(() => {
         if (inputRef != null && inputRef.current != null) {
             // @ts-ignore
-            const quill = (inputRef.current as ReactQuill);
+            const quill = inputRef.current as ReactQuill;
             quill.setEditorSelection(quill.getEditor(), {index: quill.getEditor().getLength(), length: 0});
         }
     }, []);
 
     const handleChange = (value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor) => {
         props.onChange(value, delta, source, editor);
-    }
+    };
 
     const iconStyle = {
         // color: theme.palette.text.primary,
@@ -53,31 +53,34 @@ export default function QuillEditor(props: QuillEditorProps) {
         <div className={'mf-ql-toolbar'} style={{fill: theme.palette.text.primary}}>
             {props.toolbarWidgets}
             <div id={props.widgetKey}>
-            <span className={'ql-formats'}>
-                <button className="ql-bold" style={iconStyle}/>
-                <button className="ql-italic" style={iconStyle}/>
-                <button className="ql-underline" style={iconStyle}/>
-                {/*<button className="ql-strike" style={iconStyle}/>*/}
-            </span>
                 <span className={'ql-formats'}>
-                <button className="ql-list" value="ordered" style={iconStyle}/>
-                <button className="ql-list" value="bullet" style={iconStyle}/>
-            </span>
+                    <button className='ql-bold' style={iconStyle} />
+                    <button className='ql-italic' style={iconStyle} />
+                    <button className='ql-underline' style={iconStyle} />
+                    {/*<button className="ql-strike" style={iconStyle}/>*/}
+                </span>
+                <span className={'ql-formats'}>
+                    <button className='ql-list' value='ordered' style={iconStyle} />
+                    <button className='ql-list' value='bullet' style={iconStyle} />
+                </span>
             </div>
             <IconButton
                 onClick={() => props.onClose?.(props.widgetKey)}
                 className={'mf-ql-toolbar-close'}
                 style={iconStyle}
-            ><KeyboardArrowUpRoundedIcon/></IconButton>
+            >
+                <KeyboardArrowUpRoundedIcon />
+            </IconButton>
         </div>
     );
 
     // @ts-ignore
     return (
-        <div className={'mf-ql-editor'}
-             style={{
-                 backgroundColor: (theme.palette as any).action.hover,
-             }}
+        <div
+            className={'mf-ql-editor'}
+            style={{
+                backgroundColor: (theme.palette as any).action.hover,
+            }}
         >
             <ReactQuill
                 className={'quill-editor'}

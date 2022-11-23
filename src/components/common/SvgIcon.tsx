@@ -1,10 +1,10 @@
-import {ReactSVG} from "react-svg";
+import {ReactSVG} from 'react-svg';
 
 type SvgIconProps = {
-    src: string,
-    size?: number,
-    color?: string,
-}
+    src: string;
+    size?: number;
+    color?: string;
+};
 
 export default function SvgIcon(props: SvgIconProps) {
     let style = '';
@@ -14,7 +14,12 @@ export default function SvgIcon(props: SvgIconProps) {
     if (props.color) {
         style += `fill: ${props.color}`;
     }
-    return (<ReactSVG src={props.src} beforeInjection={(svg) => {
-        svg.setAttribute('style', style);
-    }}/>);
+    return (
+        <ReactSVG
+            src={props.src}
+            beforeInjection={(svg) => {
+                svg.setAttribute('style', style);
+            }}
+        />
+    );
 }

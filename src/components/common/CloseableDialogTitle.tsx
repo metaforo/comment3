@@ -1,6 +1,6 @@
-import {DialogTitle, IconButton} from "@mui/material";
-import React from "react";
-import CloseIcon from "@mui/icons-material/Close";
+import {DialogTitle, IconButton} from '@mui/material';
+import React from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 
 export interface DialogTitleProps {
     children?: React.ReactNode;
@@ -17,7 +17,7 @@ export function CloseableDialogTitle(props: DialogTitleProps) {
             {children}
             {onClose ? (
                 <IconButton
-                    aria-label="close"
+                    aria-label='close'
                     onClick={onClose}
                     sx={{
                         position: 'absolute',
@@ -28,7 +28,7 @@ export function CloseableDialogTitle(props: DialogTitleProps) {
                         color: (theme) => theme.palette.grey[500],
                     }}
                 >
-                    <CloseIcon/>
+                    <CloseIcon />
                 </IconButton>
             ) : null}
         </DialogTitle>

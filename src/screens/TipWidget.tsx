@@ -1,22 +1,22 @@
-import React, {Dispatch, useEffect} from "react";
-import {TipAccount} from "../model/TipAccount";
+import React, {Dispatch, useEffect} from 'react';
+import {TipAccount} from '../model/TipAccount';
 import {
     updateUserStatusByLocalStorage,
     UserContextProvider,
     UserInfoState,
-    useUserContext
-} from "../context/UserContext";
-import {UserStatus} from "../utils/Constants";
-import {Storage} from "../utils/Storage";
-import GuestView from "./GuestView";
-import MemberView from "./MemberView";
-import {TipWidgetContextProvider, useTipWidgetContext} from "../context/TipWidgetContext";
-import {Global} from "../utils/GlobalVariables";
-import log from "../utils/LogUtil";
-import {SnackBarContextProvider} from "../utils/SnackBar";
-import {ThemeProvider} from "@mui/material";
-import {createThemeFromAttr} from "../utils/ThemeUtil";
-import {composeProviders} from "../utils/Util";
+    useUserContext,
+} from '../context/UserContext';
+import {UserStatus} from '../utils/Constants';
+import {Storage} from '../utils/Storage';
+import GuestView from './GuestView';
+import MemberView from './MemberView';
+import {TipWidgetContextProvider, useTipWidgetContext} from '../context/TipWidgetContext';
+import {Global} from '../utils/GlobalVariables';
+import log from '../utils/LogUtil';
+import {SnackBarContextProvider} from '../utils/SnackBar';
+import {ThemeProvider} from '@mui/material';
+import {createThemeFromAttr} from '../utils/ThemeUtil';
+import {composeProviders} from '../utils/Util';
 
 // region ---- TipWidget  ----
 
@@ -38,12 +38,13 @@ export function TipWidgetContainer(props: any) {
         Global.isDemo = true;
     }
 
-    if (!htmlAttrs
-        || !htmlAttrs['siteName']
-        || !htmlAttrs['pageId']
-        || !htmlAttrs['receiverAddress']
-        || !htmlAttrs['receiverUsername']
-        || !htmlAttrs['receiverChainId']
+    if (
+        !htmlAttrs ||
+        !htmlAttrs['siteName'] ||
+        !htmlAttrs['pageId'] ||
+        !htmlAttrs['receiverAddress'] ||
+        !htmlAttrs['receiverUsername'] ||
+        !htmlAttrs['receiverChainId']
     ) {
         return null;
     }
@@ -53,11 +54,7 @@ export function TipWidgetContainer(props: any) {
         paletteMode = htmlAttrs['theme'].value;
     }
 
-    const StateProviders = composeProviders(
-        SnackBarContextProvider,
-        TipWidgetContextProvider,
-        UserContextProvider,
-    );
+    const StateProviders = composeProviders(SnackBarContextProvider, TipWidgetContextProvider, UserContextProvider);
 
     return (
         <ThemeProvider theme={createThemeFromAttr(paletteMode)}>
@@ -69,7 +66,8 @@ export function TipWidgetContainer(props: any) {
                         address: htmlAttrs['receiverAddress'].value,
                         chainId: htmlAttrs['receiverChainId'].value,
                         username: htmlAttrs['receiverUsername'].value,
-                    }}/>
+                    }}
+                />
             </StateProviders>
         </ThemeProvider>
     );
@@ -77,10 +75,10 @@ export function TipWidgetContainer(props: any) {
 
 // endregion ---- TipWidget  ----
 type TipWidgetProps = {
-    siteName: string,
-    pageId: string,
-    receiver: TipAccount,
-}
+    siteName: string;
+    pageId: string;
+    receiver: TipAccount;
+};
 
 function TipWidget(props: TipWidgetProps) {
     const {userInfoState, setUserState} = useUserContext();
@@ -107,9 +105,9 @@ function TipWidget(props: TipWidgetProps) {
 
     switch (userInfoState.loginStatus) {
         case UserStatus.login:
-            return (<MemberView/>);
+            return <MemberView />;
         case UserStatus.notLogin:
-            return (<GuestView/>);
+            return <GuestView />;
         case UserStatus.isChecking:
         default:
             return null;

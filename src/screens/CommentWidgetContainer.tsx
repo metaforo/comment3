@@ -1,13 +1,13 @@
-import {Global} from "../utils/GlobalVariables";
-import log from "../utils/LogUtil";
-import {composeProviders} from "../utils/Util";
-import {SnackBarContextProvider} from "../utils/SnackBar";
-import {CommentWidgetContextProvider} from "../context/CommentWidgetContext";
-import {UserContextProvider} from "../context/UserContext";
-import {ThemeProvider} from "@mui/material";
-import {createThemeFromAttr} from "../utils/ThemeUtil";
-import React from "react";
-import CommentWidget from "./CommentWidget";
+import {Global} from '../utils/GlobalVariables';
+import log from '../utils/LogUtil';
+import {composeProviders} from '../utils/Util';
+import {SnackBarContextProvider} from '../utils/SnackBar';
+import {CommentWidgetContextProvider} from '../context/CommentWidgetContext';
+import {UserContextProvider} from '../context/UserContext';
+import {ThemeProvider} from '@mui/material';
+import {createThemeFromAttr} from '../utils/ThemeUtil';
+import React from 'react';
+import CommentWidget from './CommentWidget';
 
 export function CommentWidgetContainer(props: any) {
     const htmlAttrs = props.props;
@@ -27,10 +27,7 @@ export function CommentWidgetContainer(props: any) {
         Global.isDemo = true;
     }
 
-    if (!htmlAttrs
-        || !htmlAttrs['siteName']
-        || !htmlAttrs['pageId']
-    ) {
+    if (!htmlAttrs || !htmlAttrs['siteName'] || !htmlAttrs['pageId']) {
         return null;
     }
 
@@ -39,11 +36,7 @@ export function CommentWidgetContainer(props: any) {
         paletteMode = htmlAttrs['theme'].value;
     }
 
-    const StateProviders = composeProviders(
-        SnackBarContextProvider,
-        CommentWidgetContextProvider,
-        UserContextProvider,
-    );
+    const StateProviders = composeProviders(SnackBarContextProvider, CommentWidgetContextProvider, UserContextProvider);
 
     return (
         <ThemeProvider theme={createThemeFromAttr(paletteMode)}>

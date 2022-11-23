@@ -1,4 +1,4 @@
-import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
+import {Web3Provider} from '@ethersproject/providers/src.ts/web3-provider';
 
 /* eslint-disable */
 const ethers = require('ethers');

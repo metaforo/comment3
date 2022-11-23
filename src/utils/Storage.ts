@@ -25,4 +25,3 @@ export class Storage {
         return localStorage.clear();
     }
 }
-
