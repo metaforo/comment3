@@ -1,16 +1,16 @@
-import React, {Dispatch, useContext, useReducer} from "react";
-import {UserStatus} from "../utils/Constants";
-import {Storage} from "../utils/Storage";
-import {initApiService} from "../api/ApiService";
-import {removeEverpayInstance} from "../components/tip/Everpay";
+import React, {Dispatch, useContext, useReducer} from 'react';
+import {UserStatus} from '../utils/Constants';
+import {Storage} from '../utils/Storage';
+import {initApiService} from '../api/ApiService';
+import {removeEverpayInstance} from '../components/tipping/Everpay';
 
 export interface UserInfoState {
-    loginStatus: number,
-    username?: string,
-    avatar?: string,
-    ethAddress?: string,
-    arAddress?: string,
-    isNew: boolean,
+    loginStatus: number;
+    username?: string;
+    avatar?: string;
+    ethAddress?: string;
+    arAddress?: string;
+    isNew: boolean;
 }
 
 function initialUserState() {
@@ -24,7 +24,7 @@ function initialUserState() {
     };
 }
 
-const UserContext = React.createContext<{ userInfoState: UserInfoState, setUserState: Dispatch<UserInfoState> }>({
+const UserContext = React.createContext<{userInfoState: UserInfoState; setUserState: Dispatch<UserInfoState>}>({
     userInfoState: initialUserState(),
     setUserState: () => null,
 });
@@ -42,7 +42,7 @@ export function updateUserStatusByLocalStorage(userInfoState: UserInfoState, dis
     initApiService(Storage.getItem(Storage.userToken) ?? '');
 }
 
-export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<UserInfoState>) {
+export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<UserInfoState>, isRegister?: boolean) {
     let ethAddress, arAddress;
     res.web3_public_keys.forEach((web3Key: any) => {
         switch (web3Key.type) {
@@ -64,7 +64,7 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
         avatar: res.photo_url,
         ethAddress: ethAddress,
         arAddress: arAddress,
-        isNew: res.isNew ?? false,
+        isNew: isRegister ?? false,
     } as UserInfoState;
     dispatch(user);
 }
@@ -80,15 +80,17 @@ export const logout = (setUserState: Dispatch<UserInfoState>) => {
         arAddress: undefined,
         isNew: false,
     });
-}
+};
 
-export const UserContextProvider = ({children}: { children: JSX.Element }) => {
-    const [state, dispatch] = useReducer((state: UserInfoState, newState: Partial<UserInfoState>) => ({
-        ...state, ...newState
-    }), initialUserState());
+export const UserContextProvider = ({children}: {children: JSX.Element}) => {
+    const [state, dispatch] = useReducer(
+        (state: UserInfoState, newState: Partial<UserInfoState>) => ({
+            ...state,
+            ...newState,
+        }),
+        initialUserState(),
+    );
     return (
-        <UserContext.Provider value={{userInfoState: state, setUserState: dispatch}}>
-            {children}
-        </UserContext.Provider>
-    )
-}
+        <UserContext.Provider value={{userInfoState: state, setUserState: dispatch}}>{children}</UserContext.Provider>
+    );
+};

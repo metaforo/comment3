@@ -1,14 +1,14 @@
-import React, {useState} from "react";
-import {submitPost} from "../../api/ApiService";
-import {useCommentWidgetContext} from "../../context/CommentWidgetContext";
-import QuillEditor from "./QuillEditor";
-import {DeltaStatic, Sources} from "quill";
-import {UnprivilegedEditor} from "react-quill";
-import {EMPTY_DELTA} from "../../utils/Util";
-import {LoadingButton} from "@mui/lab";
-import {Post} from "../../model/Post";
-import {Global} from "../../utils/GlobalVariables";
-import log from "../../utils/LogUtil";
+import React, {useState} from 'react';
+import {submitPost} from '../../api/ApiService';
+import {useCommentWidgetContext} from '../../context/CommentWidgetContext';
+import QuillEditor from './QuillEditor';
+import {DeltaStatic, Sources} from 'quill';
+import {UnprivilegedEditor} from 'react-quill';
+import {EMPTY_DELTA} from '../../utils/Util';
+import {LoadingButton} from '@mui/lab';
+import {Post} from '../../model/Post';
+import {Global} from '../../utils/GlobalVariables';
+import log from '../../utils/LogUtil';
 
 interface CreateCommentWidgetProp {
     onClose: () => void;
@@ -30,7 +30,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
         }
 
         setIsLoading(true);
-        submitPost(commentWidgetState.siteName, commentWidgetState.pageId, content, props.replyPostId,).then((res) => {
+        submitPost(commentWidgetState.siteName, commentWidgetState.pageId, content, props.replyPostId).then((res) => {
             if (res.status) {
                 setQuillContent(EMPTY_DELTA);
                 if (Global.quillDraft[props.replyPostId]) {
@@ -39,7 +39,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
                 try {
                     res.data.post.children = {
                         posts: [],
-                    }
+                    };
                     res.data.post.childrenCount = 0;
                 } catch (e) {
                     log(e);
@@ -48,7 +48,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
             }
             setIsLoading(false);
         });
-    }
+    };
 
     const handleChange = (value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor) => {
         // 如果用户输入的内容为空，则设置 content 也为空（默认是 insert \n ）
@@ -63,26 +63,26 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProp) {
         }
         // @ts-ignore
         setQuillContent(editor.getContents);
-    }
+    };
 
     const submitBtn = (
-        <LoadingButton
-            className='ql-submit'
-            variant={"contained"}
-            loading={isLoading}
-            onClick={createThread}
-        >Submit</LoadingButton>);
+        <LoadingButton className='ql-submit' variant={'contained'} loading={isLoading} onClick={createThread}>
+            Submit
+        </LoadingButton>
+    );
     return (
-        <div style={{
-            width: '100%',
-        }}>
+        <div
+            style={{
+                width: '100%',
+            }}
+        >
             <QuillEditor
                 widgetKey={props.widgetKey}
                 disabled={isLoading}
                 onChange={handleChange}
                 value={quillContent}
                 toolbarWidgets={submitBtn}
-                onClose={(w) => props.onClose()}
+                onClose={() => props.onClose()}
             />
         </div>
     );

@@ -1,22 +1,22 @@
-import {Avatar, Button, Dialog, ImageList, ImageListItem, useTheme} from "@mui/material";
-import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
-import React, {useEffect, useState} from "react";
-import LoadingWidget from "../common/LoadingWidget";
-import {useUserContext} from "../../context/UserContext";
-import {loadNftAvatar} from "../../api/ApiService";
+import {Avatar, Button, Dialog, ImageList, ImageListItem, useTheme} from '@mui/material';
+import {CloseableDialogTitle} from '../common/CloseableDialogTitle';
+import React, {useEffect, useState} from 'react';
+import LoadingWidget from '../common/LoadingWidget';
+import {useUserContext} from '../../context/UserContext';
+import {loadNftAvatar} from '../../api/ApiService';
 
 type SelectAvatarDialogProp = {
-    open: boolean,
-    currentAvatarUrl: string,
-    onClose: (value: string) => void,
-}
+    open: boolean;
+    currentAvatarUrl: string;
+    onClose: (value: string) => void;
+};
 
 type UserAvatar = {
-    url: string,
-    isDefault: boolean,
-    isSelect: boolean,
-    isNft: boolean,
-}
+    url: string;
+    isDefault: boolean;
+    isSelect: boolean;
+    isNft: boolean;
+};
 
 const avatarSize = 72;
 const count = 6;
@@ -41,19 +41,18 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
         // eslint-disable-next-line
     }, [userInfoState]);
 
-
     const init = () => {
         setLoading(false);
         setSelectedAvatarAvatar(null);
         if (avatarList.length === 0) {
             void initAvatar();
         } else {
-            avatarList.forEach(item => {
+            avatarList.forEach((item) => {
                 item.isSelect = item.url === props.currentAvatarUrl;
             });
             setAvatarList(([] as UserAvatar[]).concat(avatarList));
         }
-    }
+    };
 
     const initAvatar = async () => {
         if (!props.open) {
@@ -86,28 +85,24 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
                     }
 
                     avatarUrlSet.add(nftUrl);
-                    avatarList.push(
-                        {
-                            url: nftUrl,
-                            isDefault: false,
-                            isSelect: false,
-                            isNft: true,
-                        } as UserAvatar
-                    );
+                    avatarList.push({
+                        url: nftUrl,
+                        isDefault: false,
+                        isSelect: false,
+                        isNft: true,
+                    } as UserAvatar);
                 });
-            })
+            });
         }
 
         // 3. default avatar
         for (let i = 1; i < 25; i++) {
-            avatarList.push(
-                {
-                    url: `https://metaforo.io/img/default_avatar_${i}.png`,
-                    isDefault: true,
-                    isSelect: false,
-                    isNft: false,
-                } as UserAvatar
-            );
+            avatarList.push({
+                url: `https://metaforo.io/img/default_avatar_${i}.png`,
+                isDefault: true,
+                isSelect: false,
+                isNft: false,
+            } as UserAvatar);
         }
 
         const currentAvatar = avatarList.find((item) => item.url === userInfoState.avatar);
@@ -117,45 +112,41 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
 
         setAvatarList(avatarList);
         setLoading(false);
-    }
+    };
 
     const buildImageItem = (avatar: UserAvatar) => {
         return (
-            <ImageListItem
-                key={avatar.url}
-                onClick={() => onAvatarClick(avatar)}
-            >
-                <Avatar src={avatar.url}
-                        sx={{
-                            width: avatarSize,
-                            height: avatarSize,
-                            border: `3px solid ${avatar.isSelect ? theme.palette.primary.main : '#00000000'}`,
-                        }}
+            <ImageListItem key={avatar.url} onClick={() => onAvatarClick(avatar)}>
+                <Avatar
+                    src={avatar.url}
+                    sx={{
+                        width: avatarSize,
+                        height: avatarSize,
+                        border: `3px solid ${avatar.isSelect ? theme.palette.primary.main : '#00000000'}`,
+                    }}
                 />
-
             </ImageListItem>
         );
-    }
+    };
 
     const onAvatarClick = (avatar: UserAvatar) => {
-        avatarList.forEach(item => item.isSelect = false);
+        avatarList.forEach((item) => (item.isSelect = false));
         avatar.isSelect = true;
         setAvatarList(([] as UserAvatar[]).concat(avatarList));
 
         setSelectedAvatarAvatar(avatar);
-    }
+    };
 
     const content = (
         <div
             style={{
                 visibility: loading ? 'hidden' : 'visible',
                 padding: '12px 48px',
-                alignItems: "center",
-                display: "flex",
-                flexDirection: "column",
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
             }}
         >
-
             <ImageList
                 variant={'quilted'}
                 cols={count}
@@ -169,7 +160,7 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
             </ImageList>
 
             <Button
-                variant={"contained"}
+                variant={'contained'}
                 className={'mf-contained-button'}
                 disabled={selectedAvatar == null}
                 onClick={() => {
@@ -181,20 +172,15 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
                     marginTop: '12px',
                     marginBottom: '20px',
                 }}
-            >Done</Button>
+            >
+                Done
+            </Button>
         </div>
     );
     return (
-        <Dialog
-            open={props.open}
-            className={'mf-main'}
-            maxWidth={"sm"}
-            fullWidth={true}
-        >
-            <CloseableDialogTitle onClose={() => props.onClose('')}>
-                {<p>Select Your Avatar</p>}
-            </CloseableDialogTitle>
-            <LoadingWidget loading={loading}/>
+        <Dialog open={props.open} className={'mf-main'} maxWidth={'sm'} fullWidth={true}>
+            <CloseableDialogTitle onClose={() => props.onClose('')}>{<p>Select Your Avatar</p>}</CloseableDialogTitle>
+            <LoadingWidget loading={loading} />
             {content}
         </Dialog>
     );

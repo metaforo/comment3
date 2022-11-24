@@ -1,29 +1,29 @@
-import {updateUserStatusByLoginResponse, UserInfoState, useUserContext} from "../context/UserContext";
-import {useCommentWidgetContext} from "../context/CommentWidgetContext";
-import {Avatar, Card, List, ListItem, useTheme} from "@mui/material";
-import React, {Dispatch, useEffect, useState} from "react";
-import {UserStatus} from "../utils/Constants";
-import {Storage} from "../utils/Storage";
-import CreateCommentWidget from "../components/comment/CreateCommentWidget";
-import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from "../api/ApiService";
-import CenterLoadingWidget from "../components/common/CenterLoadingWIdget";
-import {EMPTY_THREAD, Thread} from "../model/Thread";
-import {grey} from "@mui/material/colors";
-import {LoginDialog} from "../components/login/LoginDialog";
-import {Post, ROOT_POST} from "../model/Post";
-import HeaderWidget from "../components/comment/HeaderWidget";
-import CommentListItem from "../components/comment/CommentListItem";
-import {LoadingButton} from "@mui/lab";
-import {addItemToSetState} from "../utils/Util";
-import {getEns} from "../utils/EnsService";
-import EditProfileDialog from "../components/login/EditProfileDialog";
+import {updateUserStatusByLoginResponse, UserInfoState, useUserContext} from '../../context/UserContext';
+import {useCommentWidgetContext} from '../../context/CommentWidgetContext';
+import {Avatar, Card, List, ListItem, useTheme} from '@mui/material';
+import React, {Dispatch, useEffect, useState} from 'react';
+import {UserStatus} from '../../utils/Constants';
+import {Storage} from '../../utils/Storage';
+import CreateCommentWidget from './CreateCommentWidget';
+import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from '../../api/ApiService';
+import CenterLoadingWidget from '../common/CenterLoadingWIdget';
+import {EMPTY_THREAD, Thread} from '../../model/Thread';
+import {grey} from '@mui/material/colors';
+import {LoginDialog} from '../login/LoginDialog';
+import {Post, ROOT_POST} from '../../model/Post';
+import HeaderWidget from './HeaderWidget';
+import CommentListItem from './CommentListItem';
+import {LoadingButton} from '@mui/lab';
+import {addItemToSetState} from '../../utils/Util';
+import {getEns} from '../../utils/EnsService';
+import EditProfileDialog from '../login/EditProfileDialog';
 
 type CommentWidgetProps = {
-    siteName: string,
-    pageId: string,
-    needRefresh?: boolean,
-    variant?: string,
-}
+    siteName: string;
+    pageId: string;
+    needRefresh?: boolean;
+    variant?: string;
+};
 
 const ALL_CLOSED = -1;
 const ROOT_REPLY = 0;
@@ -41,7 +41,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
     const [isOpenLoginDialog, setIsOpenLoginDialog] = useState(false);
     const closeLoginDialog = () => {
         setIsOpenLoginDialog(false);
-    }
+    };
     /// user profile
     const [showUpdateProfileDialog, setShowUpdateProfileDialog] = useState(false);
 
@@ -102,7 +102,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             // firstLevelCount contains an empty "first_post".
             return thread.firstLevelCount - 1 > postList.length;
         }
-    }
+    };
 
     const loadNextPage = (startPostId: number) => {
         if (showTailLoading) {
@@ -142,7 +142,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 setShowFullLoading(false);
                 setShowTailLoading(false);
             });
-    }
+    };
 
     const loadMoreReplies = (post: Post) => {
         showInnerLoading.add(post.id);
@@ -163,11 +163,12 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 } else {
                     addItemToSetState(post.id, noMorePost, setNoMorePost);
                 }
-            }).finally(() => {
+            })
+            .finally(() => {
                 showInnerLoading.delete(post.id);
                 setShowInnerLoading(new Set(showInnerLoading));
             });
-    }
+    };
 
     const handleReplyPost = async (replyPostId: number, newPost: Post) => {
         await loadEnsNameForPostList([newPost], resolvedEnsMap);
@@ -187,9 +188,11 @@ export default function CommentWidget(props: CommentWidgetProps) {
                     return false;
                 }
 
-                return p.children.posts.find((child) => {
-                    return child.id === replyPostId;
-                }) !== undefined;
+                return (
+                    p.children.posts.find((child) => {
+                        return child.id === replyPostId;
+                    }) !== undefined
+                );
             });
 
             if (repliedPost) {
@@ -212,7 +215,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
         }
         setOpenReply(ALL_CLOSED);
         setPostList(newPostList);
-    }
+    };
 
     function clickReply(post?: Post) {
         if (isLogin) {
@@ -230,24 +233,24 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
     const listItemList = [] as JSX.Element[];
     postList.forEach((post) => {
-        listItemList.push(CommentListItem({
-            thread: thread!,
-            post: post,
-            level: 1,
-            onReplySuccess: handleReplyPost,
-            openingReply: openReply,
-            onShowReplyClick: clickReply,
-            loadingChildren: showInnerLoading,
-            onLoadingChildrenClick: loadMoreReplies,
-            noMorePostSet: noMorePost,
-            theme: theme,
-        }));
+        listItemList.push(
+            CommentListItem({
+                thread: thread!,
+                post: post,
+                level: 1,
+                onReplySuccess: handleReplyPost,
+                openingReply: openReply,
+                onShowReplyClick: clickReply,
+                loadingChildren: showInnerLoading,
+                onLoadingChildrenClick: loadMoreReplies,
+                noMorePostSet: noMorePost,
+                theme: theme,
+            }),
+        );
     });
     if (hasMorePost()) {
         listItemList.push(
-            <ListItem
-                key={'has-more'}
-                sx={{justifyContent: 'center',}}>
+            <ListItem key={'has-more'} sx={{justifyContent: 'center'}}>
                 <LoadingButton
                     loading={showTailLoading}
                     onClick={() => loadNextPage(postList.last().id)}
@@ -258,7 +261,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 >
                     {showTailLoading ? 'Loading...' : 'Load More'}
                 </LoadingButton>
-            </ListItem>
+            </ListItem>,
         );
     }
 
@@ -270,32 +273,35 @@ export default function CommentWidget(props: CommentWidgetProps) {
         } else {
             setIsOpenLoginDialog(true);
         }
-    }
+    };
 
     const rootReplyWidget = () => {
-        let avatarSx = {
+        const avatarSx = {
             width: '40px',
             height: '40px',
             marginRight: '16px',
             backgroundColor: grey[200],
-        }
+        };
         let replyWidget;
         if (openReply === ROOT_REPLY) {
-            replyWidget = (<CreateCommentWidget
-                replyPostId={0}
-                widgetKey={'quill-toolbar-header'}
-                onClose={() => setOpenReply(ALL_CLOSED)}
-                onReplySuccess={handleReplyPost}
-            />);
+            replyWidget = (
+                <CreateCommentWidget
+                    replyPostId={0}
+                    widgetKey={'quill-toolbar-header'}
+                    onClose={() => setOpenReply(ALL_CLOSED)}
+                    onReplySuccess={handleReplyPost}
+                />
+            );
         } else {
             replyWidget = (
-                <div className={'mf-reply-area'}
-                     style={{
-                         backgroundColor: (theme.palette as any).action.hover,
-                         color: theme.palette.action.disabled,
-                         cursor: isLogin ? 'text' : 'default',
-                     }}
-                     onClick={() => clickReply(ROOT_POST)}
+                <div
+                    className={'mf-reply-area'}
+                    style={{
+                        backgroundColor: (theme.palette as any).action.hover,
+                        color: theme.palette.action.disabled,
+                        cursor: isLogin ? 'text' : 'default',
+                    }}
+                    onClick={() => clickReply(ROOT_POST)}
                 >
                     Write a reply
                 </div>
@@ -303,46 +309,46 @@ export default function CommentWidget(props: CommentWidgetProps) {
         }
 
         return (
-            <div style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                width: '100%',
-                marginTop: '22px',
-            }}>
-                <Avatar
-                    src={isLogin ? userInfoState.avatar : ''}
-                    sx={avatarSx}
-                    onClick={editProfile}
-                />
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    width: '100%',
+                    marginTop: '22px',
+                }}
+            >
+                <Avatar src={isLogin ? userInfoState.avatar : ''} sx={avatarSx} onClick={editProfile} />
                 {replyWidget}
             </div>
         );
-    }
+    };
 
     const widget = (
         <>
-            <HeaderWidget thread={thread}/>
+            <HeaderWidget thread={thread} />
             {rootReplyWidget()}
-            {showFullLoading ?
-                <CenterLoadingWidget height={240}/> :
+            {showFullLoading ? (
+                <CenterLoadingWidget height={240} />
+            ) : (
                 <List
                     className={'mf-comment-list'}
                     disablePadding={true}
                     sx={{
                         margin: 0,
                         padding: 0,
-                    }}>
+                    }}
+                >
                     {listItemList}
                 </List>
-            }
+            )}
 
-            <LoginDialog
-                open={isOpenLoginDialog}
-                onClose={closeLoginDialog}
-                closeDialog={closeLoginDialog}/>
-            <EditProfileDialog open={showUpdateProfileDialog} closeDialog={() => {
-                setShowUpdateProfileDialog(false);
-            }}/>
+            <LoginDialog open={isOpenLoginDialog} closeDialog={closeLoginDialog} />
+            <EditProfileDialog
+                open={showUpdateProfileDialog}
+                closeDialog={() => {
+                    setShowUpdateProfileDialog(false);
+                }}
+            />
         </>
     );
 
@@ -371,29 +377,32 @@ async function _initUserLoginStatus(userInfoState: UserInfoState, dispatch: Disp
     }
 }
 
-function WidgetContainer(widget: JSX.Element, isInitializing: boolean, variant?: string,): JSX.Element {
+function WidgetContainer(widget: JSX.Element, isInitializing: boolean, variant?: string): JSX.Element {
     const loadingWidget = (
         <>
-            <div style={{
-                display: !isInitializing ? 'none' : undefined,
-            }}>
-                <CenterLoadingWidget minHeight={'240px'}/>
+            <div
+                style={{
+                    display: !isInitializing ? 'none' : undefined,
+                }}
+            >
+                <CenterLoadingWidget minHeight={'240px'} />
             </div>
-            <div style={{
-                display: isInitializing ? 'none' : undefined,
-            }}>
+            <div
+                style={{
+                    display: isInitializing ? 'none' : undefined,
+                }}
+            >
                 {widget}
             </div>
         </>
     );
-
 
     if (variant === 'plain') {
         return loadingWidget;
     } else {
         return (
             <Card
-                variant="outlined"
+                variant='outlined'
                 sx={{
                     padding: '20px 18px',
                 }}
@@ -419,7 +428,9 @@ async function loadEnsNameForPostList(postList: Post[], resolvedMap: any) {
                 if (ensName) {
                     resolvedMap[userId] = ensName;
                 } else {
-                    resolvedMap[userId] = `${addressMap[userId].substring(0, 6)}...${addressMap[userId].substring(addressMap[userId].length - 4)}`;
+                    resolvedMap[userId] = `${addressMap[userId].substring(0, 6)}...${addressMap[userId].substring(
+                        addressMap[userId].length - 4,
+                    )}`;
                 }
             });
             futureList.push(ensNameFuture);

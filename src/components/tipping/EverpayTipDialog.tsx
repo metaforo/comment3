@@ -1,5 +1,5 @@
-import {useSnakeBarContext} from "../../utils/SnackBar";
-import React, {useEffect, useState} from "react";
+import {useSnakeBarContext} from '../../utils/SnackBar';
+import React, {useEffect, useState} from 'react';
 import {
     Avatar,
     Button,
@@ -13,28 +13,27 @@ import {
     SxProps,
     TextField,
     Theme,
-    Typography
-} from "@mui/material";
+    Typography,
+} from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import {logout, useUserContext} from "../../context/UserContext";
-import {EverpayBalance, loadUserBalance, tip} from "./Everpay";
-import {saveEverpayLog} from "../../api/ApiService";
-import {useTipWidgetContext} from "../../context/TipWidgetContext";
-import {Global} from "../../utils/GlobalVariables";
-import {floatToString} from "../../utils/Util";
-import {CloseableDialogTitle} from "../common/CloseableDialogTitle";
-import {grey} from "@mui/material/colors";
-import LoadingWidget from "../common/LoadingWidget";
+import {logout, useUserContext} from '../../context/UserContext';
+import {EverpayBalance, loadUserBalance, tip} from './Everpay';
+import {saveEverpayLog} from '../../api/ApiService';
+import {useTipWidgetContext} from '../../context/TipWidgetContext';
+import {Global} from '../../utils/GlobalVariables';
+import {floatToString} from '../../utils/Util';
+import {CloseableDialogTitle} from '../common/CloseableDialogTitle';
+import {grey} from '@mui/material/colors';
+import LoadingWidget from '../common/LoadingWidget';
 
 export interface EverpayDialogProps {
-    open: boolean,
-    onClose: (value: string) => void,
-    closeDialog: () => void,
+    open: boolean;
+    closeDialog: () => void;
 }
 
 export function EverpayDialog(props: EverpayDialogProps) {
-    const {open, onClose, closeDialog} = props;
+    const {open, closeDialog} = props;
 
     const {snakeBarDispatch} = useSnakeBarContext();
     const {userInfoState, setUserState} = useUserContext();
@@ -52,27 +51,25 @@ export function EverpayDialog(props: EverpayDialogProps) {
     useEffect(() => {
         initEverpayInfo();
         // eslint-disable-next-line
-    }, []);
+    }, [userInfoState]);
 
     const handleClose = () => {
-        onClose('');
-    }
+        closeDialog();
+    };
 
     const initEverpayInfo = () => {
         setLoading(true);
 
-        loadUserBalance(userInfoState)
-            .then((balances) => {
-                if (balances != null) {
-                    setBalanceList(balances!);
-                    setSelectedBalance(balances[0]);
-                }
-                setLoading(false);
-            });
-    }
+        loadUserBalance(userInfoState).then((balances) => {
+            if (balances != null) {
+                setBalanceList(balances!);
+                setSelectedBalance(balances[0]);
+            }
+            setLoading(false);
+        });
+    };
 
     const startTipping = async () => {
-
         if (!Global.isDemo && parseFloat(tokenAmount) === 0) {
             setErr('Tipping amount must larger than 0');
             return;
@@ -92,14 +89,14 @@ export function EverpayDialog(props: EverpayDialogProps) {
             setErr('Unknown error, please try later');
         } else if (everpayResponse['status'] === 'ok') {
             // log to metaforo api.
-            new Promise(resolve => setTimeout(resolve, 1500)).then(() => {
+            new Promise((resolve) => setTimeout(resolve, 1500)).then(() => {
                 closeDialog();
             });
             setLoading(false);
             setSuccess(true);
             // no need wait for log api.
             // noinspection ES6MissingAwait
-            saveEverpayLog(everpayResponse, tipWidgetState, parseFloat(tokenAmount).toString(),);
+            saveEverpayLog(everpayResponse, tipWidgetState, parseFloat(tokenAmount).toString());
         } else if (everpayResponse['error']) {
             setErr(everpayResponse['error']);
         } else {
@@ -111,17 +108,17 @@ export function EverpayDialog(props: EverpayDialogProps) {
         }
 
         setLoading(false);
-    }
+    };
 
     const showWallet = () => {
         window.open('https://metaforo.io/my/wallet', '_blank', 'noopener,noreferrer');
-    }
+    };
 
     const copyReceiverAddress = () => {
         // noinspection JSIgnoredPromiseFromCall
         navigator.clipboard.writeText(tipWidgetState.receiver.address);
         snakeBarDispatch({open: true, message: 'Copied to Clipboard'});
-    }
+    };
 
     const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let inputVal = event.target.value;
@@ -158,7 +155,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
         }
 
         setTokenAmount(floatToString(val, selectedBalance.decimals));
-    }
+    };
 
     // region ---- Content ----
 
@@ -177,20 +174,22 @@ export function EverpayDialog(props: EverpayDialogProps) {
         border: '1px solid white',
     };
     const menuItems = balanceList.map((balance) => {
-        return (<MenuItem key={balance.symbol} value={balance.symbol}>
-            <div className='mf-balance-menu-item'>
-                <Avatar alt={balance.symbol}
+        return (
+            <MenuItem key={balance.symbol} value={balance.symbol}>
+                <div className='mf-balance-menu-item'>
+                    <Avatar
+                        alt={balance.symbol}
                         src={'https://cdn.metaforo.io/images/token/' + balance.symbol.toLowerCase() + '_thumb.png'}
                         sx={avatarSxProps}
-                >
-                </Avatar>
-                <p style={{flexGrow: 1,}}>{balance.symbol}</p>
-                <p>{floatToString(balance.balance, balance.decimals)}</p>
-            </div>
-        </MenuItem>);
+                    ></Avatar>
+                    <p style={{flexGrow: 1}}>{balance.symbol}</p>
+                    <p>{floatToString(balance.balance, balance.decimals)}</p>
+                </div>
+            </MenuItem>
+        );
     });
 
-    let successWidget = (
+    const successWidget = (
         <div
             className={'mf-dialog-content'}
             style={{
@@ -214,11 +213,14 @@ export function EverpayDialog(props: EverpayDialogProps) {
         </div>
     );
 
-    let content = (
-        <Stack direction={'column'} spacing={2} className={'mf-dialog-padding'}
-               sx={{
-                   visibility: loading || success ? 'hidden' : 'visible',
-               }}
+    const content = (
+        <Stack
+            direction={'column'}
+            spacing={2}
+            className={'mf-dialog-padding'}
+            sx={{
+                visibility: loading || success ? 'hidden' : 'visible',
+            }}
         >
             <FormControl>
                 <div className={'mf-dialog-main'}>
@@ -228,13 +230,15 @@ export function EverpayDialog(props: EverpayDialogProps) {
                         </div>
                         <IconButton
                             onClick={copyReceiverAddress}
-                            aria-label="copy-address"
+                            aria-label='copy-address'
                             className={'mf-dialog-address-icon'}
                         >
-                            <ContentCopyIcon sx={{
-                                color: (theme) => theme.palette.grey[500],
-                                fontSize: '15px',
-                            }}/>
+                            <ContentCopyIcon
+                                sx={{
+                                    color: (theme) => theme.palette.grey[500],
+                                    fontSize: '15px',
+                                }}
+                            />
                         </IconButton>
                     </div>
 
@@ -249,13 +253,18 @@ export function EverpayDialog(props: EverpayDialogProps) {
                                             setTokenAmount('0');
                                             setErr('');
                                         }
-                                    })
+                                    });
                                 }}
                                 renderValue={(selected) => (
                                     <div className='mf-balance-select-item'>
-                                        <Avatar alt={selected}
-                                                src={'https://cdn.metaforo.io/images/token/' + selected.toLowerCase() + '_thumb.png'}
-                                                sx={avatarSxProps}
+                                        <Avatar
+                                            alt={selected}
+                                            src={
+                                                'https://cdn.metaforo.io/images/token/' +
+                                                selected.toLowerCase() +
+                                                '_thumb.png'
+                                            }
+                                            sx={avatarSxProps}
                                         />
                                         <p>{selected}</p>
                                     </div>
@@ -264,27 +273,28 @@ export function EverpayDialog(props: EverpayDialogProps) {
                                     PaperProps: {
                                         style: {
                                             maxHeight: 520,
-                                        }
-                                    }
+                                        },
+                                    },
                                 }}
                             >
                                 {menuItems}
                             </Select>
                         </div>
                         <div className={'mf-dialog-input'}>
-                            <TextField id="demo-helper-text-misaligned-no-helper"
-                                       inputProps={{
-                                           max: selectedBalance.balance,
-                                           min: 0,
-                                           inputMode: 'numeric',
-                                       }}
-                                       value={tokenAmount}
-                                       onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
-                                           if (event.target.value.length === 0) {
-                                               setTokenAmount('0');
-                                           }
-                                       }}
-                                       onChange={onAmountChange}
+                            <TextField
+                                id='demo-helper-text-misaligned-no-helper'
+                                inputProps={{
+                                    max: selectedBalance.balance,
+                                    min: 0,
+                                    inputMode: 'numeric',
+                                }}
+                                value={tokenAmount}
+                                onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
+                                    if (event.target.value.length === 0) {
+                                        setTokenAmount('0');
+                                    }
+                                }}
+                                onChange={onAmountChange}
                             />
                         </div>
                     </div>
@@ -300,22 +310,13 @@ export function EverpayDialog(props: EverpayDialogProps) {
                             </span>
                         </div>
                         <div className={'mf-dialog-bottom-link'}>
-                            <Button
-                                variant={"text"}
-                                sx={textButtonStyle}
-                                onClick={() => logout(setUserState)}
-                            >
+                            <Button variant={'text'} sx={textButtonStyle} onClick={() => logout(setUserState)}>
                                 Log Out
                             </Button>
-                            <Button
-                                variant={"text"}
-                                sx={textButtonStyle}
-                                onClick={showWallet}
-                            >
+                            <Button variant={'text'} sx={textButtonStyle} onClick={showWallet}>
                                 Transaction History
                             </Button>
                         </div>
-
                     </div>
                     <div
                         style={{
@@ -323,10 +324,12 @@ export function EverpayDialog(props: EverpayDialogProps) {
                             height: 14,
                             color: 'red',
                         }}
-                    >{err}</div>
+                    >
+                        {err}
+                    </div>
                     <Button
                         onClick={startTipping}
-                        variant={"contained"}
+                        variant={'contained'}
                         className={'mf-contained-button'}
                         sx={{
                             width: '120px',
@@ -339,22 +342,18 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     </Button>
                 </div>
             </FormControl>
-        </Stack>);
+        </Stack>
+    );
 
     // endregion ---- Content ----
 
     return (
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            className={'mf-main'}
-            fullWidth={true}
-            maxWidth={'sm'}>
+        <Dialog open={open} onClose={handleClose} className={'mf-main'} fullWidth={true} maxWidth={'sm'}>
             <CloseableDialogTitle onClose={handleClose}>
                 {<p> Tip to {tipWidgetState.receiver.username}</p>}
             </CloseableDialogTitle>
             {content}
-            <LoadingWidget loading={loading}/>
+            <LoadingWidget loading={loading} />
             {successWidget}
         </Dialog>
     );

@@ -1,20 +1,38 @@
 {
-  "name": "metaforo-sdk",
-  "version": "0.2.0",
-  "private": true,
-  "dependencies": {
+  "name": "@dforo3/metaforo-sdk",
+  "version": "0.3.5",
+  "author": "Metaforo",
+  "license": "ISC",
+  "homepage": "https://github.com/metaforo/comment3#readme",
+  "bugs": {
+    "url": "https://github.com/metaforo/comment3/issues"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.js",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@ensdomains/ensjs": "^3.0.0-alpha.34",
     "@mui/icons-material": "^5.10.9",
     "@mui/lab": "^5.0.0-alpha.102",
     "@mui/material": "^5.10.9",
+    "@simbathesailor/babel-plugin-use-what-changed": "^2.1.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.11.65",
-    "@types/react": "^18.0.21",
+    "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.6",
     "@walletconnect/client": "^1.8.0",
     "@walletconnect/qrcode-modal": "^1.8.0",
@@ -22,6 +40,7 @@
     "axios": "^1.1.3",
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
+    "copyfiles": "^2.4.1",
     "customize-cra": "^1.0.0",
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^5.7.2",
@@ -37,18 +56,26 @@
     "react-quill": "^2.0.0",
     "react-scripts": "5.0.1",
     "react-svg": "^15.1.11",
+    "rimraf": "^3.0.2",
     "sass": "^1.56.1",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.3",
     "web-vitals": "^2.1.4",
     "web3": "^1.8.1"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-app-rewired start",
-    "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
-    "publish": "PUBLIC_URL=/ GENERATE_SOURCEMAP=false react-app-rewired build && cp build/metaforo-sdk.min.js dist && cp build/metaforo-sdk.min.js.LICENSE.txt dist",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "build:clean": "cd build && cp static/js/*.js main.js && cp static/css/*.css main.css"
+    "build": "yarn clean && yarn build:esm && yarn build:cjs && yarn copy-files",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "clean": "rimraf dist/",
+    "copy-files": "copyfiles -u 1 src/**/*.scss src/**/*.css src/**/*.svg dist/cjs && copyfiles -u 1 src/**/*.scss src/**/*.css src/**/*.svg dist/esm",
+    "prettier": "prettier --write \"{src,tests,example/src}/**/*.{js,ts,jsx,tsx}\"",
+    "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run prettier && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metaforo/comment3.git"
   },
   "keywords": [
     "metaforo",
@@ -56,12 +83,6 @@
     "comment",
     "web3"
   ],
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -73,20 +94,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@simbathesailor/babel-plugin-use-what-changed": "^2.1.0",
-    "react-app-rewired": "^2.2.1"
-  },
-  "description": "## init project",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/metaforo/comment3.git"
-  },
-  "author": "Metaforo",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/metaforo/comment3/issues"
-  },
-  "homepage": "https://github.com/metaforo/comment3#readme"
+  }
 }

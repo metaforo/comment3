@@ -1,10 +1,9 @@
-import ReactQuill from "react-quill";
-import {DeltaStatic} from "quill";
-import {quillModules} from "../../utils/QuillUtil";
-
+import ReactQuill from 'react-quill';
+import {DeltaStatic} from 'quill';
+import {quillModules} from '../../utils/QuillUtil';
 
 interface QuillViewerProps {
-    content: string,
+    content: string;
 }
 
 export default function QuillViewer(props: QuillViewerProps) {
@@ -12,12 +11,5 @@ export default function QuillViewer(props: QuillViewerProps) {
     const modules = quillModules();
     modules.toolbar = false;
 
-    return (
-        <ReactQuill
-            className={'quill-viewer'}
-            value={delta}
-            readOnly={true}
-            modules={modules}
-        />
-    );
+    return <ReactQuill className={'quill-viewer'} value={delta} readOnly={true} modules={modules} />;
 }

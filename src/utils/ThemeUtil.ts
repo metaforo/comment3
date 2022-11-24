@@ -1,6 +1,6 @@
 import {createTheme} from '@mui/material/styles';
-import {Components} from "@mui/material/styles/components";
-import {Theme} from "@mui/material/styles/createTheme";
+import {Components} from '@mui/material/styles/components';
+import {Theme} from '@mui/material/styles/createTheme';
 
 const components = {
     MuiDialog: {
@@ -9,9 +9,9 @@ const components = {
                 borderRadius: 24,
                 paddingTop: 16,
                 paddingBottom: 16,
-                backgroundImage: "none",
+                backgroundImage: 'none',
             },
-        }
+        },
     },
     MuiDialogTitle: {
         styleOverrides: {
@@ -22,7 +22,7 @@ const components = {
                 fontWeight: 'bold',
                 fontSize: '22px',
             },
-        }
+        },
     },
     MuiButton: {
         styleOverrides: {
