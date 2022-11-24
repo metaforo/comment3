@@ -5,7 +5,7 @@ import {TipWidgetState} from '../context/TipWidgetContext';
 import {camelCase} from 'lodash';
 import {convertJsonKey} from '../utils/Util';
 
-const apiHost = process.env.REACT_APP_API_HOST;
+export const apiHost = 'https://test-chao.metaforo.io/api';
 
 // region ---- init instance ----
 

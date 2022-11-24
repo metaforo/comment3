@@ -6,6 +6,7 @@ import {UserStatus} from '../../utils/Constants';
 import {Button, Typography} from '@mui/material';
 import {grey} from '@mui/material/colors';
 import {Global} from '../../utils/GlobalVariables';
+import {apiHost} from '../../api/ApiService';
 
 type HeaderWidgetProps = {
     thread: Thread | null;
@@ -52,9 +53,7 @@ export default function HeaderWidget(props: HeaderWidgetProps) {
     let debugBtn;
     if (Global.isDebug && thread) {
         // @ts-ignore
-        const link = `${process.env.REACT_APP_API_HOST.replace('/api', '/')}g/${commentWidgetState.siteName}/thread/${
-            thread.id
-        }`;
+        const link = `${apiHost.replace('/api', '/')}g/${commentWidgetState.siteName}/thread/${thread.id}`;
         debugBtn = (
             <a
                 href={link}
