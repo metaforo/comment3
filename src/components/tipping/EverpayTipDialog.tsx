@@ -29,12 +29,11 @@ import LoadingWidget from '../common/LoadingWidget';
 
 export interface EverpayDialogProps {
     open: boolean;
-    onClose: (value: string) => void;
     closeDialog: () => void;
 }
 
 export function EverpayDialog(props: EverpayDialogProps) {
-    const {open, onClose, closeDialog} = props;
+    const {open, closeDialog} = props;
 
     const {snakeBarDispatch} = useSnakeBarContext();
     const {userInfoState, setUserState} = useUserContext();
@@ -52,10 +51,10 @@ export function EverpayDialog(props: EverpayDialogProps) {
     useEffect(() => {
         initEverpayInfo();
         // eslint-disable-next-line
-    }, []);
+    }, [userInfoState]);
 
     const handleClose = () => {
-        onClose('');
+        closeDialog();
     };
 
     const initEverpayInfo = () => {

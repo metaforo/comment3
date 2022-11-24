@@ -2,7 +2,7 @@ import React, {Dispatch, useContext, useReducer} from 'react';
 import {UserStatus} from '../utils/Constants';
 import {Storage} from '../utils/Storage';
 import {initApiService} from '../api/ApiService';
-import {removeEverpayInstance} from '../components/tip/Everpay';
+import {removeEverpayInstance} from '../components/tipping/Everpay';
 
 export interface UserInfoState {
     loginStatus: number;
@@ -42,7 +42,7 @@ export function updateUserStatusByLocalStorage(userInfoState: UserInfoState, dis
     initApiService(Storage.getItem(Storage.userToken) ?? '');
 }
 
-export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<UserInfoState>) {
+export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<UserInfoState>, isRegister?: boolean) {
     let ethAddress, arAddress;
     res.web3_public_keys.forEach((web3Key: any) => {
         switch (web3Key.type) {
@@ -64,7 +64,7 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
         avatar: res.photo_url,
         ethAddress: ethAddress,
         arAddress: arAddress,
-        isNew: res.isNew ?? false,
+        isNew: isRegister ?? false,
     } as UserInfoState;
     dispatch(user);
 }

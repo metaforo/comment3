@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {MfTipWidget, MfCommentWidget} from '../../src';
+import {MfCommentWidget, MfTippingWidget} from '../../src';
 // import {MfCommentWidget, MfTipWidget} from '@dforo3/metaforo-sdk/dist/esm';
 
 // region ---- Tipping ----
@@ -14,10 +14,6 @@ if (tippingWidgets) {
         }
         e.addEventListener('click', (event) => {
             if (event.target && event.target instanceof HTMLElement) {
-                if (!checkAttrs(e, ['siteName', 'pageId', 'receiverAddress', 'receiverUsername', 'receiverChainId'])) {
-                    return;
-                }
-
                 showTipDialog(event.target);
             }
         });
@@ -25,11 +21,19 @@ if (tippingWidgets) {
 }
 
 function showTipDialog(element: HTMLElement) {
-    console.log('show tip dialog', element);
     let div = document.createElement('div');
     document.body.appendChild(div);
     const root = ReactDOM.createRoot(div);
-    root.render(<MfTipWidget props={element.attributes} />);
+    root.render(
+        <MfTippingWidget
+            siteName={'chaometatestgroup'}
+            pageId={'ggg2'}
+            receiverAddress={'0x9d7bA953587B87c474a10beb65809Ea489F026bD'}
+            receiverChainId={1}
+            receiverUsername={'liuwei6v.eth'}
+            // theme={'dark'}
+        />,
+    );
 }
 
 // endregion ---- Tipping ----
@@ -43,30 +47,28 @@ if (commentWidgets) {
         if (!(e && e instanceof HTMLElement)) {
             continue;
         }
-        if (!checkAttrs(e, ['siteName', 'pageId'])) {
-            continue;
-        }
-
         showComment(e);
     }
 }
 
-function checkAttrs(e: HTMLElement, attrs: string[]) {
-    let missingAttrs = [] as string[];
-    attrs.forEach((attr) => {
-        if (!e.attributes.getNamedItem(attr)) missingAttrs.push(attr);
-    });
-    if (missingAttrs.length > 0) {
-        console.warn('Missing attributes ' + missingAttrs.join(',') + ' for metaforo-tip. element is ', e);
-        return false;
-    } else {
-        return true;
-    }
-}
-
 function showComment(e: HTMLElement) {
+    // // @ts-ignore
+    // window.mfTheme = {
+    //     palette: {
+    //         background: {
+    //             paper: '#232323',
+    //         }
+    //     }
+    // }
+
     const root = ReactDOM.createRoot(e);
-    root.render(<MfCommentWidget props={e.attributes} />);
+    root.render(
+        <MfCommentWidget
+            siteName={'chaometatestgroup'}
+            pageId={'ggg2'}
+            // theme={'dark'}
+        />,
+    );
 }
 
 // endregion ---- Comment ----

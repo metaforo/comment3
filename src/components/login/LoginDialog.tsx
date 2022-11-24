@@ -14,7 +14,6 @@ import {LoginType} from '../../utils/Constants';
 
 export interface LoginDialogProps {
     open: boolean;
-    onClose: () => void;
     closeDialog: () => void;
 }
 
@@ -26,12 +25,12 @@ interface LoginMethodItem {
 }
 
 export function LoginDialog(props: LoginDialogProps) {
-    const {open, onClose, closeDialog} = props;
+    const {open, closeDialog} = props;
     const {setUserState} = useUserContext();
     const [loading, setLoading] = useState(false);
 
     const handleClose = () => {
-        onClose();
+        closeDialog();
         // If there's no timeout, the dialog size will be changed before it closed.
         new Promise((resolve) => setTimeout(resolve, 300)).then(() => {
             setLoading(false);
@@ -74,7 +73,7 @@ export function LoginDialog(props: LoginDialogProps) {
             return;
         }
 
-        updateUserStatusByLoginResponse(ssoResponse.user, setUserState);
+        updateUserStatusByLoginResponse(ssoResponse.user, setUserState, ssoResponse.is_register);
         Storage.saveItem(Storage.lastLoginType, loginType);
 
         setLoading(false);

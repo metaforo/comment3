@@ -43,8 +43,14 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
                 setIsNftAvatar(false);
             });
         } else {
-            setUsername(userInfoState.username!);
-            setUserAvatar(userInfoState.avatar!);
+            sleep(200).then(() => {
+                if (userInfoState.username && !userInfoState.username.includes('#')) {
+                    setUsername(userInfoState.username!);
+                } else {
+                    setUsername('');
+                }
+                setUserAvatar(userInfoState.avatar!);
+            });
         }
     }, [userInfoState, props.open]);
 
@@ -71,6 +77,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
             .then((res) => {
                 if (!res.status) {
                     setProfileErr(res.description);
+                    return;
                 }
 
                 commentWidgetState.needRefresh = true;
@@ -135,7 +142,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
             </Badge>
 
             <UsernameInputField
-                value={username}
+                value={username || ''}
                 onChange={onUsernameChange}
                 label={'Enter Username'}
                 sx={{

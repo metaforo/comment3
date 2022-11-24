@@ -1,22 +1,22 @@
-import {updateUserStatusByLoginResponse, UserInfoState, useUserContext} from '../context/UserContext';
-import {useCommentWidgetContext} from '../context/CommentWidgetContext';
+import {updateUserStatusByLoginResponse, UserInfoState, useUserContext} from '../../context/UserContext';
+import {useCommentWidgetContext} from '../../context/CommentWidgetContext';
 import {Avatar, Card, List, ListItem, useTheme} from '@mui/material';
 import React, {Dispatch, useEffect, useState} from 'react';
-import {UserStatus} from '../utils/Constants';
-import {Storage} from '../utils/Storage';
-import CreateCommentWidget from '../components/comment/CreateCommentWidget';
-import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from '../api/ApiService';
-import CenterLoadingWidget from '../components/common/CenterLoadingWIdget';
-import {EMPTY_THREAD, Thread} from '../model/Thread';
+import {UserStatus} from '../../utils/Constants';
+import {Storage} from '../../utils/Storage';
+import CreateCommentWidget from './CreateCommentWidget';
+import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from '../../api/ApiService';
+import CenterLoadingWidget from '../common/CenterLoadingWIdget';
+import {EMPTY_THREAD, Thread} from '../../model/Thread';
 import {grey} from '@mui/material/colors';
-import {LoginDialog} from '../components/login/LoginDialog';
-import {Post, ROOT_POST} from '../model/Post';
-import HeaderWidget from '../components/comment/HeaderWidget';
-import CommentListItem from '../components/comment/CommentListItem';
+import {LoginDialog} from '../login/LoginDialog';
+import {Post, ROOT_POST} from '../../model/Post';
+import HeaderWidget from './HeaderWidget';
+import CommentListItem from './CommentListItem';
 import {LoadingButton} from '@mui/lab';
-import {addItemToSetState} from '../utils/Util';
-import {getEns} from '../utils/EnsService';
-import EditProfileDialog from '../components/login/EditProfileDialog';
+import {addItemToSetState} from '../../utils/Util';
+import {getEns} from '../../utils/EnsService';
+import EditProfileDialog from '../login/EditProfileDialog';
 
 type CommentWidgetProps = {
     siteName: string;
@@ -342,7 +342,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 </List>
             )}
 
-            <LoginDialog open={isOpenLoginDialog} onClose={closeLoginDialog} closeDialog={closeLoginDialog} />
+            <LoginDialog open={isOpenLoginDialog} closeDialog={closeLoginDialog} />
             <EditProfileDialog
                 open={showUpdateProfileDialog}
                 closeDialog={() => {
