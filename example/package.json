@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.8.0",
-    "@dforo3/metaforo-sdk": "^0.3.4",
+    "@dforo3/metaforo-sdk": "^0.4.0",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
     "assert": "^2.0.0",

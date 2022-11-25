@@ -1,6 +1,6 @@
 import {Global} from '../../utils/GlobalVariables';
 import log from '../../utils/LogUtil';
-import {composeProviders} from '../../utils/Util';
+import {composeProviders, formatSiteName} from '../../utils/Util';
 import {SnackBarContextProvider} from '../../utils/SnackBar';
 import {CommentWidgetContextProvider} from '../../context/CommentWidgetContext';
 import {UserContextProvider} from '../../context/UserContext';
@@ -53,7 +53,11 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
     return (
         <ThemeProvider theme={createThemeFromAttr(props.theme)}>
             <StateProviders>
-                <CommentWidget siteName={props.siteName} pageId={props.pageId} variant={props.variant ?? 'card'} />
+                <CommentWidget
+                    siteName={formatSiteName(props.siteName)}
+                    pageId={props.pageId}
+                    variant={props.variant ?? 'card'}
+                />
             </StateProviders>
         </ThemeProvider>
     );

@@ -146,3 +146,7 @@ if (!Array.prototype.last) {
 export const sleep = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 };
+
+export const formatSiteName = (originSiteName: string) => {
+    return originSiteName.toLowerCase().replace(/[^0-9a-z]/g, '');
+};
