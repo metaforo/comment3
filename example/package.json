@@ -7,14 +7,14 @@
     "develop": "rimraf .parcel-cache && npm run start"
   },
   "dependencies": {
-    "react": "link:../node_modules/react",
-    "react-dom": "link:../node_modules/react-dom"
+    "@dforo3/metaforo-sdk": "0.4.1"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.8.0",
-    "@dforo3/metaforo-sdk": "^0.4.0",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "assert": "^2.0.0",
     "buffer": "^5.7.1",
     "parcel": "^2.8.0",
