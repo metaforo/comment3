@@ -1,6 +1,6 @@
 import {Global} from '../../utils/GlobalVariables';
 import log from '../../utils/LogUtil';
-import {composeProviders} from '../../utils/Util';
+import {composeProviders, formatSiteName} from '../../utils/Util';
 import {SnackBarContextProvider} from '../../utils/SnackBar';
 import {TipWidgetContextProvider} from '../../context/TipWidgetContext';
 import {UserContextProvider} from '../../context/UserContext';
@@ -53,7 +53,7 @@ export default function MfTippingWidget(props: MfTippingWidgetProps) {
         <ThemeProvider theme={createThemeFromAttr(props.theme)}>
             <StateProviders>
                 <TippingWidget
-                    siteName={props.siteName}
+                    siteName={formatSiteName(props.siteName)}
                     pageId={props.pageId}
                     receiver={{
                         address: props.receiverAddress,

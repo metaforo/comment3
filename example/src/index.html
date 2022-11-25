@@ -4,8 +4,8 @@
     <meta charset='utf-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1' />
     <meta name='theme-color' content='#000000' />
-    <meta name='metaforo tipping widget example' />
-    <title>Metaforo Tipping Sample</title>
+    <meta name='metaforo sdk sample' />
+    <title>Metaforo SDK Sample</title>
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css'>
 </head>
 <body>
@@ -61,95 +61,28 @@
 <!-- region Comment -->
 <div id='CommentSample' class='content-tab container'>
     <section class='section'>
+        <h2 class='subtitle'><a href='https://github.com/metaforo/comment3#readme'>Open Homepage</a></h2>
+    </section>
+    <section class='section'>
         <div style='display: flex; justify-content: center'>
             <div class='metaforo-comment' style='width: 700px; overflow: auto;'></div>
         </div>
     </section>
-
-    <section class='section'>
-        <h2 class='subtitle'>Sample Code</h2>
-        <figure>
-        <pre><code>&lt;div class=&quot;metaforo-comment&quot;
-     variant=&quot;card&quot;
-     siteName=&quot;INPUT_SITE_NAME&quot;
-     pageId=&quot;INPUT_PAGE_ID&quot;
-&gt;&lt;/div&gt;</code></pre>
-            <!--                <figcaption>-->
-            <!--                    You can modify the theme attribute in the &lt;div&gt; tag to specify <b><i>light</i></b> or-->
-            <!--                    <b><i>dark</i></b> styles.-->
-            <!--                </figcaption>-->
-        </figure>
-    </section>
-
 </div>
 <!-- endregion Comment -->
 
 <!-- region Tipping -->
 <div id='TippingSample' class='content-tab container' style='display:none'>
     <!-- region Tipping -->
-
-    <script>
-        function changeDarkMode() {
-            let darkMode = document.getElementById('darkMode').checked;
-            if (darkMode) {
-                document.getElementById('tip-button').setAttribute('theme', 'dark');
-            } else {
-                document.getElementById('tip-button').setAttribute('theme', 'light');
-            }
-        }
-    </script>
-
+    <section class='section'>
+        <h2 class='subtitle'><a href='https://github.com/metaforo/comment3#readme'>Open Homepage</a></h2>
+    </section>
     <section class='section'>
         <div class='metaforo-tip button'
              style='width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none'>
             Metaforo Tipping
         </div>
     </section>
-
-    <section class='section'>
-        <h2 class='subtitle'>Sample Code</h2>
-        <figure>
-        <pre><code>&lt;script defer=&quot;defer&quot; src=&quot;https://cdn.jsdelivr.net/gh/metaforo/comment3/dist/metaforo-sdk.min.js&quot;&gt;&lt;/script&gt;
-
-&lt;div class=&quot;metaforo-tip&quot;
-     style=&quot;width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none&quot;
-     siteName=&quot;INPUT_SITE_NAME&quot;
-     pageId=&quot;INPUT_PAGE_ID&quot;
-     receiverAddress=&quot;INPUT_ADDRESS&quot;
-     receiverUsername=&quot;INPUT_USERNAME&quot;
-     receiverChainId=&quot;1&quot;
-     theme=&quot;dark&quot;&gt;
-    Metaforo Tipping
-&lt;/div&gt;</code></pre>
-            <figcaption>
-                You can modify the theme attribute in the &lt;div&gt; tag to specify <b><i>light</i></b> or
-                <b><i>dark</i></b> styles.
-            </figcaption>
-        </figure>
-    </section>
-
-    <section class='section'>
-        <h2 class='subtitle'>Custom Style</h2>
-        <figure>
-            <figcaption>
-                We use mui as the component library. If you need to customize the style of the popup box, you can
-                define a
-                variable in the window with the value of mui's theme definition in mfTheme. For the full definition
-                format,
-                please refer to <a href='https://mui.com/material-ui/customization/default-theme/'>this document</a>.
-            </figcaption>
-            <pre><code>&lt;script&gt;
-    window.mfTheme = {
-        palette: {
-            background: {
-                paper: &#39;#232323&#39;,
-            }
-        }
-    }
-&lt;/script&gt;</code></pre>
-        </figure>
-    </section>
-
     <!-- endregion Tipping -->
 </div>
 <!-- endregion Tipping -->

@@ -1,6 +1,27 @@
 # Metaforo SDK
 
-Metaforo sdk is a widget for tipping specified wallet addresses. Currently supports :
+Metaforo SDK contains following components:
+
+- Tipping Widget
+- Comment Widget
+
+## Demo
+
+[DEMO](https://demo.metaforo.io/tipping/)
+
+## How to install
+
+### yarn
+
+`yarn add @dforo3/metaforo-sdk`
+
+### npm
+
+`npm install @dforo3/metaforo-sdk`
+
+## Tipping Widget
+
+Metaforo Tipping Widget is a widget for tipping to specified wallet addresses. Currently supports :
 
 - ArConnect
 - Metamask
@@ -8,30 +29,31 @@ Metaforo sdk is a widget for tipping specified wallet addresses. Currently suppo
 
 Based on Everpay
 
-[DEMO](https://demo.metaforo.io/tipping/)
-
-## Sample Code
+## Usage
 
 ```html
-<script defer="defer" src="https://cdn.jsdelivr.net/gh/metaforo/comment3/dist/metaforo-sdk.min.js"></script>
 
-<div class="metaforo-tip"
-     style="width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none"
-     siteName="INPUT_SITE_NAME"
-     pageId="INPUT_PAGE_ID"
-     receiverAddress="INPUT_ADDRESS"
-     receiverUsername="INPUT_USERNAME"
-     receiverChainId="1"
-     theme="light">
-    Metaforo Tipping
-</div>
+<MfTippingWidget
+    siteName='INPUT_SITE_NAME'
+    pageId='INPUT_PAGE_ID'
+    receiverAddress='INPUT_WALLET_ADDRESS'
+    receiverUsername='INPUT_USERNAME'
+    receiverChainId='{1}'
+    theme='light'
+/>
 ```
 
-You can modify the theme attribute in the `<div>` tag to specify **light** or **dark** styles.
+You can modify the theme attribute to specify **light** or **dark** styles.
+
+## Comment Widget
+
+Metaforo Comment Widget provides a comment box for the website, allowing users to send and view comments after logging in via their wallet.
+
+The comment data will be stored in Metaforo's Group. Site owners can manage their comments via metaforo.
 
 ## Custom Style
 
-We use mui as the component library. If you need to customize the style of the popup box, you can define a variable in
+We use mui as the component library. If you need to customize the style of the widget, you can define a variable in
 the window with the value of mui's theme definition in mfTheme. For the full definition format, please refer
 to [this document](https://mui.com/material-ui/customization/default-theme/).
 
@@ -39,9 +61,16 @@ to [this document](https://mui.com/material-ui/customization/default-theme/).
 <script>
 window.mfTheme = {
     palette: {
+        primary: {
+            main: '#702AF1',
+        },
         background: {
-            paper: '#232323',
-        }
+            paper: '#ffffff',
+        },
+        text: {
+            primary: '#222222',
+        secondary: '#71717A',
+        },
     }
 }
 </script>
