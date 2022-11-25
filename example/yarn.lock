@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@dforo3/metaforo-sdk@^0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@dforo3/metaforo-sdk/-/metaforo-sdk-0.3.5.tgz#a3931592f2d3a09b55f64325c99e4bb801b378a1"
-  integrity sha512-Fvb6vDqjPZBs70MLujHxkN38f4jbTB6XrbZt94MWPYsdIT87QGJrPLVrnYA740ZRf+DJpzbd2NkEqr0cbdjm+g==
+"@dforo3/metaforo-sdk@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@dforo3/metaforo-sdk/-/metaforo-sdk-0.4.0.tgz#23c85b1bd6f2fa5af11d8ebe546ce7399d3a57dc"
+  integrity sha512-ur+bDcdcP8UFo3vDISoONvXu/g3jLBkDuPf4rdcQLJVDL7CuZTWmLtuPcq36TdD6namJOLXHwzEYhUoVfib8Rw==
 
 "@jridgewell/gen-mapping@^0.3.0":
   version "0.3.2"

@@ -53,8 +53,11 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
     return (
         <ThemeProvider theme={createThemeFromAttr(props.theme)}>
             <StateProviders>
-                <CommentWidget siteName={formatSiteName(props.siteName)} pageId={props.pageId}
-                               variant={props.variant ?? 'card'} />
+                <CommentWidget
+                    siteName={formatSiteName(props.siteName)}
+                    pageId={props.pageId}
+                    variant={props.variant ?? 'card'}
+                />
             </StateProviders>
         </ThemeProvider>
     );
