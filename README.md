@@ -28,13 +28,13 @@ Based on Everpay
 ## Usage
 
 ```html
-
+import {MfTippingWidget} from '@dforo3/metaforo-sdk';
 <MfTippingWidget
     siteName='INPUT_SITE_NAME'
     pageId='INPUT_PAGE_ID'
     receiverAddress='INPUT_WALLET_ADDRESS'
     receiverUsername='INPUT_USERNAME'
-    receiverChainId='{1}'
+    receiverChainId={1}
     theme='light'
 />
 ```
@@ -50,6 +50,7 @@ The comment data will be stored in Metaforo's Group. Site owners can manage thei
 ## Usage
 
 ```html
+import {MfCommentWidget} from '@dforo3/metaforo-sdk';
 <MfCommentWidget
     siteName={'CommentWidgetDemo'}
     pageId={'DemoThread1'}
