@@ -5,10 +5,6 @@ Metaforo SDK contains following components:
 - Tipping Widget
 - Comment Widget
 
-## Demo
-
-[DEMO](https://demo.metaforo.io/tipping/)
-
 ## How to install
 
 ### yarn
@@ -51,6 +47,18 @@ Metaforo Comment Widget provides a comment box for the website, allowing users t
 
 The comment data will be stored in Metaforo's Group. Site owners can manage their comments via metaforo.
 
+## Usage
+
+```html
+<MfCommentWidget
+    siteName={'CommentWidgetDemo'}
+    pageId={'DemoThread1'}
+    theme={'light'}
+/>
+```
+
+You can modify the theme attribute to specify **light** or **dark** styles.
+
 ## Custom Style
 
 We use mui as the component library. If you need to customize the style of the widget, you can define a variable in
@@ -69,7 +77,7 @@ window.mfTheme = {
         },
         text: {
             primary: '#222222',
-        secondary: '#71717A',
+            secondary: '#71717A',
         },
     }
 }
