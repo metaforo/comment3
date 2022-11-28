@@ -1,6 +1,6 @@
 {
   "name": "@dforo3/metaforo-sdk",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Metaforo",
   "license": "ISC",
   "homepage": "https://github.com/metaforo/comment3#readme",
@@ -56,15 +56,15 @@
     "copyfiles": "^2.4.1",
     "customize-cra": "^1.0.0",
     "lodash": "^4.17.21",
-    "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "process": "^0.11.10",
     "react-scripts": "5.0.1",
     "rimraf": "^3.0.2",
     "sass": "^1.56.1"
   },
   "scripts": {
-    "build": "yarn clean && yarn build:esm && yarn build:cjs && yarn copy-files",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "clean": "rimraf dist/",

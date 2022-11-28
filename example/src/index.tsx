@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import {MfCommentWidget, MfTippingWidget} from '../../src';
 import {MfCommentWidget, MfTippingWidget} from '@dforo3/metaforo-sdk';
 
 // region ---- Tipping ----

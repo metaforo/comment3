@@ -52,9 +52,9 @@ The comment data will be stored in Metaforo's Group. Site owners can manage thei
 ```html
 import {MfCommentWidget} from '@dforo3/metaforo-sdk';
 <MfCommentWidget
-    siteName={'CommentWidgetDemo'}
-    pageId={'DemoThread1'}
-    theme={'light'}
+    siteName='INPUT_SITE_NAME'
+    pageId='INPUT_PAGE_ID'
+    theme='light'
 />
 ```
 
