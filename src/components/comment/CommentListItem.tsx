@@ -3,14 +3,13 @@ import {Thread} from '../../model/Thread';
 import {Avatar, IconButton, List, ListItem} from '@mui/material';
 import {serverDateToString} from '../../utils/Util';
 import QuillViewer from './QuillViewer';
-import ReplyIcon from '../../assets/reply.svg';
-import LikeIcon from '../../assets/like.svg';
 import React from 'react';
 import CreateCommentWidget from './CreateCommentWidget';
 import {LoadingButton} from '@mui/lab';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SvgIcon from '../common/SvgIcon';
 import {Theme} from '@mui/material/styles/createTheme';
+import {likeIcon, replyIcon} from '../../assets/SvgAssets';
 
 type CommentListItemProps = {
     thread: Thread;
@@ -119,11 +118,11 @@ export default function CommentListItem(props: CommentListItemProps) {
                             props.onShowReplyClick(props.openingReply === post.id ? undefined : post);
                         }}
                     >
-                        <SvgIcon src={ReplyIcon} size={14} color={theme.palette.text.secondary} />
+                        <SvgIcon data={replyIcon({size: 14, color: theme.palette.text.secondary})} />
                     </IconButton>
-                    <IconButton sx={{display: 'none'}}>
-                        <SvgIcon src={LikeIcon} size={14} color={theme.palette.text.secondary} />
-                    </IconButton>
+                    {/*<IconButton sx={{display: 'none'}}>*/}
+                    {/*    <SvgIcon data={likeIcon({size: 14, color: theme.palette.text.secondary})} />*/}
+                    {/*</IconButton>*/}
                 </div>
                 {props.openingReply === post.id && (
                     <div className={'mf-reply-comment'}>
