@@ -270,6 +270,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                                     </div>
                                 )}
                                 MenuProps={{
+                                    className: 'mf-main',
                                     PaperProps: {
                                         style: {
                                             maxHeight: 520,
