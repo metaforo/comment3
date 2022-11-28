@@ -1,3 +1,26 @@
+.mf-main {
+  box-sizing: border-box;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  // Strong is using in quill editor. Some css file will set strong to a specific color, but it should
+  // use text color.
+  strong {
+    color: unset;
+  }
+
+  *, ::after, ::before {
+    box-sizing: inherit
+  }
+
+  .MuiDialog-container .MuiPaper-root {
+    overflow-y: hidden;
+  }
+}
+
 .mf-dialog-circle-div {
   display: flex;
   text-align: center;
@@ -182,10 +205,6 @@
   border-right: 1px solid #4A4A53;
 }
 
-.mf-main .MuiDialog-container .MuiPaper-root {
-  overflow-y: hidden;
-}
-
 .mf-comment-list {
   .MuiListItem-root {
     padding: 0;
@@ -251,9 +270,4 @@
   border-radius: 12px;
   padding: 0 16px;
   align-items: center;
-}
-
-// bulma.css override the strong color, need unset it so it can use color in ThemeUtil
-strong {
-  color: unset;
 }

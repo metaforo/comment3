@@ -8,7 +8,6 @@ import {ThemeProvider} from '@mui/material';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
 import React from 'react';
 import TippingWidget from './TippingWidget';
-import '../../css/bulma.css';
 
 type MfTippingWidgetProps = {
     siteName: string;
