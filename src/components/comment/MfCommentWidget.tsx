@@ -10,8 +10,6 @@ import React from 'react';
 import CommentWidget from './CommentWidget';
 import {initQuill} from '../../utils/QuillUtil';
 import '../../css/quill.css';
-import '../../utils/GlobalImport';
-import '../../css/common.css';
 
 type MfCommentWidgetProps = {
     siteName: string;

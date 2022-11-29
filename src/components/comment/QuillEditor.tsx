@@ -1,5 +1,5 @@
 import ReactQuill, {UnprivilegedEditor, Value} from 'react-quill';
-import '../../css/quill.scss';
+import '../../css/quill.css';
 import '../../css/quill.snow.css';
 import {DeltaStatic, Sources} from 'quill';
 import {quillModules} from '../../utils/QuillUtil';
