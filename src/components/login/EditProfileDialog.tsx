@@ -179,7 +179,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
     );
     return (
         <>
-            <Dialog onClose={handleClose} open={open} className={'mf-main'} maxWidth={'sm'} fullWidth={true}>
+            <Dialog onClose={handleClose} open={open} maxWidth={'sm'} fullWidth={true}>
                 <CloseableDialogTitle onClose={handleClose}>{<p>Complete Your Profile</p>}</CloseableDialogTitle>
                 {content}
                 <LoadingWidget loading={loading} />

@@ -6,10 +6,12 @@
   "scripts": {
     "start": "parcel -p 57831",
     "develop": "npm run clean && npm run start",
-    "clean": "rimraf .parcel-cache && rimraf dist"
+    "clean": "rimraf .parcel-cache && rimraf dist",
+    "package": "npm run clean && parcel build --dist-dir public && npm run package:after",
+    "package:after": "cp public/*.js ../dist/metaforo-sdk.min.js && cp public/*.css ../dist/metaforo-sdk.min.css && rimraf public"
   },
   "dependencies": {
-    "@dforo3/metaforo-sdk": "0.4.2"
+    "@dforo3/metaforo-sdk": "0.4.3"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.8.0",

@@ -7,6 +7,7 @@
     <meta name='metaforo sdk sample' />
     <title>Metaforo SDK Sample</title>
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css'>
+    <script type='module' src='index.tsx'></script>
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -65,13 +66,11 @@
     </section>
     <section class='section'>
         <div style='display: flex; justify-content: center'>
-            <div class='metaforo-comment' style='width: 700px; overflow: auto;'></div>
-        </div>
-    </section>
-    <section class='section'>
-        <div class='metaforo-tip button'
-             style='width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none'>
-            Metaforo Tipping
+            <div class='metaforo-comment' style='width: 700px; overflow: auto;'
+                 siteName='CommentWidgetDemo'
+                 pageId='DemoThread1'
+                 theme='light'
+            ></div>
         </div>
     </section>
 </div>
@@ -84,16 +83,21 @@
         <h2 class='subtitle'><a href='https://github.com/metaforo/comment3#readme'>Open Homepage</a></h2>
     </section>
     <section class='section'>
-        <div class='metaforo-tip button'
-             style='width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none'>
+        <div class='metaforo-tipping button'
+             style='width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none'
+             siteName='CommentWidgetDemo'
+             pageId='DemoThread1'
+             receiverAddress='%INPUT_YOUR_ADDRESS%'
+             receiverUsername='%INPUT_YOUR_USERNAME%'
+             receiverChainId='1'
+             theme='light'
+        >
             Metaforo Tipping
         </div>
     </section>
     <!-- endregion Tipping -->
 </div>
 <!-- endregion Tipping -->
-
-<script type='module' src='index.tsx'></script>
 
 </body>
 </html>

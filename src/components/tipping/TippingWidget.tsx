@@ -55,9 +55,9 @@ export default function TippingWidget(props: TipWidgetProps) {
     }
 
     return (
-        <>
+        <div className={'mf-main'}>
             <EverpayDialog open={isOpenTippingDialog} closeDialog={() => setIsOpenTippingDialog(false)} />
             <LoginDialog open={isOpenLoginDialog} closeDialog={() => setIsOpenLoginDialog(false)} />
-        </>
+        </div>
     );
 }

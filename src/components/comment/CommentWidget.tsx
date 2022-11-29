@@ -324,7 +324,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
     };
 
     const widget = (
-        <>
+        <div className={'mf-main'}>
             <HeaderWidget thread={thread} />
             {rootReplyWidget()}
             {showFullLoading ? (
@@ -349,7 +349,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                     setShowUpdateProfileDialog(false);
                 }}
             />
-        </>
+        </div>
     );
 
     return WidgetContainer(widget, isInitializing, props.variant);
