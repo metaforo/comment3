@@ -2,28 +2,46 @@
   "name": "metaforo-sdk-example",
   "version": "0.1.0",
   "private": true,
-  "source": "src/index.html",
-  "scripts": {
-    "start": "parcel -p 57831",
-    "develop": "npm run clean && npm run start",
-    "clean": "rimraf .parcel-cache && rimraf dist",
-    "package": "npm run clean && parcel build --dist-dir public && npm run package:after",
-    "package:after": "cp public/*.js ../dist/metaforo-sdk.min.js && cp public/*.css ../dist/metaforo-sdk.min.css && rimraf public"
-  },
   "dependencies": {
-    "@dforo3/metaforo-sdk": "0.4.3"
+    "@dforo3/metaforo-sdk": "0.4.5"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "2.8.0",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "@types/node": "^16.18.3",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "assert": "^2.0.0",
-    "buffer": "^5.7.1",
-    "parcel": "^2.8.0",
-    "process": "^0.11.10",
-    "punycode": "^1.4.1",
-    "string_decoder": "^1.3.0"
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.3",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "GENERATE_SOURCEMAP=false react-app-rewired start",
+    "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
+    "publish": "PUBLIC_URL=/ GENERATE_SOURCEMAP=false react-app-rewired build && cp build/static/js/main.*.js ../dist/metaforo-sdk.min.js && cp build/static/css/main.*.css ../dist/metaforo-sdk.min.css"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <meta name='theme-color' content='#000000' />
+  <meta name='metaforo sdk sample' />
+  <title>Metaforo SDK Sample</title>
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css'>
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+
+<style>
+  .hero.is-primary {
+    background-color: #702AF1;
+  }
+
+  .hero.is-primary .tabs li.is-active a {
+    color: #702AF1 !important;
+  }
+</style>
+
+<script>
+  function openTab(evt, tabName) {
+    let i, x, tabLinks;
+    x = document.getElementsByClassName('content-tab');
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = 'none';
+    }
+    tabLinks = document.getElementsByClassName('tab');
+    for (i = 0; i < x.length; i++) {
+      tabLinks[i].className = tabLinks[i].className.replace(' is-active', '');
+    }
+    document.getElementById(tabName).style.display = 'block';
+    evt.currentTarget.className += ' is-active';
+  }
+</script>
+
+<section class='hero is-primary'>
+  <div class='hero-body'>
+    <div class='container has-text-centered'>
+      <h1 class='title'>
+        Metaforo SDK Sample
+      </h1>
+    </div>
+  </div>
+
+  <div class='hero-foot'>
+    <nav class='tabs is-boxed is-fullwidth is-large'>
+      <div class='container'>
+        <ul>
+          <li class='tab' onclick="openTab(event,'TippingSample')"><a>Tipping Sample</a></li>
+          <li class='tab is-active' onclick="openTab(event,'CommentSample')"><a>Comment Sample</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<!-- region Comment -->
+<div id='CommentSample' class='content-tab container'>
+  <section class='section'>
+    <h2 class='subtitle'><a href='https://github.com/metaforo/comment3#readme'>Open Homepage</a></h2>
+  </section>
+  <section class='section'>
+    <div style='display: flex; justify-content: center'>
+      <div class='metaforo-comment' style='width: 700px; overflow: auto;'
+           siteName='CommentWidgetDemo'
+           pageId='DemoThread1'
+           theme='light'
+      ></div>
+    </div>
+  </section>
+</div>
+<!-- endregion Comment -->
+
+<!-- region Tipping -->
+<div id='TippingSample' class='content-tab container' style='display:none'>
+  <!-- region Tipping -->
+  <section class='section'>
+    <h2 class='subtitle'><a href='https://github.com/metaforo/comment3#readme'>Open Homepage</a></h2>
+  </section>
+  <section class='section'>
+    <div class='metaforo-tipping button'
+         style='width: 200px; height: 50px; background-color: #5200ff; color: #FFFFFF; text-align: center; user-select: none'
+         siteName='CommentWidgetDemo'
+         pageId='DemoThread1'
+         receiverAddress='%INPUT_YOUR_ADDRESS%'
+         receiverUsername='%INPUT_YOUR_USERNAME%'
+         receiverChainId='1'
+         theme='light'
+    >
+      Metaforo Tipping
+    </div>
+  </section>
+  <!-- endregion Tipping -->
+</div>
+<!-- endregion Tipping -->
+
+</body>
+</html>
