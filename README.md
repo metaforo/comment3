@@ -84,3 +84,11 @@ window.mfTheme = {
 }
 </script>
 ```
+
+# Known issues
+
+## Web3 and Create-react-app
+
+If you are using create-react-app version >=5 you may run into issues building. This is because NodeJS polyfills are not included in the latest version of create-react-app.
+
+You can follow this topic to solve this issue : [Web3.js - Web3 and Create-react-app](https://github.com/web3/web3.js#web3-and-create-react-app)

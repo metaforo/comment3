@@ -9,7 +9,7 @@ import {LoadingButton} from '@mui/lab';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SvgIcon from '../common/SvgIcon';
 import {Theme} from '@mui/material/styles/createTheme';
-import {likeIcon, replyIcon} from '../../assets/SvgAssets';
+import {replyIcon} from '../../assets/SvgAssets';
 
 type CommentListItemProps = {
     thread: Thread;

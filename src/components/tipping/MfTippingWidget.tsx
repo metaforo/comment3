@@ -8,6 +8,9 @@ import {ThemeProvider} from '@mui/material';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
 import React from 'react';
 import TippingWidget from './TippingWidget';
+import '../../css/quill.css';
+import '../../utils/GlobalImport';
+import '../../css/common.css';
 
 type MfTippingWidgetProps = {
     siteName: string;

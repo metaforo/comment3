@@ -8,10 +8,10 @@ import {ThemeProvider} from '@mui/material';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
 import React from 'react';
 import CommentWidget from './CommentWidget';
-import '../../css/quill.scss';
-import '../../utils/GlobalImport';
-import '../../css/common.scss';
 import {initQuill} from '../../utils/QuillUtil';
+import '../../css/quill.css';
+import '../../utils/GlobalImport';
+import '../../css/common.css';
 
 type MfCommentWidgetProps = {
     siteName: string;

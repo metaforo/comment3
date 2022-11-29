@@ -1,6 +1,6 @@
 {
   "name": "@dforo3/metaforo-sdk",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Metaforo",
   "license": "ISC",
   "homepage": "https://github.com/metaforo/comment3#readme",
@@ -67,8 +67,8 @@
     "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "clean": "rimraf dist/",
-    "copy-files": "copyfiles -u 1 src/**/*.scss src/**/*.css src/**/*.svg dist/cjs && copyfiles -u 1 src/**/*.scss src/**/*.css src/**/*.svg dist/esm",
+    "clean": "rimraf dist/tsc && rimraf dist/esm",
+    "copy-files": "copyfiles -u 1 src/**/*.css dist/cjs && copyfiles -u 1 src/**/*.css dist/esm",
     "prettier": "prettier --write \"{src,tests,example/src}/**/*.{js,ts,jsx,tsx}\"",
     "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
     "prepare": "npm run build",
