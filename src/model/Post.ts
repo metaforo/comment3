@@ -12,6 +12,7 @@ export type Post = {
         id: number;
         username: string;
         photoUrl: string;
+        displayName?: string;
         ensName?: string;
         web3PublicKeys?: UserPublicKey[];
     };

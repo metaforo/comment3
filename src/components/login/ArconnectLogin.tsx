@@ -1,4 +1,5 @@
-import {loginToAr} from '../../api/ApiService';
+import {loginByWallet, LoginParam} from '../../api/ApiService';
+import {Global} from '../../utils/GlobalVariables';
 
 export async function connectToAr() {
     // @ts-ignore
@@ -17,5 +18,17 @@ export async function connectToAr() {
             return JSON.stringify(Object.values(res));
         });
 
-    return await loginToAr(account, publicKey, signResult, signMsg);
+    let displayName;
+    if (Global.preferDisplayName && Global.preferDisplayName != '') {
+        displayName = Global.preferDisplayName;
+    }
+    return await loginByWallet({
+        web3_public_key: account,
+        web3_address: publicKey,
+        sign: signResult,
+        signMsg: signMsg,
+        wallet_type: 3,
+        display_name: displayName,
+        group_name: displayName ? Global.siteName : undefined,
+    } as LoginParam);
 }

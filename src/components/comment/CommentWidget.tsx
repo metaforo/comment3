@@ -438,22 +438,21 @@ async function loadEnsNameForPostList(postList: Post[], resolvedMap: any) {
     }
     await Promise.all(futureList);
 
-    // step 3: assign ensName for post.
-    postList.forEach((post: Post) => {
-        if (post.children && post.children.posts) {
-            post.children.posts.forEach((subPost) => {
-                if (resolvedMap[subPost.user.id]) {
-                    subPost.user.ensName = resolvedMap[subPost.user.id];
-                }
-            });
-        }
-
+    const setEnsName = (post: Post) => {
         if (resolvedMap[post.user.id]) {
             if (resolvedMap[post.user.id].includes('...') && !post.user.username.startsWith('w_sso')) {
                 // No ens but has normal username, do nothing.
             } else {
                 post.user.ensName = resolvedMap[post.user.id];
             }
+        }
+    };
+
+    // step 3: assign ensName for post.
+    postList.forEach((post: Post) => {
+        setEnsName(post);
+        if (post.children && post.children.posts) {
+            post.children.posts.forEach(setEnsName);
         }
     });
 }

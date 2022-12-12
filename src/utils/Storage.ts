@@ -3,6 +3,7 @@ const prefix = 'mf-';
 export class Storage {
     static readonly userToken = prefix + 'user-token';
     static readonly userName = prefix + 'username';
+    static readonly displayName = prefix + 'display-name';
     static readonly userAvatar = prefix + 'avatar';
     static readonly userEthAddress = prefix + 'eth-address';
     static readonly userArAddress = prefix + 'ar-address';

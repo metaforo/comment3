@@ -41,12 +41,20 @@ function showCommentList(
     element: HTMLElement,
     siteName: string,
     pageId: string,
+    displayName?: string,
     theme?: string,
     debug?: boolean,
     demo?: boolean,
 ) {
     ReactDOM.createRoot(element).render(
-        <MfCommentWidget siteName={siteName} pageId={pageId} theme={theme} debug={debug} demo={demo} />,
+        <MfCommentWidget
+            siteName={siteName}
+            pageId={pageId}
+            theme={theme}
+            debug={debug}
+            demo={demo}
+            displayName={displayName}
+        />,
     );
 }
 
@@ -116,6 +124,7 @@ function initMfCommentWidget() {
                 element,
                 attrs.getNamedItem('siteName')!.value,
                 attrs.getNamedItem('pageId')!.value,
+                attrs.getNamedItem('displayName')?.value ?? undefined,
                 attrs.getNamedItem('theme')?.value ?? undefined,
                 attrs.getNamedItem('debug')?.value === 'true',
                 attrs.getNamedItem('demo')?.value === 'true',
