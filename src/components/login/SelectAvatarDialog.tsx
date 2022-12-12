@@ -8,7 +8,7 @@ import {loadNftAvatar} from '../../api/ApiService';
 type SelectAvatarDialogProp = {
     open: boolean;
     currentAvatarUrl: string;
-    onClose: (value: string) => void;
+    onClose: (avatarUrl: string, isNft: boolean) => void;
 };
 
 type UserAvatar = {
@@ -164,7 +164,7 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
                 className={'mf-contained-button'}
                 disabled={selectedAvatar == null}
                 onClick={() => {
-                    props.onClose(selectedAvatar?.url ?? '');
+                    props.onClose(selectedAvatar?.url ?? '', selectedAvatar.isNft);
                 }}
                 sx={{
                     width: '120px',
@@ -179,7 +179,7 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
     );
     return (
         <Dialog open={props.open} className={'mf-main'} maxWidth={'sm'} fullWidth={true}>
-            <CloseableDialogTitle onClose={() => props.onClose('')}>{<p>Select Your Avatar</p>}</CloseableDialogTitle>
+            <CloseableDialogTitle onClose={() => props.onClose('', false)}>{<p>Select Your Avatar</p>}</CloseableDialogTitle>
             <LoadingWidget loading={loading} />
             {content}
         </Dialog>
