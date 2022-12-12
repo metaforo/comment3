@@ -83,6 +83,15 @@ export default function CommentListItem(props: CommentListItemProps) {
             );
         }
     }
+    const getUsername = (post: Post) => {
+        if (post.user.displayName) {
+            return post.user.displayName;
+        } else if (post.user.ensName) {
+            return post.user.ensName;
+        } else {
+            return post.user.username;
+        }
+    };
     return (
         <ListItem key={post.id} alignItems='flex-start' className={clsName} disablePadding={true}>
             <Avatar src={post.user.photoUrl} />
@@ -100,7 +109,7 @@ export default function CommentListItem(props: CommentListItemProps) {
                         marginBottom: '8px',
                     }}
                 >
-                    <div className={'mf-username'}>{post.user.ensName ? post.user.ensName : post.user.username}</div>
+                    <div className={'mf-username'}>{getUsername(post)}</div>
                     <div
                         className={'mf-datetime'}
                         style={{

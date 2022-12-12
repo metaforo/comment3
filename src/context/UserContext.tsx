@@ -3,10 +3,12 @@ import {UserStatus} from '../utils/Constants';
 import {Storage} from '../utils/Storage';
 import {initApiService} from '../api/ApiService';
 import {removeEverpayInstance} from '../components/tipping/Everpay';
+import {Global} from '../utils/GlobalVariables';
 
 export interface UserInfoState {
     loginStatus: number;
     username?: string;
+    displayName?: string;
     avatar?: string;
     ethAddress?: string;
     arAddress?: string;
@@ -17,6 +19,7 @@ function initialUserState() {
     return {
         loginStatus: UserStatus.isChecking,
         username: undefined,
+        displayName: undefined,
         avatar: undefined,
         ethAddress: undefined,
         arAddress: undefined,
@@ -35,6 +38,7 @@ export function useUserContext() {
 
 export function updateUserStatusByLocalStorage(userInfoState: UserInfoState, dispatch: Dispatch<UserInfoState>) {
     userInfoState.username = Storage.getItem(Storage.userName) ?? '';
+    userInfoState.displayName = Storage.getItem(Storage.displayName) ?? '';
     userInfoState.avatar = Storage.getItem(Storage.userAvatar) ?? '';
     userInfoState.ethAddress = Storage.getItem(Storage.userEthAddress) ?? '';
     userInfoState.arAddress = Storage.getItem(Storage.userArAddress) ?? '';
@@ -58,9 +62,17 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
         }
     });
 
+    let displayName;
+    res.display_names.forEach((dn: any) => {
+        if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
+            displayName = dn.display_name;
+        }
+    });
+
     const user = {
         loginStatus: UserStatus.login,
         username: res.username,
+        displayName: displayName,
         avatar: res.photo_url,
         ethAddress: ethAddress,
         arAddress: arAddress,
@@ -75,6 +87,7 @@ export const logout = (setUserState: Dispatch<UserInfoState>) => {
     setUserState({
         loginStatus: UserStatus.notLogin,
         username: undefined,
+        displayName: undefined,
         avatar: undefined,
         ethAddress: undefined,
         arAddress: undefined,

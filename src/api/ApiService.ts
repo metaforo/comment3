@@ -4,6 +4,7 @@ import {Storage} from '../utils/Storage';
 import {TipWidgetState} from '../context/TipWidgetContext';
 import {camelCase} from 'lodash';
 import {convertJsonKey} from '../utils/Util';
+import {Global} from '../utils/GlobalVariables';
 
 export const apiHost = 'https://metaforo.io/api';
 
@@ -116,28 +117,20 @@ export function submitPost(groupName: string, thread: string, content: any, repl
 
 // region ---- User ----
 
-export function loginToEth(account: string, sign: string, signMsg: string) {
-    return post('/wallet/sso', {
-        web3_public_key: account,
-        wallet_type: 5,
-        sign: sign,
-        signMsg: signMsg,
-    }).then((res) => {
-        if (res.data && res.data.user) {
-            saveUserInfoToStorage(res.data.user);
-        }
-        return res.data;
-    });
-}
+export type LoginParam = {
+    web3_public_key: string;
+    // 3 = ar, 5 = eth (metamask or walletconnect)
+    wallet_type: number;
+    // Only use for arConnect
+    web3_address: string | undefined;
+    sign: string;
+    signMsg: string;
+    group_name: string | undefined;
+    display_name: string | undefined;
+};
 
-export function loginToAr(account: string, publicKey: string, sign: string, signMsg: string) {
-    return post('/wallet/sso', {
-        web3_public_key: account,
-        web3_address: publicKey,
-        wallet_type: 3,
-        sign: sign,
-        signMsg: signMsg,
-    }).then((res) => {
+export function loginByWallet(param: LoginParam) {
+    return post('/wallet/sso', param).then((res) => {
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
         }
@@ -171,9 +164,22 @@ function saveUserInfoToStorage(user: any) {
                 break;
         }
     });
+
+    user.display_names.forEach((dn: any) => {
+        if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
+            Storage.saveItem(Storage.displayName, dn.display_name);
+        }
+    });
 }
 
-export function updateProfile(param: any) {
+export type UpdateProfileParam = {
+    display_name: string | undefined;
+    group_name: string | undefined;
+    photo_url: string | undefined;
+    is_nft: number | undefined;
+};
+
+export function updateProfile(param: UpdateProfileParam) {
     return post('/user/update_info', param).then((res) => {
         if (res.data && res.data.username) {
             saveUserInfoToStorage(res.data);

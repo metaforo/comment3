@@ -47,6 +47,7 @@ export default function MfTippingWidget(props: MfTippingWidgetProps) {
     ) {
         return null;
     }
+    Global.siteName = formatSiteName(props.siteName);
 
     const StateProviders = composeProviders(SnackBarContextProvider, TipWidgetContextProvider, UserContextProvider);
     return (

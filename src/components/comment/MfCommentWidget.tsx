@@ -15,6 +15,9 @@ type MfCommentWidgetProps = {
     siteName: string;
     pageId: string;
 
+    /// current user's display name.
+    displayName?: string;
+
     /// light or dark. default is light.
     theme?: string;
 
@@ -44,6 +47,8 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
     if (!props.siteName || !props.pageId) {
         return null;
     }
+    Global.siteName = formatSiteName(props.siteName);
+    Global.preferDisplayName = props.displayName;
 
     initQuill();
 

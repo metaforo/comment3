@@ -5,10 +5,11 @@ import SelectAvatarDialog from './SelectAvatarDialog';
 import React, {useEffect, useState} from 'react';
 import {useCommentWidgetContext} from '../../context/CommentWidgetContext';
 import {updateUserStatusByLoginResponse, useUserContext} from '../../context/UserContext';
-import {updateProfile} from '../../api/ApiService';
+import {updateProfile, UpdateProfileParam} from '../../api/ApiService';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import styled from '@emotion/styled';
 import {sleep} from '../../utils/Util';
+import {Global} from '../../utils/GlobalVariables';
 
 type EditProfileDialogProps = {
     open: boolean;
@@ -36,7 +37,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
         if (!props.open) {
             // 关闭窗口时,进行一次初始化
             sleep(200).then(() => {
-                setUsername(userInfoState.username!);
+                setUsername(userInfoState.displayName ?? userInfoState.username!);
                 setUserAvatar(userInfoState.avatar!);
 
                 setProfileErr('');
@@ -44,8 +45,8 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
             });
         } else {
             sleep(200).then(() => {
-                if (userInfoState.username && !userInfoState.username.includes('#')) {
-                    setUsername(userInfoState.username!);
+                if (userInfoState.displayName ?? (userInfoState.username && !userInfoState.username.includes('#'))) {
+                    setUsername(userInfoState.displayName ?? userInfoState.username!);
                 } else {
                     setUsername('');
                 }
@@ -63,9 +64,10 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
 
     const startUpdateProfile = () => {
         setLoading(true);
-        const params = {} as any;
-        if (username !== userInfoState.username) {
-            params.username = username;
+        const params = {} as UpdateProfileParam;
+        if (username !== userInfoState.displayName) {
+            params.display_name = username;
+            params.group_name = Global.siteName;
         }
         if (userAvatar !== userInfoState.avatar) {
             params.photo_url = userAvatar;
