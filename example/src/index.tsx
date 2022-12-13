@@ -41,7 +41,8 @@ function showCommentList(
     element: HTMLElement,
     siteName: string,
     pageId: string,
-    displayName?: string,
+    userDisplayName?: string,
+    userAvatar?: string,
     theme?: string,
     debug?: boolean,
     demo?: boolean,
@@ -53,7 +54,8 @@ function showCommentList(
             theme={theme}
             debug={debug}
             demo={demo}
-            displayName={displayName}
+            userDisplayName={userDisplayName}
+            userAvatar={userAvatar}
         />,
     );
 }
@@ -124,7 +126,8 @@ function initMfCommentWidget() {
                 element,
                 attrs.getNamedItem('siteName')!.value,
                 attrs.getNamedItem('pageId')!.value,
-                attrs.getNamedItem('displayName')?.value ?? undefined,
+                attrs.getNamedItem('userDisplayName')?.value ?? undefined,
+                attrs.getNamedItem('userAvatar')?.value ?? undefined,
                 attrs.getNamedItem('theme')?.value ?? undefined,
                 attrs.getNamedItem('debug')?.value === 'true',
                 attrs.getNamedItem('demo')?.value === 'true',

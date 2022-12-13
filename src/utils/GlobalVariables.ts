@@ -6,4 +6,5 @@ export const Global = {
 
     siteName: '',
     preferDisplayName: '',
+    preferDisplayAvatar: '',
 };

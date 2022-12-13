@@ -127,9 +127,20 @@ export type LoginParam = {
     signMsg: string;
     group_name: string | undefined;
     display_name: string | undefined;
+    display_avatar: string | undefined;
 };
 
 export function loginByWallet(param: LoginParam) {
+    if (Global.siteName) {
+        param.group_name = Global.siteName;
+        if (Global.preferDisplayName && Global.preferDisplayName != '') {
+            param.display_name = Global.preferDisplayName;
+        }
+        if (Global.preferDisplayAvatar && Global.preferDisplayAvatar != '') {
+            param.display_avatar = Global.preferDisplayAvatar;
+        }
+    }
+
     return post('/wallet/sso', param).then((res) => {
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
