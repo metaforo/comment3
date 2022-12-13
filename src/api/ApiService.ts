@@ -176,17 +176,19 @@ function saveUserInfoToStorage(user: any) {
         }
     });
 
-    user.display_names.forEach((dn: any) => {
-        if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
-            Storage.saveItem(Storage.displayName, dn.display_name);
-        }
-    });
+    if (user.group_profiles) {
+        user.group_profiles.forEach((dn: any) => {
+            if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
+                Storage.saveItem(Storage.displayName, dn.display_name);
+            }
+        });
+    }
 }
 
 export type UpdateProfileParam = {
     display_name: string | undefined;
     group_name: string | undefined;
-    photo_url: string | undefined;
+    display_avatar: string | undefined;
     is_nft: number | undefined;
 };
 

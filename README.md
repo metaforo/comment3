@@ -55,16 +55,17 @@ import {MfCommentWidget} from '@dforo3/metaforo-sdk';
 <MfCommentWidget
     siteName='INPUT_SITE_NAME'
     pageId='INPUT_PAGE_ID'
-    displayName='INPUT_USERNAME'
+    userDisplayName='INPUT_USERNAME'
+    userAvatar='INPUT_AVATAR_URL'
     theme='light'
 />
 ```
 
-- The sitename field must be applied for, and we will provide you with the corresponding value.
-- The pageId is used to differentiate between different pages. Comments loaded with the same pageId will be the same.
-- The displayName field is optional. It is used to specify the current user's username, but the user can manually change
+- The `siteName` field must be applied for, and we will provide you with the corresponding value.
+- The `pageId` is used to differentiate between different pages. Comments loaded with the same pageId will be the same.
+- The `userDisplayName` and `userAvatar` field is optional. It is used to specify the current user's username or avatar url, but the user can manually change
   this value after logging in.
-- The theme field is optional. You can use it to specify the  **light** or **dark** styles.
+- The `theme` field is optional. You can use it to specify the  **light** or **dark** styles.
 
 ## Custom Style
 

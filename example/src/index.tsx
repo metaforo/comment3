@@ -103,7 +103,7 @@ function initMfCommentWidget() {
                     pageId: attrs.getNamedItem('pageId')!.value,
                     userDisplayName: attrs.getNamedItem('userDisplayName')?.value ?? undefined,
                     userAvatar: attrs.getNamedItem('userAvatar')?.value ?? undefined,
-                    disableEditProfile: attrs.getNamedItem('disableEditProfile')?.value ?? undefined,
+                    disableEditProfile: attrs.getNamedItem('disableEditProfile')?.value  === 'true' ?? undefined,
                     theme: attrs.getNamedItem('theme')?.value ?? undefined,
                     debug: attrs.getNamedItem('debug')?.value === 'true',
                     demo: attrs.getNamedItem('demo')?.value === 'true',

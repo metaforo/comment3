@@ -70,7 +70,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
             params.group_name = Global.siteName;
         }
         if (userAvatar !== userInfoState.avatar) {
-            params.photo_url = userAvatar;
+            params.display_avatar = userAvatar;
             if (isNftAvatar) {
                 params.is_nft = 1;
             }

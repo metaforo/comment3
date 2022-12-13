@@ -425,19 +425,19 @@ async function loadEnsNameForPostList(postList: Post[], resolvedMap: any) {
     const futureList = [];
     for (const userId of Object.keys(addressMap)) {
         if (resolvedMap[userId]) {
-            return;
-        } else {
-            const ensNameFuture = getEns(addressMap[userId]).then((ensName) => {
-                if (ensName) {
-                    resolvedMap[userId] = ensName;
-                } else {
-                    resolvedMap[userId] = `${addressMap[userId].substring(0, 6)}...${addressMap[userId].substring(
-                        addressMap[userId].length - 4,
-                    )}`;
-                }
-            });
-            futureList.push(ensNameFuture);
+            continue;
         }
+
+        const ensNameFuture = getEns(addressMap[userId]).then((ensName) => {
+            if (ensName) {
+                resolvedMap[userId] = ensName;
+            } else {
+                resolvedMap[userId] = `${addressMap[userId].substring(0, 6)}...${addressMap[userId].substring(
+                    addressMap[userId].length - 4,
+                )}`;
+            }
+        });
+        futureList.push(ensNameFuture);
     }
     await Promise.all(futureList);
 
