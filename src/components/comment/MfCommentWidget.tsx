@@ -11,7 +11,7 @@ import CommentWidget from './CommentWidget';
 import {initQuill} from '../../utils/QuillUtil';
 import '../../css/quill.css';
 
-type MfCommentWidgetProps = {
+export type MfCommentWidgetProps = {
     siteName: string;
     pageId: string;
 
