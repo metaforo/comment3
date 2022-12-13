@@ -17,6 +17,7 @@ import {LoadingButton} from '@mui/lab';
 import {addItemToSetState} from '../../utils/Util';
 import {getEns} from '../../utils/EnsService';
 import EditProfileDialog from '../login/EditProfileDialog';
+import {Global} from '../../utils/GlobalVariables';
 
 type CommentWidgetProps = {
     siteName: string;
@@ -90,7 +91,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
     useEffect(() => {
         setOpenReply(ALL_CLOSED);
 
-        if (userInfoState.isNew) {
+        if (userInfoState.isNew && !Global.disableEditProfile) {
             setShowUpdateProfileDialog(true);
         }
     }, [userInfoState]);
@@ -269,7 +270,9 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
     const editProfile = () => {
         if (isLogin) {
-            setShowUpdateProfileDialog(true);
+            if (!Global.disableEditProfile) {
+                setShowUpdateProfileDialog(true);
+            }
         } else {
             setIsOpenLoginDialog(true);
         }

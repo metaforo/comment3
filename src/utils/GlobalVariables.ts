@@ -5,6 +5,8 @@ export const Global = {
     quillDraft: {} as any,
 
     siteName: '',
-    preferDisplayName: '',
-    preferDisplayAvatar: '',
+    preferDisplayName: undefined as string | undefined,
+    preferDisplayAvatar: undefined as string | undefined,
+
+    disableEditProfile: false,
 };

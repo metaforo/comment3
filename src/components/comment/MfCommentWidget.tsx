@@ -21,6 +21,9 @@ type MfCommentWidgetProps = {
     /// current user's avatar.
     userAvatar?: string;
 
+    /// if true, users can not edit their profile by metaforo sdk. (but they still can edit profile in metaforo)
+    disableEditProfile?: boolean;
+
     /// light or dark. default is light.
     theme?: string;
 
@@ -53,6 +56,9 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
     Global.siteName = formatSiteName(props.siteName);
     Global.preferDisplayName = props.userDisplayName;
     Global.preferDisplayAvatar = props.userAvatar;
+    if (props.disableEditProfile) {
+        Global.disableEditProfile = true;
+    }
 
     initQuill();
 
