@@ -1,7 +1,6 @@
 import {loginByWallet, LoginParam} from '../../api/ApiService';
 import {typedData} from '../../utils/Util';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import {Global} from '../../utils/GlobalVariables';
 
 export async function connectToWalletConnectByProvider() {
     const getProvider = () => new WalletConnectProvider({infuraId: '27804223e321460cb5682ca4b676f224'});
@@ -43,16 +42,10 @@ export async function connectToWalletConnectByProvider() {
     if (sign == null) {
         return false;
     }
-    let displayName;
-    if (Global.preferDisplayName && Global.preferDisplayName != '') {
-        displayName = Global.preferDisplayName;
-    }
     return await loginByWallet({
         web3_public_key: account,
         sign: sign,
         signMsg: msg,
         wallet_type: 5,
-        display_name: displayName,
-        group_name: displayName ? Global.siteName : undefined,
     } as LoginParam);
 }

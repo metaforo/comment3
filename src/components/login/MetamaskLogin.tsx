@@ -1,7 +1,6 @@
 import {typedData} from '../../utils/Util';
-import {LoginParam, loginByWallet} from '../../api/ApiService';
+import {loginByWallet, LoginParam} from '../../api/ApiService';
 import log from '../../utils/LogUtil';
-import {Global} from '../../utils/GlobalVariables';
 
 export async function connectToMetamask() {
     // @ts-ignore
@@ -55,16 +54,10 @@ export async function connectToMetamask() {
     if (!sign) {
         return false;
     }
-    let displayName;
-    if (Global.preferDisplayName && Global.preferDisplayName != '') {
-        displayName = Global.preferDisplayName;
-    }
     return await loginByWallet({
         web3_public_key: account,
         sign: sign,
         signMsg: signMsg,
         wallet_type: 5,
-        display_name: displayName,
-        group_name: displayName ? Global.siteName : undefined,
     } as LoginParam);
 }

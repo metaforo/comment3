@@ -127,9 +127,20 @@ export type LoginParam = {
     signMsg: string;
     group_name: string | undefined;
     display_name: string | undefined;
+    display_avatar: string | undefined;
 };
 
 export function loginByWallet(param: LoginParam) {
+    if (Global.siteName) {
+        param.group_name = Global.siteName;
+        if (Global.preferDisplayName && Global.preferDisplayName != '') {
+            param.display_name = Global.preferDisplayName;
+        }
+        if (Global.preferDisplayAvatar && Global.preferDisplayAvatar != '') {
+            param.display_avatar = Global.preferDisplayAvatar;
+        }
+    }
+
     return post('/wallet/sso', param).then((res) => {
         if (res.data && res.data.user) {
             saveUserInfoToStorage(res.data.user);
@@ -165,17 +176,19 @@ function saveUserInfoToStorage(user: any) {
         }
     });
 
-    user.display_names.forEach((dn: any) => {
-        if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
-            Storage.saveItem(Storage.displayName, dn.display_name);
-        }
-    });
+    if (user.group_profiles) {
+        user.group_profiles.forEach((dn: any) => {
+            if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
+                Storage.saveItem(Storage.displayName, dn.display_name);
+            }
+        });
+    }
 }
 
 export type UpdateProfileParam = {
     display_name: string | undefined;
     group_name: string | undefined;
-    photo_url: string | undefined;
+    display_avatar: string | undefined;
     is_nft: number | undefined;
 };
 

@@ -9,7 +9,7 @@ import {createThemeFromAttr} from '../../utils/ThemeUtil';
 import React from 'react';
 import TippingWidget from './TippingWidget';
 
-type MfTippingWidgetProps = {
+export type MfTippingWidgetProps = {
     siteName: string;
     pageId: string;
 

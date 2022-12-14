@@ -62,18 +62,21 @@ export function updateUserStatusByLoginResponse(res: any, dispatch: Dispatch<Use
         }
     });
 
-    let displayName;
-    res.display_names.forEach((dn: any) => {
-        if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
-            displayName = dn.display_name;
-        }
-    });
+    let displayName, displayAvatar;
+    if (res.group_profiles) {
+        res.group_profiles.forEach((dn: any) => {
+            if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
+                displayName = dn.display_name;
+                displayAvatar = dn.display_avatar;
+            }
+        });
+    }
 
     const user = {
         loginStatus: UserStatus.login,
         username: res.username,
         displayName: displayName,
-        avatar: res.photo_url,
+        avatar: displayAvatar ?? res.photo_url,
         ethAddress: ethAddress,
         arAddress: arAddress,
         isNew: isRegister ?? false,

@@ -26,7 +26,7 @@ export default function SvgIcon(props: SvgIconProps) {
         }
         return (
             <ReactSVG
-                src={props.src}
+                src={props.src!}
                 beforeInjection={(svg) => {
                     svg.setAttribute('style', style);
                 }}

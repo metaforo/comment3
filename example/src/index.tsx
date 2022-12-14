@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {MfCommentWidget, MfTippingWidget} from '@dforo3/metaforo-sdk';
+import {MfCommentWidget, MfTippingWidget, MfCommentWidgetProps, MfTippingWidgetProps} from '@dforo3/metaforo-sdk';
 
 // When a single JS is referenced via HTML, the value is used to automatically iterate through
 // the specified tag name of the HTML and generate the corresponding component
@@ -10,51 +10,24 @@ const tippingWidgetClass = 'metaforo-tipping';
 
 /// show tipping dialog
 function showTippingDialog(
-    siteName: string,
-    pageId: string,
-    receiverAddress: string,
-    receiverUsername: string,
-    receiverChainId: number,
-    theme?: string,
-    debug?: boolean,
-    demo?: boolean,
+    element: HTMLElement,
+    props: MfTippingWidgetProps,
 ) {
     let div = document.createElement('div');
     document.body.appendChild(div);
     const root = ReactDOM.createRoot(div);
     root.render(
-        <MfTippingWidget
-            siteName={siteName}
-            pageId={pageId}
-            receiverAddress={receiverAddress}
-            receiverChainId={receiverChainId}
-            receiverUsername={receiverUsername}
-            theme={theme}
-            debug={debug}
-            demo={demo}
-        />,
+        <MfTippingWidget {...props} />,
     );
 }
 
 /// show comment list in specific div element.
 function showCommentList(
     element: HTMLElement,
-    siteName: string,
-    pageId: string,
-    displayName?: string,
-    theme?: string,
-    debug?: boolean,
-    demo?: boolean,
+    props: MfCommentWidgetProps,
 ) {
     ReactDOM.createRoot(element).render(
-        <MfCommentWidget
-            siteName={siteName}
-            pageId={pageId}
-            theme={theme}
-            debug={debug}
-            demo={demo}
-            displayName={displayName}
-        />,
+        <MfCommentWidget {...props} />,
     );
 }
 
@@ -93,14 +66,17 @@ function initMfTippingWidget() {
 
                     const attrs = event.target.attributes;
                     showTippingDialog(
-                        attrs.getNamedItem('siteName')!.value,
-                        attrs.getNamedItem('pageId')!.value,
-                        attrs.getNamedItem('receiverAddress')!.value,
-                        attrs.getNamedItem('receiverUsername')!.value,
-                        parseInt(attrs.getNamedItem('receiverChainId')!.value),
-                        attrs.getNamedItem('theme')?.value ?? undefined,
-                        attrs.getNamedItem('debug')?.value === 'true',
-                        attrs.getNamedItem('demo')?.value === 'true',
+                        element,
+                        {
+                            siteName: attrs.getNamedItem('siteName')!.value,
+                            pageId: attrs.getNamedItem('pageId')!.value,
+                            receiverAddress: attrs.getNamedItem('receiverAddress')!.value,
+                            receiverUsername: attrs.getNamedItem('receiverUsername')!.value,
+                            receiverChainId: parseInt(attrs.getNamedItem('receiverChainId')!.value),
+                            theme: attrs.getNamedItem('theme')?.value ?? undefined,
+                            debug: attrs.getNamedItem('debug')?.value === 'true',
+                            demo: attrs.getNamedItem('demo')?.value === 'true',
+                        } as MfTippingWidgetProps,
                     );
                 }
             });
@@ -122,12 +98,16 @@ function initMfCommentWidget() {
             const attrs = element.attributes;
             showCommentList(
                 element,
-                attrs.getNamedItem('siteName')!.value,
-                attrs.getNamedItem('pageId')!.value,
-                attrs.getNamedItem('displayName')?.value ?? undefined,
-                attrs.getNamedItem('theme')?.value ?? undefined,
-                attrs.getNamedItem('debug')?.value === 'true',
-                attrs.getNamedItem('demo')?.value === 'true',
+                {
+                    siteName: attrs.getNamedItem('siteName')!.value,
+                    pageId: attrs.getNamedItem('pageId')!.value,
+                    userDisplayName: attrs.getNamedItem('userDisplayName')?.value ?? undefined,
+                    userAvatar: attrs.getNamedItem('userAvatar')?.value ?? undefined,
+                    disableEditProfile: attrs.getNamedItem('disableEditProfile')?.value  === 'true' ?? undefined,
+                    theme: attrs.getNamedItem('theme')?.value ?? undefined,
+                    debug: attrs.getNamedItem('debug')?.value === 'true',
+                    demo: attrs.getNamedItem('demo')?.value === 'true',
+                } as MfCommentWidgetProps,
             );
         }
     }
