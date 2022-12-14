@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@dforo3/metaforo-sdk": "0.4.6",
+    "@dforo3/metaforo-sdk": "0.4.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

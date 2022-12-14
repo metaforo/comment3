@@ -9,26 +9,16 @@ const commentWidgetClass = 'metaforo-comment';
 const tippingWidgetClass = 'metaforo-tipping';
 
 /// show tipping dialog
-function showTippingDialog(
-    element: HTMLElement,
-    props: MfTippingWidgetProps,
-) {
+function showTippingDialog(element: HTMLElement, props: MfTippingWidgetProps) {
     let div = document.createElement('div');
     document.body.appendChild(div);
     const root = ReactDOM.createRoot(div);
-    root.render(
-        <MfTippingWidget {...props} />,
-    );
+    root.render(<MfTippingWidget {...props} />);
 }
 
 /// show comment list in specific div element.
-function showCommentList(
-    element: HTMLElement,
-    props: MfCommentWidgetProps,
-) {
-    ReactDOM.createRoot(element).render(
-        <MfCommentWidget {...props} />,
-    );
+function showCommentList(element: HTMLElement, props: MfCommentWidgetProps) {
+    ReactDOM.createRoot(element).render(<MfCommentWidget {...props} />);
 }
 
 // region ---- Auto init from html ----
@@ -65,19 +55,16 @@ function initMfTippingWidget() {
                     }
 
                     const attrs = event.target.attributes;
-                    showTippingDialog(
-                        element,
-                        {
-                            siteName: attrs.getNamedItem('siteName')!.value,
-                            pageId: attrs.getNamedItem('pageId')!.value,
-                            receiverAddress: attrs.getNamedItem('receiverAddress')!.value,
-                            receiverUsername: attrs.getNamedItem('receiverUsername')!.value,
-                            receiverChainId: parseInt(attrs.getNamedItem('receiverChainId')!.value),
-                            theme: attrs.getNamedItem('theme')?.value ?? undefined,
-                            debug: attrs.getNamedItem('debug')?.value === 'true',
-                            demo: attrs.getNamedItem('demo')?.value === 'true',
-                        } as MfTippingWidgetProps,
-                    );
+                    showTippingDialog(element, {
+                        siteName: attrs.getNamedItem('siteName')!.value,
+                        pageId: attrs.getNamedItem('pageId')!.value,
+                        receiverAddress: attrs.getNamedItem('receiverAddress')!.value,
+                        receiverUsername: attrs.getNamedItem('receiverUsername')!.value,
+                        receiverChainId: parseInt(attrs.getNamedItem('receiverChainId')!.value),
+                        theme: attrs.getNamedItem('theme')?.value ?? undefined,
+                        debug: attrs.getNamedItem('debug')?.value === 'true',
+                        demo: attrs.getNamedItem('demo')?.value === 'true',
+                    } as MfTippingWidgetProps);
                 }
             });
         }
@@ -96,19 +83,16 @@ function initMfCommentWidget() {
                 continue;
             }
             const attrs = element.attributes;
-            showCommentList(
-                element,
-                {
-                    siteName: attrs.getNamedItem('siteName')!.value,
-                    pageId: attrs.getNamedItem('pageId')!.value,
-                    userDisplayName: attrs.getNamedItem('userDisplayName')?.value ?? undefined,
-                    userAvatar: attrs.getNamedItem('userAvatar')?.value ?? undefined,
-                    disableEditProfile: attrs.getNamedItem('disableEditProfile')?.value  === 'true' ?? undefined,
-                    theme: attrs.getNamedItem('theme')?.value ?? undefined,
-                    debug: attrs.getNamedItem('debug')?.value === 'true',
-                    demo: attrs.getNamedItem('demo')?.value === 'true',
-                } as MfCommentWidgetProps,
-            );
+            showCommentList(element, {
+                siteName: attrs.getNamedItem('siteName')!.value,
+                pageId: attrs.getNamedItem('pageId')!.value,
+                userDisplayName: attrs.getNamedItem('userDisplayName')?.value ?? undefined,
+                userAvatar: attrs.getNamedItem('userAvatar')?.value ?? undefined,
+                disableEditProfile: attrs.getNamedItem('disableEditProfile')?.value === 'true' ?? undefined,
+                theme: attrs.getNamedItem('theme')?.value ?? undefined,
+                debug: attrs.getNamedItem('debug')?.value === 'true',
+                demo: attrs.getNamedItem('demo')?.value === 'true',
+            } as MfCommentWidgetProps);
         }
     }
 }

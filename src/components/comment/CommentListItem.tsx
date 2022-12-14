@@ -92,7 +92,8 @@ export default function CommentListItem(props: CommentListItemProps) {
             return post.user.username;
         }
     };
-    const getUserAvatar = (post: Post) => post.user.displayAvatar && post.user.displayAvatar != '' ? post.user.displayAvatar : post.user.photoUrl;
+    const getUserAvatar = (post: Post) =>
+        post.user.displayAvatar && post.user.displayAvatar != '' ? post.user.displayAvatar : post.user.photoUrl;
     return (
         <ListItem key={post.id} alignItems='flex-start' className={clsName} disablePadding={true}>
             <Avatar src={getUserAvatar(post)} />
