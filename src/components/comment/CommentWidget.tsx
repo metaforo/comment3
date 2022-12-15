@@ -5,7 +5,14 @@ import React, {Dispatch, useEffect, useState} from 'react';
 import {UserStatus} from '../../utils/Constants';
 import {Storage} from '../../utils/Storage';
 import CreateCommentWidget from './CreateCommentWidget';
-import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from '../../api/ApiService';
+import {
+    initApiService,
+    likePost,
+    loadInnerComment,
+    loadThread,
+    refreshLoginStatus,
+    unlikePost,
+} from '../../api/ApiService';
 import CenterLoadingWidget from '../common/CenterLoadingWIdget';
 import {EMPTY_THREAD, Thread} from '../../model/Thread';
 import {grey} from '@mui/material/colors';
@@ -230,6 +237,26 @@ export default function CommentWidget(props: CommentWidgetProps) {
         }
     }
 
+    function clickLike(post: Post) {
+        if (!isLogin) {
+            setIsOpenLoginDialog(true);
+            return;
+        }
+
+        if (post.liked) {
+            post.likeCount--;
+            post.liked = !post.liked;
+            // noinspection JSIgnoredPromiseFromCall
+            unlikePost(commentWidgetState.siteName, post.id);
+        } else {
+            post.likeCount++;
+            post.liked = !post.liked;
+            // noinspection JSIgnoredPromiseFromCall
+            likePost(commentWidgetState.siteName, post.id);
+        }
+        setPostList([].concat(postList));
+    }
+
     // region ---- Comment List ----
 
     const listItemList = [] as JSX.Element[];
@@ -242,6 +269,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 onReplySuccess: handleReplyPost,
                 openingReply: openReply,
                 onShowReplyClick: clickReply,
+                onLikeClick: clickLike,
                 loadingChildren: showInnerLoading,
                 onLoadingChildrenClick: loadMoreReplies,
                 noMorePostSet: noMorePost,

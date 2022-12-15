@@ -113,6 +113,26 @@ export function submitPost(groupName: string, thread: string, content: any, repl
     });
 }
 
+export function likePost(groupName: string, postId: number) {
+    const url = 'like_post';
+    return post(url, {
+        group_name: groupName,
+        post_id: postId,
+    }).then((res) => {
+        return res;
+    });
+}
+
+export function unlikePost(groupName: string, postId: number) {
+    const url = 'unlike_post';
+    return post(url, {
+        group_name: groupName,
+        post_id: postId,
+    }).then((res) => {
+        return res;
+    });
+}
+
 // endregion ---- Comment ----
 
 // region ---- User ----

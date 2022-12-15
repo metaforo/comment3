@@ -8,16 +8,19 @@ export type Post = {
         posts: Post[];
     };
     childrenCount: number;
-    user: {
-        id: number;
-        username: string;
-        photoUrl: string;
-        displayName?: string;
-        displayAvatar?: string;
-        ensName?: string;
-        web3PublicKeys?: UserPublicKey[];
-    };
+    user: User;
+    liked: boolean; // 0 or 1, if current user is liked.
 };
+
+type User = {
+    id: number;
+    username: string;
+    photoUrl: string;
+    displayName?: string;
+    displayAvatar?: string;
+    ensName?: string;
+    web3PublicKeys?: UserPublicKey[];
+}
 
 type UserPublicKey = {
     userId: number;
