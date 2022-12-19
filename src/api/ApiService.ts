@@ -114,7 +114,7 @@ export function submitPost(groupName: string, thread: string, content: any, repl
 }
 
 export function likePost(groupName: string, postId: number) {
-    const url = 'like_post';
+    const url = '/like_post';
     return post(url, {
         group_name: groupName,
         post_id: postId,
@@ -124,10 +124,30 @@ export function likePost(groupName: string, postId: number) {
 }
 
 export function unlikePost(groupName: string, postId: number) {
-    const url = 'unlike_post';
+    const url = '/unlike_post';
     return post(url, {
         group_name: groupName,
         post_id: postId,
+    }).then((res) => {
+        return res;
+    });
+}
+
+export function likeThread(groupName: string, thread: string) {
+    const url = '/websdk/thread/like';
+    return post(url, {
+        group_name: groupName,
+        web_thread_name: thread,
+    }).then((res) => {
+        return res;
+    });
+}
+
+export function unlikeThread(groupName: string, thread: string) {
+    const url = '/websdk/thread/unlike';
+    return post(url, {
+        group_name: groupName,
+        web_thread_name: thread,
     }).then((res) => {
         return res;
     });

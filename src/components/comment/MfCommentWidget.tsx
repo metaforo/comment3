@@ -10,6 +10,7 @@ import React from 'react';
 import CommentWidget from './CommentWidget';
 import {initQuill} from '../../utils/QuillUtil';
 import '../../css/quill.css';
+import {LIB_VER} from '../../utils/Constants';
 
 export type MfCommentWidgetProps = {
     siteName: string;
@@ -41,7 +42,7 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
     if (props.debug) {
         Global.isDebug = true;
         log('---- Metaforo Comment Widget ----');
-        log('Version : ' + process.env.REACT_APP_VERSION);
+        log('Version : ' + LIB_VER);
         log('Props : ', props);
         log('---- Metaforo Comment Widget ----');
     }

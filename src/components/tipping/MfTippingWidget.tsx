@@ -8,6 +8,7 @@ import {ThemeProvider} from '@mui/material';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
 import React from 'react';
 import TippingWidget from './TippingWidget';
+import {LIB_VER} from '../../utils/Constants';
 
 export type MfTippingWidgetProps = {
     siteName: string;
@@ -33,7 +34,7 @@ export default function MfTippingWidget(props: MfTippingWidgetProps) {
 
     if (props.debug) {
         log('---- Metaforo Tipping Widget ----');
-        log('Version : ' + process.env.REACT_APP_VERSION);
+        log('Version : ' + LIB_VER);
         log('Props : ', props);
         log('---- Metaforo Tipping Widget ----');
     }
