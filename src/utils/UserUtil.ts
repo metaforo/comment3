@@ -1,10 +1,9 @@
 import {UserInfoState} from '../context/UserContext';
 import {Dispatch} from 'react';
-import {EventItem, EventTypeRemove, EventTypeRemoveAll, EventTypeSave, Storage} from './Storage';
+import {EventItem, EventTypeRemoveAll, EventTypeSave, Storage} from './Storage';
 import {initApiService, refreshLoginStatus} from '../api/ApiService';
 import {UserStatus} from './Constants';
 import {removeEverpayInstance} from '../components/tipping/Everpay';
-import log from './LogUtil';
 
 export function refreshByStorage(
     e: Event | CustomEvent<EventItem>,
@@ -12,33 +11,36 @@ export function refreshByStorage(
     userInfoState: UserInfoState,
     dispatch: Dispatch<UserInfoState>,
 ) {
-    let needRefreshLogin = false;
+    if (userInfoState.loginStatus === UserStatus.isChecking) {
+        // do nothing.
+        return;
+    }
+
+    const prevLoginStatus = userInfoState.loginStatus === UserStatus.login;
+    let currentLoginStatus = false;
     if (e instanceof CustomEvent<EventItem>) {
-        if (e.detail.type === EventTypeSave && e.detail.key === Storage.userToken && userInfoState.loginStatus === UserStatus.notLogin) {
-            needRefreshLogin = true;
-        } else if (e.detail.type === EventTypeRemove && e.detail.key === Storage.userToken && userInfoState.loginStatus === UserStatus.login) {
-            needRefreshLogin = true;
-        } else if (e.detail.type === EventTypeRemoveAll && userInfoState.loginStatus === UserStatus.login) {
-            needRefreshLogin = true;
+        if (e.detail.type === EventTypeRemoveAll) {
+            currentLoginStatus = false;
+        } else if (e.detail.type === EventTypeSave && e.detail.key === Storage.isLogin) {
+            currentLoginStatus = true;
         }
     } else if (e instanceof StorageEvent) {
-        if (userInfoState.loginStatus !== UserStatus.isChecking) {
-            const prevLoginStatus = userInfoState.loginStatus === UserStatus.login;
-            if (e.key === Storage.userToken) { // login event
-                if (!prevLoginStatus) {
-                    needRefreshLogin = true;
-                }
-            } else if (e.key == null || e.key == '') { // logout event
-                if (prevLoginStatus) {
-                    needRefreshLogin = true;
-                }
-            }
+        if (e.key === Storage.isLogin) { // login event
+            currentLoginStatus = true;
+        } else if (e.key == null || e.key == '') { // logout event
+            currentLoginStatus = Storage.getItem(Storage.isLogin) === 'true';
         }
     }
 
-    if (needRefreshLogin) {
-        log('refresh', e);
-        initLoginStatus(groupName, userInfoState, dispatch);
+    if (prevLoginStatus != currentLoginStatus) {
+        const userToken = Storage.getItem(Storage.userToken);
+        if (userToken) {
+            userInfoState.loginStatus = UserStatus.login;
+            updateUserStatusByLocalStorage(userInfoState, dispatch);
+        } else {
+            userInfoState.loginStatus = UserStatus.notLogin;
+            dispatch(userInfoState);
+        }
     }
 }
 
@@ -68,6 +70,36 @@ export async function initLoginStatus(
     }
 }
 
+export function saveUserInfoToStorage(user: any, siteName: string) {
+    Storage.saveItem(Storage.userName, user.username);
+    Storage.saveItem(Storage.userAvatar, user.photo_url);
+    user.web3_public_keys.forEach((web3Key: any) => {
+        switch (web3Key.type) {
+            case 5:
+                Storage.saveItem(Storage.userEthAddress, web3Key.address);
+                break;
+            case 3:
+                Storage.saveItem(Storage.userArAddress, web3Key.address);
+                break;
+            default:
+                // do nothing.
+                break;
+        }
+    });
+
+    if (user.group_profiles) {
+        user.group_profiles.forEach((dn: any) => {
+            if (dn.group_name.toLowerCase() === siteName.toLowerCase()) {
+                Storage.saveItem(Storage.displayName, dn.display_name);
+                if (dn.display_avatar) {
+                    Storage.saveItem(Storage.userAvatar, dn.display_avatar);
+                }
+            }
+        });
+    }
+
+    Storage.saveItem(Storage.isLogin, 'true');
+}
 
 export function updateUserStatusByLocalStorage(userInfoState: UserInfoState, dispatch: Dispatch<UserInfoState>) {
     userInfoState.username = Storage.getItem(Storage.userName) ?? '';

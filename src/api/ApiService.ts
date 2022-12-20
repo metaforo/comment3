@@ -4,6 +4,7 @@ import {Storage} from '../utils/Storage';
 import {TipWidgetState} from '../context/TipWidgetContext';
 import {camelCase} from 'lodash';
 import {convertJsonKey} from '../utils/Util';
+import {saveUserInfoToStorage} from '../utils/UserUtil';
 
 export const apiHost = 'https://metaforo.io/api';
 
@@ -188,31 +189,6 @@ export function refreshLoginStatus(groupName: string) {
     });
 }
 
-function saveUserInfoToStorage(user: any, siteName: string) {
-    Storage.saveItem(Storage.userName, user.username);
-    Storage.saveItem(Storage.userAvatar, user.photo_url);
-    user.web3_public_keys.forEach((web3Key: any) => {
-        switch (web3Key.type) {
-            case 5:
-                Storage.saveItem(Storage.userEthAddress, web3Key.address);
-                break;
-            case 3:
-                Storage.saveItem(Storage.userArAddress, web3Key.address);
-                break;
-            default:
-                // do nothing.
-                break;
-        }
-    });
-
-    if (user.group_profiles) {
-        user.group_profiles.forEach((dn: any) => {
-            if (dn.group_name.toLowerCase() === siteName.toLowerCase()) {
-                Storage.saveItem(Storage.displayName, dn.display_name);
-            }
-        });
-    }
-}
 
 export type UpdateProfileParam = {
     display_name: string | undefined;
