@@ -138,10 +138,12 @@ export default function CommentListItem(props: CommentListItemProps) {
                             this.forceUpdate();
                         }}
                     >
-                        <SvgIcon data={likeIcon({
-                            size: 14,
-                            color: post.liked ? theme.palette.primary.main : theme.palette.text.secondary,
-                        })} />
+                        <SvgIcon
+                            data={likeIcon({
+                                size: 14,
+                                color: post.liked ? theme.palette.primary.main : theme.palette.text.secondary,
+                            })}
+                        />
                         {post.likeCount > 0 && <p style={{marginLeft: 4, fontSize: 13}}>· {post.likeCount}</p>}
                     </IconButton>
                 </div>

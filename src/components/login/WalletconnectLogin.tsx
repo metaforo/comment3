@@ -1,8 +1,9 @@
 import {loginByWallet, LoginParam} from '../../api/ApiService';
 import {typedData} from '../../utils/Util';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import {GlobalState} from '../../context/GlobalContext';
 
-export async function connectToWalletConnectByProvider() {
+export async function connectToWalletConnectByProvider(globalState: GlobalState) {
     const getProvider = () => new WalletConnectProvider({infuraId: '27804223e321460cb5682ca4b676f224'});
     try {
         await getProvider().wc.killSession();
@@ -42,10 +43,22 @@ export async function connectToWalletConnectByProvider() {
     if (sign == null) {
         return false;
     }
-    return await loginByWallet({
+
+    const loginParam = {
         web3_public_key: account,
         sign: sign,
         signMsg: msg,
         wallet_type: 5,
-    } as LoginParam);
+    } as LoginParam;
+    if (globalState.siteName) {
+        loginParam.group_name = globalState.siteName;
+        if (globalState.preferDisplayName && globalState.preferDisplayName != '') {
+            loginParam.display_name = globalState.preferDisplayName;
+        }
+        if (globalState.preferDisplayAvatar && globalState.preferDisplayAvatar != '') {
+            loginParam.display_avatar = globalState.preferDisplayAvatar;
+        }
+    }
+
+    return await loginByWallet(loginParam);
 }

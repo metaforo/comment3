@@ -2,7 +2,7 @@ import {Avatar, Dialog, List, ListItemButton, ListItemText, SxProps, Theme, Tool
 import {connectToAr} from './ArconnectLogin';
 import {isArConnectInstalled, isMetamaskInstalled} from '../../utils/Util';
 import {loginIconSize} from '../../utils/ThemeUtil';
-import {updateUserStatusByLoginResponse, useUserContext} from '../../context/UserContext';
+import {useUserContext} from '../../context/UserContext';
 import React, {useState} from 'react';
 import {connectToMetamask} from './MetamaskLogin';
 import {connectToWalletConnectByProvider} from './WalletconnectLogin';
@@ -11,6 +11,8 @@ import {CloseableDialogTitle} from '../common/CloseableDialogTitle';
 import LoadingWidget from '../common/LoadingWidget';
 import {Storage} from '../../utils/Storage';
 import {LoginType} from '../../utils/Constants';
+import {useGlobalContext} from '../../context/GlobalContext';
+import {updateUserStatusByLoginResponse} from '../../utils/UserUtil';
 
 export interface LoginDialogProps {
     open: boolean;
@@ -27,6 +29,7 @@ interface LoginMethodItem {
 export function LoginDialog(props: LoginDialogProps) {
     const {open, closeDialog} = props;
     const {setUserState} = useUserContext();
+    const {globalState} = useGlobalContext();
     const [loading, setLoading] = useState(false);
 
     const handleClose = () => {
@@ -45,7 +48,7 @@ export function LoginDialog(props: LoginDialogProps) {
         }
         setLoading(true);
 
-        const result = await connectToAr();
+        const result = await connectToAr(globalState);
         handleSsoResponse(result, LoginType.ar);
     };
 
@@ -56,14 +59,14 @@ export function LoginDialog(props: LoginDialogProps) {
 
         setLoading(true);
 
-        const result = await connectToMetamask();
+        const result = await connectToMetamask(globalState);
         handleSsoResponse(result, LoginType.eth);
     };
 
     const startWalletconnect = async () => {
         setLoading(true);
 
-        const result = await connectToWalletConnectByProvider();
+        const result = await connectToWalletConnectByProvider(globalState);
         handleSsoResponse(result, LoginType.walletConnect);
     };
 
@@ -85,13 +88,13 @@ export function LoginDialog(props: LoginDialogProps) {
             text: 'ArConnect',
             logo: 'https://cdn.metaforo.io/images/connect/arconnect_thumb.png',
             onClick: startArConnect,
-            disableReason: isArConnectInstalled() ? null : "You haven't install ArConnect plugin yet.",
+            disableReason: isArConnectInstalled() ? null : 'You haven\'t install ArConnect plugin yet.',
         },
         {
             text: 'Metamask',
             logo: 'https://cdn.metaforo.io/images/connect/metamask_thumb.png',
             onClick: startMetamaskConnect,
-            disableReason: isMetamaskInstalled() ? null : "You haven't install Metamask plugin yet.",
+            disableReason: isMetamaskInstalled() ? null : 'You haven\'t install Metamask plugin yet.',
         },
         {
             text: 'WalletConnect',

@@ -1,5 +1,5 @@
 import {Thread} from '../../model/Thread';
-import {logout, useUserContext} from '../../context/UserContext';
+import {useUserContext} from '../../context/UserContext';
 import React from 'react';
 import {useCommentWidgetContext} from '../../context/CommentWidgetContext';
 import {UserStatus} from '../../utils/Constants';
@@ -7,6 +7,7 @@ import {Button, Typography} from '@mui/material';
 import {grey} from '@mui/material/colors';
 import {Global} from '../../utils/GlobalVariables';
 import {apiHost} from '../../api/ApiService';
+import {logout} from '../../utils/UserUtil';
 
 type HeaderWidgetProps = {
     thread: Thread | null;

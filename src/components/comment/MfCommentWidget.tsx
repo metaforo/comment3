@@ -1,4 +1,3 @@
-import {Global} from '../../utils/GlobalVariables';
 import log from '../../utils/LogUtil';
 import {composeProviders, formatSiteName} from '../../utils/Util';
 import {SnackBarContextProvider} from '../../utils/SnackBar';
@@ -11,6 +10,8 @@ import CommentWidget from './CommentWidget';
 import {initQuill} from '../../utils/QuillUtil';
 import '../../css/quill.css';
 import {LIB_VER} from '../../utils/Constants';
+import {GlobalContextProvider, initGlobalState} from '../../context/GlobalContext';
+import {Global} from '../../utils/GlobalVariables';
 
 export type MfCommentWidgetProps = {
     siteName: string;
@@ -39,8 +40,10 @@ export type MfCommentWidgetProps = {
 };
 
 export default function MfCommentWidget(props: MfCommentWidgetProps) {
+    const baseProps = initGlobalState();
     if (props.debug) {
         Global.isDebug = true;
+        baseProps.isDebug = true;
         log('---- Metaforo Comment Widget ----');
         log('Version : ' + LIB_VER);
         log('Props : ', props);
@@ -48,30 +51,32 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
     }
 
     if (props.demo) {
-        Global.isDemo = true;
+        baseProps.isDemo = true;
     }
 
     if (!props.siteName || !props.pageId) {
         return null;
     }
-    Global.siteName = formatSiteName(props.siteName);
-    Global.preferDisplayName = props.userDisplayName;
-    Global.preferDisplayAvatar = props.userAvatar;
+    baseProps.siteName = formatSiteName(props.siteName);
+    baseProps.pageId = props.pageId;
+    baseProps.preferDisplayName = props.userDisplayName;
+    baseProps.preferDisplayAvatar = props.userAvatar;
     if (props.disableEditProfile) {
-        Global.disableEditProfile = true;
+        baseProps.disableEditProfile = true;
     }
 
     initQuill();
-
     const StateProviders = composeProviders(SnackBarContextProvider, CommentWidgetContextProvider, UserContextProvider);
     return (
         <ThemeProvider theme={createThemeFromAttr(props.theme)}>
             <StateProviders>
-                <CommentWidget
-                    siteName={formatSiteName(props.siteName)}
-                    pageId={props.pageId}
-                    variant={props.variant ?? 'card'}
-                />
+                <GlobalContextProvider {...baseProps}>
+                    <CommentWidget
+                        siteName={formatSiteName(props.siteName)}
+                        pageId={props.pageId}
+                        variant={props.variant ?? 'card'}
+                    />
+                </GlobalContextProvider>
             </StateProviders>
         </ThemeProvider>
     );

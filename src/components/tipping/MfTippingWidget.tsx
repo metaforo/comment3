@@ -9,6 +9,7 @@ import {createThemeFromAttr} from '../../utils/ThemeUtil';
 import React from 'react';
 import TippingWidget from './TippingWidget';
 import {LIB_VER} from '../../utils/Constants';
+import {GlobalContextProvider, initGlobalState} from '../../context/GlobalContext';
 
 export type MfTippingWidgetProps = {
     siteName: string;
@@ -29,15 +30,17 @@ export type MfTippingWidgetProps = {
 };
 
 export default function MfTippingWidget(props: MfTippingWidgetProps) {
-    Global.isDebug = props.debug ?? false;
-    Global.isDemo = props.demo ?? false;
+    const baseProps = initGlobalState();
 
     if (props.debug) {
+        Global.isDebug = true;
+        baseProps.isDebug = true;
         log('---- Metaforo Tipping Widget ----');
         log('Version : ' + LIB_VER);
         log('Props : ', props);
         log('---- Metaforo Tipping Widget ----');
     }
+    baseProps.isDemo = props.demo ?? false;
 
     if (
         !props.siteName ||
@@ -48,21 +51,29 @@ export default function MfTippingWidget(props: MfTippingWidgetProps) {
     ) {
         return null;
     }
-    Global.siteName = formatSiteName(props.siteName);
+    baseProps.siteName = formatSiteName(props.siteName);
+    baseProps.pageId = props.pageId;
+    // baseProps.preferDisplayName = props.userDisplayName;
+    // baseProps.preferDisplayAvatar = props.userAvatar;
+    // if (props.disableEditProfile) {
+    //     baseProps.disableEditProfile = true;
+    // }
 
     const StateProviders = composeProviders(SnackBarContextProvider, TipWidgetContextProvider, UserContextProvider);
     return (
         <ThemeProvider theme={createThemeFromAttr(props.theme)}>
             <StateProviders>
-                <TippingWidget
-                    siteName={formatSiteName(props.siteName)}
-                    pageId={props.pageId}
-                    receiver={{
-                        address: props.receiverAddress,
-                        chainId: props.receiverChainId,
-                        username: props.receiverUsername,
-                    }}
-                />
+                <GlobalContextProvider {...baseProps}>
+                    <TippingWidget
+                        siteName={formatSiteName(props.siteName)}
+                        pageId={props.pageId}
+                        receiver={{
+                            address: props.receiverAddress,
+                            chainId: props.receiverChainId,
+                            username: props.receiverUsername,
+                        }}
+                    />
+                </GlobalContextProvider>
             </StateProviders>
         </ThemeProvider>
     );

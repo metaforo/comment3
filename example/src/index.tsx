@@ -1,12 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {MfCommentWidget, MfTippingWidget, MfCommentWidgetProps, MfTippingWidgetProps} from '@dforo3/metaforo-sdk';
+import {
+    MfCommentWidget,
+    MfCommentWidgetProps,
+    MfLikeWidget,
+    MfLikeWidgetProps,
+    MfTippingWidget,
+    MfTippingWidgetProps,
+} from '@dforo3/metaforo-sdk';
 
 // When a single JS is referenced via HTML, the value is used to automatically iterate through
 // the specified tag name of the HTML and generate the corresponding component
 const autoInitFromHtml = true;
 const commentWidgetClass = 'metaforo-comment';
 const tippingWidgetClass = 'metaforo-tipping';
+const likeWidgetClass = 'metaforo-like';
 
 /// show tipping dialog
 function showTippingDialog(element: HTMLElement, props: MfTippingWidgetProps) {
@@ -21,6 +29,10 @@ function showCommentList(element: HTMLElement, props: MfCommentWidgetProps) {
     ReactDOM.createRoot(element).render(<MfCommentWidget {...props} />);
 }
 
+function showLikeButton(element: HTMLElement, props: MfLikeWidgetProps) {
+    ReactDOM.createRoot(element).render(<MfLikeWidget {...props} />);
+}
+
 // region ---- Auto init from html ----
 
 if (autoInitFromHtml) {
@@ -30,6 +42,7 @@ if (autoInitFromHtml) {
 function initMetaforoSdkFromHtml() {
     initMfTippingWidget();
     initMfCommentWidget();
+    initMfLikeWidget();
 }
 
 function initMfTippingWidget() {
@@ -93,6 +106,32 @@ function initMfCommentWidget() {
                 debug: attrs.getNamedItem('debug')?.value === 'true',
                 demo: attrs.getNamedItem('demo')?.value === 'true',
             } as MfCommentWidgetProps);
+        }
+    }
+}
+
+function initMfLikeWidget() {
+    const likeWidgets = document.getElementsByClassName(likeWidgetClass);
+    if (likeWidgets) {
+        for (let i = 0; i < likeWidgets.length; i++) {
+            const element = likeWidgets.item(i);
+            if (!(element && element instanceof HTMLElement)) {
+                continue;
+            }
+            if (!checkAttrs(element, ['siteName', 'pageId'])) {
+                continue;
+            }
+
+            const attrs = element.attributes;
+
+            showLikeButton(element, {
+                siteName: attrs.getNamedItem('siteName')!.value,
+                pageId: attrs.getNamedItem('pageId')!.value,
+                userDisplayName: attrs.getNamedItem('userDisplayName')?.value ?? undefined,
+                userAvatar: attrs.getNamedItem('userAvatar')?.value ?? undefined,
+                theme: attrs.getNamedItem('theme')?.value ?? undefined,
+                debug: attrs.getNamedItem('debug')?.value === 'true',
+            } as MfLikeWidgetProps);
         }
     }
 }

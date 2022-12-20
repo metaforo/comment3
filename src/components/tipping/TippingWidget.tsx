@@ -1,11 +1,12 @@
 import React, {Dispatch, useEffect, useState} from 'react';
 import {TipAccount} from '../../model/TipAccount';
-import {updateUserStatusByLocalStorage, UserInfoState, useUserContext} from '../../context/UserContext';
+import {UserInfoState, useUserContext} from '../../context/UserContext';
 import {UserStatus} from '../../utils/Constants';
 import {Storage} from '../../utils/Storage';
 import {useTipWidgetContext} from '../../context/TipWidgetContext';
 import {EverpayDialog} from './EverpayTipDialog';
 import {LoginDialog} from '../login/LoginDialog';
+import {updateUserStatusByLocalStorage} from '../../utils/UserUtil';
 
 type TipWidgetProps = {
     siteName: string;

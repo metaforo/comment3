@@ -115,11 +115,10 @@ export function serverDateToString(dateStr: string) {
 }
 
 const numberFormatter = new Intl.NumberFormat('en', {
-        notation: 'compact',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-    },
-);
+    notation: 'compact',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+});
 
 export function formatNumber(num: number) {
     return numberFormatter.format(num);

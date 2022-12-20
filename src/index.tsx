@@ -5,8 +5,4 @@ import MfCommentWidget, {MfCommentWidgetProps} from './components/comment/MfComm
 import MfTippingWidget, {MfTippingWidgetProps} from './components/tipping/MfTippingWidget';
 import MfLikeWidget, {MfLikeWidgetProps} from './components/like/MfLikeWidget';
 
-export {
-    MfCommentWidget, MfCommentWidgetProps,
-    MfTippingWidget, MfTippingWidgetProps,
-    MfLikeWidget, MfLikeWidgetProps,
-};
+export {MfCommentWidget, MfCommentWidgetProps, MfTippingWidget, MfTippingWidgetProps, MfLikeWidget, MfLikeWidgetProps};

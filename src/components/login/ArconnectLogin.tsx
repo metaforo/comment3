@@ -1,6 +1,7 @@
 import {loginByWallet, LoginParam} from '../../api/ApiService';
+import {GlobalState} from '../../context/GlobalContext';
 
-export async function connectToAr() {
+export async function connectToAr(globalState: GlobalState) {
     // @ts-ignore
     const {arweaveWallet} = window;
     await arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGNATURE', 'ACCESS_PUBLIC_KEY']);
@@ -17,11 +18,22 @@ export async function connectToAr() {
             return JSON.stringify(Object.values(res));
         });
 
-    return await loginByWallet({
+    const loginParam = {
         web3_public_key: account,
         web3_address: publicKey,
         sign: signResult,
         signMsg: signMsg,
         wallet_type: 3,
-    } as LoginParam);
+    } as LoginParam;
+    if (globalState.siteName) {
+        loginParam.group_name = globalState.siteName;
+        if (globalState.preferDisplayName && globalState.preferDisplayName != '') {
+            loginParam.display_name = globalState.preferDisplayName;
+        }
+        if (globalState.preferDisplayAvatar && globalState.preferDisplayAvatar != '') {
+            loginParam.display_avatar = globalState.preferDisplayAvatar;
+        }
+    }
+
+    return await loginByWallet(loginParam);
 }

@@ -4,7 +4,6 @@ import {Storage} from '../utils/Storage';
 import {TipWidgetState} from '../context/TipWidgetContext';
 import {camelCase} from 'lodash';
 import {convertJsonKey} from '../utils/Util';
-import {Global} from '../utils/GlobalVariables';
 
 export const apiHost = 'https://metaforo.io/api';
 
@@ -171,35 +170,25 @@ export type LoginParam = {
 };
 
 export function loginByWallet(param: LoginParam) {
-    if (Global.siteName) {
-        param.group_name = Global.siteName;
-        if (Global.preferDisplayName && Global.preferDisplayName != '') {
-            param.display_name = Global.preferDisplayName;
-        }
-        if (Global.preferDisplayAvatar && Global.preferDisplayAvatar != '') {
-            param.display_avatar = Global.preferDisplayAvatar;
-        }
-    }
-
     return post('/wallet/sso', param).then((res) => {
         if (res.data && res.data.user) {
-            saveUserInfoToStorage(res.data.user);
+            saveUserInfoToStorage(res.data.user, param.group_name);
         }
         return res.data;
     });
 }
 
-export function refreshLoginStatus() {
+export function refreshLoginStatus(groupName: string) {
     return get('/me').then((res) => {
         log('get current user ' + res.data + ' , ' + res.data.user);
         if (res.data && res.data.user) {
-            saveUserInfoToStorage(res.data.user);
+            saveUserInfoToStorage(res.data.user, groupName);
         }
         return res;
     });
 }
 
-function saveUserInfoToStorage(user: any) {
+function saveUserInfoToStorage(user: any, siteName: string) {
     Storage.saveItem(Storage.userName, user.username);
     Storage.saveItem(Storage.userAvatar, user.photo_url);
     user.web3_public_keys.forEach((web3Key: any) => {
@@ -218,7 +207,7 @@ function saveUserInfoToStorage(user: any) {
 
     if (user.group_profiles) {
         user.group_profiles.forEach((dn: any) => {
-            if (dn.group_name.toLowerCase() === Global.siteName.toLowerCase()) {
+            if (dn.group_name.toLowerCase() === siteName.toLowerCase()) {
                 Storage.saveItem(Storage.displayName, dn.display_name);
             }
         });
@@ -235,7 +224,7 @@ export type UpdateProfileParam = {
 export function updateProfile(param: UpdateProfileParam) {
     return post('/user/update_info', param).then((res) => {
         if (res.data && res.data.username) {
-            saveUserInfoToStorage(res.data);
+            saveUserInfoToStorage(res.data, param.group_name);
         }
         return res;
     });

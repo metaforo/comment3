@@ -20,7 +20,7 @@ type User = {
     displayAvatar?: string;
     ensName?: string;
     web3PublicKeys?: UserPublicKey[];
-}
+};
 
 type UserPublicKey = {
     userId: number;
