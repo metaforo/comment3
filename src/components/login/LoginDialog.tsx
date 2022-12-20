@@ -76,7 +76,7 @@ export function LoginDialog(props: LoginDialogProps) {
             return;
         }
 
-        updateUserStatusByLoginResponse(ssoResponse.user, setUserState, ssoResponse.is_register);
+        updateUserStatusByLoginResponse(globalState.siteName, ssoResponse.user, setUserState, ssoResponse.is_register);
         Storage.saveItem(Storage.lastLoginType, loginType);
 
         setLoading(false);

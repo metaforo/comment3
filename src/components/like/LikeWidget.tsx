@@ -8,7 +8,8 @@ import {LoginDialog} from '../login/LoginDialog';
 import SvgIcon from '../common/SvgIcon';
 import {doneIcon, likeIcon} from '../../assets/SvgAssets';
 import {formatNumber} from '../../utils/Util';
-import {initLoginStatus} from '../../utils/UserUtil';
+import {initLoginStatus, refreshByStorage} from '../../utils/UserUtil';
+import {EventItem, StorageEvent} from '../../utils/Storage';
 
 type LikeWidgetProps = {
     siteName: string;
@@ -25,6 +26,18 @@ export default function LikeWidget(props: LikeWidgetProps) {
     };
     const [likeCount, setLikeCount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
+
+    // listen storage changes
+    const refreshUserByStorage = (e: Event | CustomEvent<EventItem>) =>
+        refreshByStorage(e, props.siteName, userInfoState, setUserState);
+    useEffect(() => {
+        window.addEventListener('storage', refreshUserByStorage);
+        window.addEventListener(StorageEvent, refreshUserByStorage);
+        return () => {
+            window.removeEventListener('storage', refreshUserByStorage);
+            window.removeEventListener(StorageEvent, refreshUserByStorage);
+        };
+    }, []);
 
     useEffect(() => {
         let f;

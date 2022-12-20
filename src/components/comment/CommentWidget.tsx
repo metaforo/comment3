@@ -17,8 +17,8 @@ import {addItemToSetState} from '../../utils/Util';
 import {getEns} from '../../utils/EnsService';
 import EditProfileDialog from '../login/EditProfileDialog';
 import {useGlobalContext} from '../../context/GlobalContext';
-import log from '../../utils/LogUtil';
-import {initLoginStatus} from '../../utils/UserUtil';
+import {initLoginStatus, refreshByStorage} from '../../utils/UserUtil';
+import {EventItem, StorageEvent} from '../../utils/Storage';
 
 type CommentWidgetProps = {
     siteName: string;
@@ -59,7 +59,18 @@ export default function CommentWidget(props: CommentWidgetProps) {
     /// Only one reply dialog can be shown
     const [openReply, setOpenReply] = useState(ALL_CLOSED);
 
-    log(globalState.preferDisplayName);
+    // listen storage changes
+    const refreshUserByStorage = (e: Event | CustomEvent<EventItem>) =>
+        refreshByStorage(e, props.siteName, userInfoState, setUserState);
+    useEffect(() => {
+        window.addEventListener('storage', refreshUserByStorage);
+        window.addEventListener(StorageEvent, refreshUserByStorage);
+        return () => {
+            window.removeEventListener('storage', refreshUserByStorage);
+            window.removeEventListener(StorageEvent, refreshUserByStorage);
+        };
+    }, []);
+
     /// Check User Login Status
     useEffect(() => {
         commentWidgetDispatch(props);
