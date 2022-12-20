@@ -21,8 +21,19 @@ export function refreshByStorage(
         } else if (e.detail.type === EventTypeRemoveAll && userInfoState.loginStatus === UserStatus.login) {
             needRefreshLogin = true;
         }
-    } else {
-        // TODO
+    } else if (e instanceof StorageEvent) {
+        if (userInfoState.loginStatus !== UserStatus.isChecking) {
+            const prevLoginStatus = userInfoState.loginStatus === UserStatus.login;
+            if (e.key === Storage.userToken) { // login event
+                if (!prevLoginStatus) {
+                    needRefreshLogin = true;
+                }
+            } else if (e.key == null || e.key == '') { // logout event
+                if (prevLoginStatus) {
+                    needRefreshLogin = true;
+                }
+            }
+        }
     }
 
     if (needRefreshLogin) {
