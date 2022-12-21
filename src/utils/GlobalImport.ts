@@ -1,2 +1,3 @@
-/* eslint-disable */
-window.Buffer = window.Buffer || require('buffer').Buffer;
+import {Buffer} from 'buffer';
+
+window.Buffer = window.Buffer || Buffer;
