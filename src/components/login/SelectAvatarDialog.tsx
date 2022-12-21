@@ -179,7 +179,9 @@ export default function SelectAvatarDialog(props: SelectAvatarDialogProp) {
     );
     return (
         <Dialog open={props.open} className={'mf-main'} maxWidth={'sm'} fullWidth={true}>
-            <CloseableDialogTitle onClose={() => props.onClose('', false)}>{<p>Select Your Avatar</p>}</CloseableDialogTitle>
+            <CloseableDialogTitle onClose={() => props.onClose('', false)}>
+                {<p>Select Your Avatar</p>}
+            </CloseableDialogTitle>
             <LoadingWidget loading={loading} />
             {content}
         </Dialog>
