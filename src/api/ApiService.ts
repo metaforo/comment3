@@ -55,6 +55,83 @@ function post(path: string, params?: any) {
 
 // endregion ---- init instance ----
 
+// region ---- User ----
+
+export type LoginParam = {
+    web3_public_key: string;
+    // 3 = ar, 5 = eth (metamask or walletconnect)
+    wallet_type: number;
+    // Only use for arConnect
+    web3_address: string | undefined;
+    sign: string;
+    signMsg: string;
+    group_name: string | undefined;
+    display_name: string | undefined;
+    display_avatar: string | undefined;
+};
+
+export function loginByWallet(param: LoginParam) {
+    return post('/wallet/sso', param).then((res) => {
+        if (res.data && res.data.user) {
+            saveUserInfoToStorage(res.data.user, param.group_name);
+        }
+        return res.data;
+    });
+}
+
+export function refreshLoginStatus(groupName: string) {
+    return get('/me').then((res) => {
+        log('get current user ' + res.data + ' , ' + res.data.user);
+        if (res.data && res.data.user) {
+            saveUserInfoToStorage(res.data.user, groupName);
+        }
+        return res;
+    });
+}
+
+
+export type UpdateProfileParam = {
+    display_name: string | undefined;
+    group_name: string | undefined;
+    display_avatar: string | undefined;
+    is_nft: number | undefined;
+};
+
+export function updateProfile(param: UpdateProfileParam) {
+    return post('/user/update_info', param).then((res) => {
+        if (res.data && res.data.username) {
+            saveUserInfoToStorage(res.data, param.group_name);
+        }
+        return res;
+    });
+}
+
+export function loadNftAvatar(address: string) {
+    return axios
+        .get(`https://api.opensea.io/api/v1/assets?limit=100&owner=${address}`)
+        .then((res) => {
+            return res.data;
+        })
+        .then((res) => {
+            if (!res.assets) {
+                return [];
+            }
+
+            const result: any[] = [];
+            (res.assets as []).forEach((asset) => {
+                if (asset['image_preview_url']) {
+                    result.push(asset['image_preview_url']);
+                }
+            });
+            return result;
+        })
+        .catch(() => {
+            return [];
+        });
+}
+
+// endregion ---- User ----
+
 // region ---- Comment ----
 
 export function loadThread(groupName: string, thread: string, startPostId: number) {
@@ -133,6 +210,20 @@ export function unlikePost(groupName: string, postId: number) {
     });
 }
 
+// endregion ---- Comment ----
+
+// region ---- Like ----
+
+export function getLikeInfo(groupName: string, thread: string) {
+    const url = '/websdk/like/list';
+    return get(url, {
+        group_name: groupName,
+        web_thread_name: thread,
+    }).then((res) => {
+        return convertJsonKey(res, camelCase);
+    });
+}
+
 export function likeThread(groupName: string, thread: string) {
     const url = '/websdk/thread/like';
     return post(url, {
@@ -153,84 +244,7 @@ export function unlikeThread(groupName: string, thread: string) {
     });
 }
 
-// endregion ---- Comment ----
-
-// region ---- User ----
-
-export type LoginParam = {
-    web3_public_key: string;
-    // 3 = ar, 5 = eth (metamask or walletconnect)
-    wallet_type: number;
-    // Only use for arConnect
-    web3_address: string | undefined;
-    sign: string;
-    signMsg: string;
-    group_name: string | undefined;
-    display_name: string | undefined;
-    display_avatar: string | undefined;
-};
-
-export function loginByWallet(param: LoginParam) {
-    return post('/wallet/sso', param).then((res) => {
-        if (res.data && res.data.user) {
-            saveUserInfoToStorage(res.data.user, param.group_name);
-        }
-        return res.data;
-    });
-}
-
-export function refreshLoginStatus(groupName: string) {
-    return get('/me').then((res) => {
-        log('get current user ' + res.data + ' , ' + res.data.user);
-        if (res.data && res.data.user) {
-            saveUserInfoToStorage(res.data.user, groupName);
-        }
-        return res;
-    });
-}
-
-
-export type UpdateProfileParam = {
-    display_name: string | undefined;
-    group_name: string | undefined;
-    display_avatar: string | undefined;
-    is_nft: number | undefined;
-};
-
-export function updateProfile(param: UpdateProfileParam) {
-    return post('/user/update_info', param).then((res) => {
-        if (res.data && res.data.username) {
-            saveUserInfoToStorage(res.data, param.group_name);
-        }
-        return res;
-    });
-}
-
-export function loadNftAvatar(address: string) {
-    return axios
-        .get(`https://api.opensea.io/api/v1/assets?limit=100&owner=${address}`)
-        .then((res) => {
-            return res.data;
-        })
-        .then((res) => {
-            if (!res.assets) {
-                return [];
-            }
-
-            const result: any[] = [];
-            (res.assets as []).forEach((asset) => {
-                if (asset['image_preview_url']) {
-                    result.push(asset['image_preview_url']);
-                }
-            });
-            return result;
-        })
-        .catch(() => {
-            return [];
-        });
-}
-
-// endregion ---- User ----
+// endregion ---- Like ----
 
 // region ---- Tipping ----
 

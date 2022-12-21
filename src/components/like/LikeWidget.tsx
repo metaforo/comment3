@@ -1,8 +1,7 @@
 import {useUserContext} from '../../context/UserContext';
 import React, {useEffect, useState} from 'react';
 import {UserStatus} from '../../utils/Constants';
-import {likeThread, loadThread, unlikeThread} from '../../api/ApiService';
-import {Thread} from '../../model/Thread';
+import {getLikeInfo, likeThread, unlikeThread} from '../../api/ApiService';
 import {Button, CircularProgress, useTheme} from '@mui/material';
 import {LoginDialog} from '../login/LoginDialog';
 import SvgIcon from '../common/SvgIcon';
@@ -10,6 +9,7 @@ import {doneIcon, likeIcon} from '../../assets/SvgAssets';
 import {formatNumber} from '../../utils/Util';
 import {initLoginStatus, refreshByStorage} from '../../utils/UserUtil';
 import {EventItem, StorageEvent} from '../../utils/Storage';
+import {LikeInfo} from '../../model/LikeInfo';
 
 type LikeWidgetProps = {
     siteName: string;
@@ -51,18 +51,15 @@ export default function LikeWidget(props: LikeWidgetProps) {
     }, []);
 
     const initLikeStatus = () => {
-        loadThread(props.siteName, props.pageId, 0).then((res) => {
-            if (!res || !res['thread']) {
-                //  thread not created.
+        getLikeInfo(props.siteName, props.pageId).then((res) => {
+            if (!res || !res.data) {
                 setLikeCount(0);
                 setIsLiked(false);
                 return;
             }
-
-            const thread = res['thread'] as Thread;
-            setLikeCount(thread.firstPost.likeCount);
-            setIsLiked(thread.firstPost.liked);
-            return;
+            const likeInfo = res.data as LikeInfo;
+            setLikeCount(likeInfo.usersCount);
+            setIsLiked(likeInfo.currentUserLiked);
         });
     };
 
