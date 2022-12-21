@@ -65,9 +65,9 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
     const startUpdateProfile = () => {
         setLoading(true);
         const params = {} as UpdateProfileParam;
+        params.group_name = Global.siteName;
         if (username !== userInfoState.displayName) {
             params.display_name = username;
-            params.group_name = Global.siteName;
         }
         if (userAvatar !== userInfoState.avatar) {
             params.display_avatar = userAvatar;
@@ -98,10 +98,11 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
         setShowAvatarDialog(true);
     };
 
-    const onAvatarSelected = (avatarUrl: string) => {
+    const onAvatarSelected = (avatarUrl: string, isNft: boolean) => {
         setShowAvatarDialog(false);
-        if (avatarUrl) {
+        if (avatarUrl && avatarUrl != '') {
             setUserAvatar(avatarUrl);
+            setIsNftAvatar(isNft);
         }
     };
 

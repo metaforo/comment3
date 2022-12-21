@@ -1,7 +1,5 @@
 import {Web3Provider} from '@ethersproject/providers/src.ts/web3-provider';
-
-/* eslint-disable */
-const ethers = require('ethers');
+import {ethers} from 'ethers';
 // @ts-ignore
 const {ethereum} = window;
 let provider: Web3Provider | undefined;
