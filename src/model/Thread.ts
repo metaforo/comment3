@@ -7,6 +7,8 @@ export type Thread = {
     id: number;
     groupId: number;
     likesCount: number;
+
+    firstPost: Post;
 };
 
 export const EMPTY_THREAD = {

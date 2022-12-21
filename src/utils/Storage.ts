@@ -1,6 +1,7 @@
 const prefix = 'mf-';
 
 export class Storage {
+    static readonly isLogin = prefix + 'is-login';
     static readonly userToken = prefix + 'user-token';
     static readonly userName = prefix + 'username';
     static readonly displayName = prefix + 'display-name';
@@ -11,7 +12,17 @@ export class Storage {
     static readonly lastLoginType = prefix + 'login-type';
 
     static saveItem(key: string, value: string) {
-        return localStorage.setItem(key, value);
+        const result = localStorage.setItem(key, value);
+        window.dispatchEvent(
+            new CustomEvent<EventItem>(StorageEvent, {
+                detail: {
+                    type: EventTypeSave,
+                    key: key,
+                    value: value,
+                } as EventItem,
+            }),
+        );
+        return result;
     }
 
     static getItem(key: string) {
@@ -19,10 +30,42 @@ export class Storage {
     }
 
     static removeItem(key: string) {
-        return localStorage.removeItem(key);
+        const result = localStorage.removeItem(key);
+        window.dispatchEvent(
+            new CustomEvent<EventItem>(StorageEvent, {
+                detail: {
+                    type: EventTypeRemove,
+                    key: key,
+                    value: null,
+                } as EventItem,
+            }),
+        );
+        return result;
     }
 
     static removeAll() {
-        return localStorage.clear();
+        const result = localStorage.clear();
+        window.dispatchEvent(
+            new CustomEvent<EventItem>(StorageEvent, {
+                detail: {
+                    type: EventTypeRemoveAll,
+                    key: '',
+                    value: null,
+                } as EventItem,
+            }),
+        );
+        return result;
     }
+}
+
+export const StorageEvent = 'MfStorageEvent';
+export const EventTypeSave = 'save';
+export const EventTypeRemove = 'remove';
+export const EventTypeRemoveAll = 'remove_all';
+
+export interface EventItem {
+    // save, remove, remove_all
+    type: string;
+    key: string;
+    value: any;
 }

@@ -17,15 +17,16 @@ import {
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import {logout, useUserContext} from '../../context/UserContext';
+import {useUserContext} from '../../context/UserContext';
 import {EverpayBalance, loadUserBalance, tip} from './Everpay';
 import {saveEverpayLog} from '../../api/ApiService';
 import {useTipWidgetContext} from '../../context/TipWidgetContext';
-import {Global} from '../../utils/GlobalVariables';
 import {floatToString} from '../../utils/Util';
 import {CloseableDialogTitle} from '../common/CloseableDialogTitle';
 import {grey} from '@mui/material/colors';
 import LoadingWidget from '../common/LoadingWidget';
+import {useGlobalContext} from '../../context/GlobalContext';
+import {logout} from '../../utils/UserUtil';
 
 export interface EverpayDialogProps {
     open: boolean;
@@ -34,9 +35,9 @@ export interface EverpayDialogProps {
 
 export function EverpayDialog(props: EverpayDialogProps) {
     const {open, closeDialog} = props;
-
     const {snakeBarDispatch} = useSnakeBarContext();
     const {userInfoState, setUserState} = useUserContext();
+    const {globalState} = useGlobalContext();
     const {tipWidgetState} = useTipWidgetContext();
     const [loading, setLoading] = useState(false);
     const [tokenAmount, setTokenAmount] = useState('0');
@@ -70,7 +71,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
     };
 
     const startTipping = async () => {
-        if (!Global.isDemo && parseFloat(tokenAmount) === 0) {
+        if (!globalState.isDemo && parseFloat(tokenAmount) === 0) {
             setErr('Tipping amount must larger than 0');
             return;
         }

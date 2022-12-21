@@ -1,11 +1,12 @@
 import React, {Dispatch, useEffect, useState} from 'react';
 import {TipAccount} from '../../model/TipAccount';
-import {updateUserStatusByLocalStorage, UserInfoState, useUserContext} from '../../context/UserContext';
+import {UserInfoState, useUserContext} from '../../context/UserContext';
 import {UserStatus} from '../../utils/Constants';
-import {Storage} from '../../utils/Storage';
+import {EventItem, Storage, StorageEvent} from '../../utils/Storage';
 import {useTipWidgetContext} from '../../context/TipWidgetContext';
 import {EverpayDialog} from './EverpayTipDialog';
 import {LoginDialog} from '../login/LoginDialog';
+import {refreshByStorage, updateUserStatusByLocalStorage} from '../../utils/UserUtil';
 
 type TipWidgetProps = {
     siteName: string;
@@ -18,6 +19,18 @@ export default function TippingWidget(props: TipWidgetProps) {
     const {tipWidgetDispatch} = useTipWidgetContext();
     const [isOpenLoginDialog, setIsOpenLoginDialog] = useState(false);
     const [isOpenTippingDialog, setIsOpenTippingDialog] = useState(false);
+
+    // listen storage changes
+    const refreshUserByStorage = (e: Event | CustomEvent<EventItem>) =>
+        refreshByStorage(e, props.siteName, userInfoState, setUserState);
+    useEffect(() => {
+        window.addEventListener('storage', refreshUserByStorage);
+        window.addEventListener(StorageEvent, refreshUserByStorage);
+        return () => {
+            window.removeEventListener('storage', refreshUserByStorage);
+            window.removeEventListener(StorageEvent, refreshUserByStorage);
+        };
+    }, []);
 
     useEffect(() => {
         tipWidgetDispatch(props);

@@ -18,8 +18,11 @@ export default function SvgIcon(props: SvgIconProps) {
         return <img src={`data:image/svg+xml;utf8,${props.data.replaceAll('#', '%23')}`} />;
     } else {
         let style = '';
+        const styleMap = {};
         if (props.size) {
             style += `width: ${props.size}px; height: ${props.size}px;`;
+            styleMap['width'] = props.size;
+            styleMap['height'] = props.size;
         }
         if (props.color) {
             style += `fill: ${props.color}`;
@@ -27,6 +30,7 @@ export default function SvgIcon(props: SvgIconProps) {
         return (
             <ReactSVG
                 src={props.src!}
+                style={styleMap}
                 beforeInjection={(svg) => {
                     svg.setAttribute('style', style);
                 }}

@@ -114,6 +114,16 @@ export function serverDateToString(dateStr: string) {
     }
 }
 
+const numberFormatter = new Intl.NumberFormat('en', {
+    notation: 'compact',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+});
+
+export function formatNumber(num: number) {
+    return numberFormatter.format(num);
+}
+
 export function addItemToSetState<T>(item: T, set: Set<T>, dispatch: Dispatch<Set<T>>) {
     const newSet = new Set(set);
     newSet.add(item);

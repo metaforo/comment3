@@ -4,12 +4,13 @@ import LoadingWidget from '../common/LoadingWidget';
 import SelectAvatarDialog from './SelectAvatarDialog';
 import React, {useEffect, useState} from 'react';
 import {useCommentWidgetContext} from '../../context/CommentWidgetContext';
-import {updateUserStatusByLoginResponse, useUserContext} from '../../context/UserContext';
+import {useUserContext} from '../../context/UserContext';
 import {updateProfile, UpdateProfileParam} from '../../api/ApiService';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import styled from '@emotion/styled';
 import {sleep} from '../../utils/Util';
-import {Global} from '../../utils/GlobalVariables';
+import {updateUserStatusByLoginResponse} from '../../utils/UserUtil';
+import {useGlobalContext} from '../../context/GlobalContext';
 
 type EditProfileDialogProps = {
     open: boolean;
@@ -21,6 +22,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
 
     const theme = useTheme();
     const {commentWidgetState, commentWidgetDispatch} = useCommentWidgetContext();
+    const {globalState} = useGlobalContext();
     const {userInfoState, setUserState} = useUserContext();
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState('');
@@ -65,7 +67,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
     const startUpdateProfile = () => {
         setLoading(true);
         const params = {} as UpdateProfileParam;
-        params.group_name = Global.siteName;
+        params.group_name = globalState.siteName;
         if (username !== userInfoState.displayName) {
             params.display_name = username;
         }
@@ -86,7 +88,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
                 commentWidgetDispatch(commentWidgetState);
 
                 res.data.isNew = false;
-                updateUserStatusByLoginResponse(res.data, setUserState);
+                updateUserStatusByLoginResponse(globalState.siteName, res.data, setUserState);
                 closeDialog();
             })
             .finally(() => {

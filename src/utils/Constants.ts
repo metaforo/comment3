@@ -1,3 +1,5 @@
+export const LIB_VER = '0.4.7';
+
 export class UserStatus {
     static readonly isChecking = 0;
     static readonly login = 1;

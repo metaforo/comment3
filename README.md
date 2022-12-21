@@ -4,6 +4,7 @@ Metaforo SDK contains following components:
 
 - Tipping Widget
 - Comment Widget
+- Like Widget
 
 ## How to install
 
@@ -25,7 +26,7 @@ Metaforo Tipping Widget is a widget for tipping to specified wallet addresses. C
 
 Based on Everpay
 
-## Usage
+### Usage
 
 ```html
 import {MfTippingWidget} from '@dforo3/metaforo-sdk';
@@ -48,7 +49,7 @@ in via their wallet.
 
 The comment data will be stored in Metaforo's Group. Site owners can manage their comments via metaforo.
 
-## Usage
+### Usage
 
 ```html
 import {MfCommentWidget} from '@dforo3/metaforo-sdk';
@@ -66,6 +67,26 @@ import {MfCommentWidget} from '@dforo3/metaforo-sdk';
 - The `userDisplayName` and `userAvatar` field is optional. It is used to specify the current user's username or avatar url, but the user can manually change
   this value after logging in.
 - The `theme` field is optional. You can use it to specify the  **light** or **dark** styles.
+
+## Like Widget
+
+Metaforo Like Widget provides a like button for the website. The usage is similar with comment widget.
+
+### Usage
+
+
+```html
+import {MfLikeWidget} from '@dforo3/metaforo-sdk';
+<MfLikeWidget
+    siteName='INPUT_SITE_NAME'
+    pageId='INPUT_PAGE_ID'
+    userDisplayName='INPUT_USERNAME'
+    userAvatar='INPUT_AVATAR_URL'
+    theme='light'
+/>
+```
+
+For the meaning of the parameters, see MfCommentWidget.
 
 ## Custom Style
 

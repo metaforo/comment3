@@ -1,19 +1,15 @@
+import {Global} from '../../utils/GlobalVariables';
 import log from '../../utils/LogUtil';
 import {composeProviders, formatSiteName} from '../../utils/Util';
-import {SnackBarContextProvider} from '../../utils/SnackBar';
-import {CommentWidgetContextProvider} from '../../context/CommentWidgetContext';
 import {UserContextProvider} from '../../context/UserContext';
-import {ThemeProvider} from '@mui/material';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
+import {ThemeProvider} from '@mui/material';
 import React from 'react';
-import CommentWidget from './CommentWidget';
-import {initQuill} from '../../utils/QuillUtil';
-import '../../css/quill.css';
+import LikeWidget from './LikeWidget';
 import {LIB_VER} from '../../utils/Constants';
 import {GlobalContextProvider, initGlobalState} from '../../context/GlobalContext';
-import {Global} from '../../utils/GlobalVariables';
 
-export type MfCommentWidgetProps = {
+export type MfLikeWidgetProps = {
     siteName: string;
     pageId: string;
 
@@ -22,36 +18,23 @@ export type MfCommentWidgetProps = {
 
     /// current user's avatar.
     userAvatar?: string;
-
-    /// if true, users can not edit their profile by metaforo sdk. (but they still can edit profile in metaforo)
     disableEditProfile?: boolean;
 
-    /// light or dark. default is light.
     theme?: string;
-
-    /// card or plain. default is card.
-    variant?: string;
 
     /// debug mode will print log in console.
     debug?: boolean;
-
-    /// demo mode allows users tipping 0 to the target user ( It can not be 0 when demo mode is false)
-    demo?: boolean;
 };
 
-export default function MfCommentWidget(props: MfCommentWidgetProps) {
+export default function MfLikeWidget(props: MfLikeWidgetProps) {
     const baseProps = initGlobalState();
     if (props.debug) {
         Global.isDebug = true;
         baseProps.isDebug = true;
-        log('---- Metaforo Comment Widget ----');
+        log('---- Metaforo Like Widget ----');
         log('Version : ' + LIB_VER);
         log('Props : ', props);
-        log('---- Metaforo Comment Widget ----');
-    }
-
-    if (props.demo) {
-        baseProps.isDemo = true;
+        log('---- Metaforo Like Widget ----');
     }
 
     if (!props.siteName || !props.pageId) {
@@ -65,17 +48,12 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
         baseProps.disableEditProfile = true;
     }
 
-    initQuill();
-    const StateProviders = composeProviders(SnackBarContextProvider, CommentWidgetContextProvider, UserContextProvider);
+    const StateProviders = composeProviders(UserContextProvider);
     return (
         <ThemeProvider theme={createThemeFromAttr(props.theme)}>
             <StateProviders>
                 <GlobalContextProvider {...baseProps}>
-                    <CommentWidget
-                        siteName={formatSiteName(props.siteName)}
-                        pageId={props.pageId}
-                        variant={props.variant ?? 'card'}
-                    />
+                    <LikeWidget siteName={formatSiteName(props.siteName)} pageId={props.pageId} />
                 </GlobalContextProvider>
             </StateProviders>
         </ThemeProvider>

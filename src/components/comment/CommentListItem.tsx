@@ -9,7 +9,7 @@ import {LoadingButton} from '@mui/lab';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SvgIcon from '../common/SvgIcon';
 import {Theme} from '@mui/material/styles/createTheme';
-import {replyIcon} from '../../assets/SvgAssets';
+import {likeIcon, replyIcon} from '../../assets/SvgAssets';
 
 type CommentListItemProps = {
     thread: Thread;
@@ -18,6 +18,7 @@ type CommentListItemProps = {
     onReplySuccess: (replyPostId: number, newPost: Post) => void;
     openingReply: number;
     onShowReplyClick: (post?: Post) => void;
+    onLikeClick: (post?: Post) => void;
     loadingChildren: Set<number>;
     onLoadingChildrenClick: (post: Post) => void;
     noMorePostSet: Set<number>;
@@ -131,9 +132,20 @@ export default function CommentListItem(props: CommentListItemProps) {
                     >
                         <SvgIcon data={replyIcon({size: 14, color: theme.palette.text.secondary})} />
                     </IconButton>
-                    {/*<IconButton sx={{display: 'none'}}>*/}
-                    {/*    <SvgIcon data={likeIcon({size: 14, color: theme.palette.text.secondary})} />*/}
-                    {/*</IconButton>*/}
+                    <IconButton
+                        onClick={() => {
+                            props.onLikeClick(post);
+                            this.forceUpdate();
+                        }}
+                    >
+                        <SvgIcon
+                            data={likeIcon({
+                                size: 14,
+                                color: post.liked ? theme.palette.primary.main : theme.palette.text.secondary,
+                            })}
+                        />
+                        {post.likeCount > 0 && <p style={{marginLeft: 4, fontSize: 13}}>· {post.likeCount}</p>}
+                    </IconButton>
                 </div>
                 {props.openingReply === post.id && (
                     <div className={'mf-reply-comment'}>

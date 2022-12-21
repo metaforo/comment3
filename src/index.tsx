@@ -3,5 +3,6 @@ import './css/common.css';
 
 import MfCommentWidget, {MfCommentWidgetProps} from './components/comment/MfCommentWidget';
 import MfTippingWidget, {MfTippingWidgetProps} from './components/tipping/MfTippingWidget';
+import MfLikeWidget, {MfLikeWidgetProps} from './components/like/MfLikeWidget';
 
-export {MfCommentWidget, MfTippingWidget, MfCommentWidgetProps, MfTippingWidgetProps};
+export {MfCommentWidget, MfCommentWidgetProps, MfTippingWidget, MfTippingWidgetProps, MfLikeWidget, MfLikeWidgetProps};

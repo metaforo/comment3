@@ -1,11 +1,10 @@
-import {updateUserStatusByLoginResponse, UserInfoState, useUserContext} from '../../context/UserContext';
+import {useUserContext} from '../../context/UserContext';
 import {useCommentWidgetContext} from '../../context/CommentWidgetContext';
 import {Avatar, Card, List, ListItem, useTheme} from '@mui/material';
-import React, {Dispatch, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {UserStatus} from '../../utils/Constants';
-import {Storage} from '../../utils/Storage';
 import CreateCommentWidget from './CreateCommentWidget';
-import {initApiService, loadInnerComment, loadThread, refreshLoginStatus} from '../../api/ApiService';
+import {likePost, loadInnerComment, loadThread, unlikePost} from '../../api/ApiService';
 import CenterLoadingWidget from '../common/CenterLoadingWIdget';
 import {EMPTY_THREAD, Thread} from '../../model/Thread';
 import {grey} from '@mui/material/colors';
@@ -17,7 +16,9 @@ import {LoadingButton} from '@mui/lab';
 import {addItemToSetState} from '../../utils/Util';
 import {getEns} from '../../utils/EnsService';
 import EditProfileDialog from '../login/EditProfileDialog';
-import {Global} from '../../utils/GlobalVariables';
+import {useGlobalContext} from '../../context/GlobalContext';
+import {initLoginStatus, refreshByStorage} from '../../utils/UserUtil';
+import {EventItem, StorageEvent} from '../../utils/Storage';
 
 type CommentWidgetProps = {
     siteName: string;
@@ -35,6 +36,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
     const theme = useTheme();
 
     const {userInfoState, setUserState} = useUserContext();
+    const {globalState} = useGlobalContext();
     const {commentWidgetState, commentWidgetDispatch} = useCommentWidgetContext();
     const isLogin = userInfoState.loginStatus === UserStatus.login;
     /// user login & load thread
@@ -57,11 +59,23 @@ export default function CommentWidget(props: CommentWidgetProps) {
     /// Only one reply dialog can be shown
     const [openReply, setOpenReply] = useState(ALL_CLOSED);
 
+    // listen storage changes
+    const refreshUserByStorage = (e: Event | CustomEvent<EventItem>) =>
+        refreshByStorage(e, props.siteName, userInfoState, setUserState);
+    useEffect(() => {
+        window.addEventListener('storage', refreshUserByStorage);
+        window.addEventListener(StorageEvent, refreshUserByStorage);
+        return () => {
+            window.removeEventListener('storage', refreshUserByStorage);
+            window.removeEventListener(StorageEvent, refreshUserByStorage);
+        };
+    }, []);
+
     /// Check User Login Status
     useEffect(() => {
         commentWidgetDispatch(props);
         if (userInfoState.loginStatus === UserStatus.isChecking) {
-            _initUserLoginStatus(userInfoState, setUserState).then(() => {
+            initLoginStatus(props.siteName, userInfoState, setUserState).then(() => {
                 setIsInitializing(false);
             });
         } else {
@@ -91,9 +105,10 @@ export default function CommentWidget(props: CommentWidgetProps) {
     useEffect(() => {
         setOpenReply(ALL_CLOSED);
 
-        if (userInfoState.isNew && !Global.disableEditProfile) {
+        if (userInfoState.isNew && !globalState.disableEditProfile) {
             setShowUpdateProfileDialog(true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userInfoState]);
 
     const hasMorePost = () => {
@@ -230,6 +245,26 @@ export default function CommentWidget(props: CommentWidgetProps) {
         }
     }
 
+    function clickLike(post: Post) {
+        if (!isLogin) {
+            setIsOpenLoginDialog(true);
+            return;
+        }
+
+        if (post.liked) {
+            post.likeCount--;
+            post.liked = !post.liked;
+            // noinspection JSIgnoredPromiseFromCall
+            unlikePost(commentWidgetState.siteName, post.id);
+        } else {
+            post.likeCount++;
+            post.liked = !post.liked;
+            // noinspection JSIgnoredPromiseFromCall
+            likePost(commentWidgetState.siteName, post.id);
+        }
+        setPostList([].concat(postList));
+    }
+
     // region ---- Comment List ----
 
     const listItemList = [] as JSX.Element[];
@@ -242,6 +277,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
                 onReplySuccess: handleReplyPost,
                 openingReply: openReply,
                 onShowReplyClick: clickReply,
+                onLikeClick: clickLike,
                 loadingChildren: showInnerLoading,
                 onLoadingChildrenClick: loadMoreReplies,
                 noMorePostSet: noMorePost,
@@ -270,7 +306,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
 
     const editProfile = () => {
         if (isLogin) {
-            if (!Global.disableEditProfile) {
+            if (!globalState.disableEditProfile) {
                 setShowUpdateProfileDialog(true);
             }
         } else {
@@ -356,28 +392,6 @@ export default function CommentWidget(props: CommentWidgetProps) {
     );
 
     return WidgetContainer(widget, isInitializing, props.variant);
-}
-
-async function _initUserLoginStatus(userInfoState: UserInfoState, dispatch: Dispatch<UserInfoState>) {
-    const userToken = Storage.getItem(Storage.userToken);
-    if (userToken) {
-        initApiService(userToken);
-        return refreshLoginStatus().then((res) => {
-            if (res.data && res.data.user) {
-                userInfoState.loginStatus = UserStatus.login;
-                updateUserStatusByLoginResponse(res.data.user, dispatch);
-                return true;
-            } else {
-                userInfoState.loginStatus = UserStatus.notLogin;
-                dispatch(userInfoState);
-                return false;
-            }
-        });
-    } else {
-        userInfoState.loginStatus = UserStatus.notLogin;
-        dispatch(userInfoState);
-        return false;
-    }
 }
 
 function WidgetContainer(widget: JSX.Element, isInitializing: boolean, variant?: string): JSX.Element {

@@ -1,8 +1,9 @@
 import {typedData} from '../../utils/Util';
 import {loginByWallet, LoginParam} from '../../api/ApiService';
 import log from '../../utils/LogUtil';
+import {GlobalState} from '../../context/GlobalContext';
 
-export async function connectToMetamask() {
+export async function connectToMetamask(globalState: GlobalState) {
     // @ts-ignore
     const {ethereum} = window;
     const targetNetworkId = '0x1';
@@ -54,10 +55,22 @@ export async function connectToMetamask() {
     if (!sign) {
         return false;
     }
-    return await loginByWallet({
+
+    const loginParam = {
         web3_public_key: account,
         sign: sign,
         signMsg: signMsg,
         wallet_type: 5,
-    } as LoginParam);
+    } as LoginParam;
+    if (globalState.siteName) {
+        loginParam.group_name = globalState.siteName;
+        if (globalState.preferDisplayName && globalState.preferDisplayName != '') {
+            loginParam.display_name = globalState.preferDisplayName;
+        }
+        if (globalState.preferDisplayAvatar && globalState.preferDisplayAvatar != '') {
+            loginParam.display_avatar = globalState.preferDisplayAvatar;
+        }
+    }
+
+    return await loginByWallet(loginParam);
 }
