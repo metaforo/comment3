@@ -6,5 +6,5 @@ export type LikeInfo = {
         username: string;
         photoUrl?: string;
         isNft?: boolean;
-    }
-}
+    };
+};

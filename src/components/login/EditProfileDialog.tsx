@@ -195,7 +195,7 @@ export default function EditProfileDialog(props: EditProfileDialogProps) {
 }
 
 const UsernameInputField = styled(TextField)`
-  fieldset {
-    border-radius: 12px;
-  }
+    fieldset {
+        border-radius: 12px;
+    }
 `;

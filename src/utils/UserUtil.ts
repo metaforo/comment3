@@ -25,9 +25,11 @@ export function refreshByStorage(
             currentLoginStatus = true;
         }
     } else if (e instanceof StorageEvent) {
-        if (e.key === Storage.isLogin) { // login event
+        if (e.key === Storage.isLogin) {
+            // login event
             currentLoginStatus = true;
-        } else if (e.key == null || e.key == '') { // logout event
+        } else if (e.key == null || e.key == '') {
+            // logout event
             currentLoginStatus = Storage.getItem(Storage.isLogin) === 'true';
         }
     }

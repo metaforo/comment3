@@ -89,7 +89,6 @@ export function refreshLoginStatus(groupName: string) {
     });
 }
 
-
 export type UpdateProfileParam = {
     display_name: string | undefined;
     group_name: string | undefined;

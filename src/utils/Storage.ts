@@ -13,13 +13,15 @@ export class Storage {
 
     static saveItem(key: string, value: string) {
         const result = localStorage.setItem(key, value);
-        window.dispatchEvent(new CustomEvent<EventItem>(StorageEvent, {
-            'detail': {
-                type: EventTypeSave,
-                key: key,
-                value: value,
-            } as EventItem,
-        }));
+        window.dispatchEvent(
+            new CustomEvent<EventItem>(StorageEvent, {
+                detail: {
+                    type: EventTypeSave,
+                    key: key,
+                    value: value,
+                } as EventItem,
+            }),
+        );
         return result;
     }
 
@@ -29,25 +31,29 @@ export class Storage {
 
     static removeItem(key: string) {
         const result = localStorage.removeItem(key);
-        window.dispatchEvent(new CustomEvent<EventItem>(StorageEvent, {
-            'detail': {
-                type: EventTypeRemove,
-                key: key,
-                value: null,
-            } as EventItem,
-        }));
+        window.dispatchEvent(
+            new CustomEvent<EventItem>(StorageEvent, {
+                detail: {
+                    type: EventTypeRemove,
+                    key: key,
+                    value: null,
+                } as EventItem,
+            }),
+        );
         return result;
     }
 
     static removeAll() {
         const result = localStorage.clear();
-        window.dispatchEvent(new CustomEvent<EventItem>(StorageEvent, {
-            'detail': {
-                type: EventTypeRemoveAll,
-                key: '',
-                value: null,
-            } as EventItem,
-        }));
+        window.dispatchEvent(
+            new CustomEvent<EventItem>(StorageEvent, {
+                detail: {
+                    type: EventTypeRemoveAll,
+                    key: '',
+                    value: null,
+                } as EventItem,
+            }),
+        );
         return result;
     }
 }

@@ -88,13 +88,13 @@ export function LoginDialog(props: LoginDialogProps) {
             text: 'ArConnect',
             logo: 'https://cdn.metaforo.io/images/connect/arconnect_thumb.png',
             onClick: startArConnect,
-            disableReason: isArConnectInstalled() ? null : 'You haven\'t install ArConnect plugin yet.',
+            disableReason: isArConnectInstalled() ? null : "You haven't install ArConnect plugin yet.",
         },
         {
             text: 'Metamask',
             logo: 'https://cdn.metaforo.io/images/connect/metamask_thumb.png',
             onClick: startMetamaskConnect,
-            disableReason: isMetamaskInstalled() ? null : 'You haven\'t install Metamask plugin yet.',
+            disableReason: isMetamaskInstalled() ? null : "You haven't install Metamask plugin yet.",
         },
         {
             text: 'WalletConnect',
