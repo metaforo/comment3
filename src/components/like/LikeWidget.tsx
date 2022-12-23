@@ -37,6 +37,7 @@ export default function LikeWidget(props: LikeWidgetProps) {
             window.removeEventListener('storage', refreshUserByStorage);
             window.removeEventListener(StorageEvent, refreshUserByStorage);
         };
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {

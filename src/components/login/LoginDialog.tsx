@@ -1,11 +1,9 @@
 import {Avatar, Dialog, List, ListItemButton, ListItemText, SxProps, Theme, Tooltip} from '@mui/material';
-import {connectToAr} from './ArconnectLogin';
-import {isArConnectInstalled, isMetamaskInstalled} from '../../utils/Util';
+import {isMetamaskInstalled} from '../../utils/Util';
 import {loginIconSize} from '../../utils/ThemeUtil';
 import {useUserContext} from '../../context/UserContext';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connectToMetamask} from './MetamaskLogin';
-import {connectToWalletConnectByProvider} from './WalletconnectLogin';
 import {grey} from '@mui/material/colors';
 import {CloseableDialogTitle} from '../common/CloseableDialogTitle';
 import LoadingWidget from '../common/LoadingWidget';
@@ -40,20 +38,17 @@ export function LoginDialog(props: LoginDialogProps) {
         });
     };
 
-    // region ---- Login Dialog ----
-
-    const startArConnect = async () => {
-        if (!isArConnectInstalled()) {
-            return;
+    useEffect(() => {
+        if (props.open) {
+            startMetamaskConnect();
         }
-        setLoading(true);
-
-        const result = await connectToAr(globalState);
-        handleSsoResponse(result, LoginType.ar);
-    };
+        // eslint-disable-next-line
+    }, [props]);
+    // region ---- Login Dialog ----
 
     const startMetamaskConnect = async () => {
         if (!isMetamaskInstalled()) {
+            closeDialog();
             return;
         }
 
@@ -63,16 +58,10 @@ export function LoginDialog(props: LoginDialogProps) {
         handleSsoResponse(result, LoginType.eth);
     };
 
-    const startWalletconnect = async () => {
-        setLoading(true);
-
-        const result = await connectToWalletConnectByProvider(globalState);
-        handleSsoResponse(result, LoginType.walletConnect);
-    };
-
     const handleSsoResponse = (ssoResponse: any, loginType: string) => {
         if (!ssoResponse) {
             setLoading(false);
+            closeDialog();
             return;
         }
 
@@ -85,22 +74,10 @@ export function LoginDialog(props: LoginDialogProps) {
 
     const loginList: LoginMethodItem[] = [
         {
-            text: 'ArConnect',
-            logo: 'https://cdn.metaforo.io/images/connect/arconnect_thumb.png',
-            onClick: startArConnect,
-            disableReason: isArConnectInstalled() ? null : "You haven't install ArConnect plugin yet.",
-        },
-        {
             text: 'Metamask',
             logo: 'https://cdn.metaforo.io/images/connect/metamask_thumb.png',
             onClick: startMetamaskConnect,
-            disableReason: isMetamaskInstalled() ? null : "You haven't install Metamask plugin yet.",
-        },
-        {
-            text: 'WalletConnect',
-            logo: 'https://cdn.metaforo.io/images/connect/wc_thumb.png',
-            onClick: startWalletconnect,
-            disableReason: null,
+            disableReason: isMetamaskInstalled() ? null : 'You haven\'t install Metamask plugin yet.',
         },
     ];
     // endregion ---- Login Dialog ----
