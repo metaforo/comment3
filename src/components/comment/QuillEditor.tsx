@@ -3,10 +3,11 @@ import '../../css/quill.css';
 import '../../css/quill.snow.css';
 import {DeltaStatic, Sources} from 'quill';
 import {quillModules} from '../../utils/QuillUtil';
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded';
 import {IconButton, useTheme} from '@mui/material';
 import {boldIcon, italicIcon, olIcon, ulIcon, underlineIcon} from '../../assets/SvgAssets';
+import log from '../../utils/LogUtil';
 
 const icons = ReactQuill.Quill.import('ui/icons');
 
@@ -27,22 +28,25 @@ interface QuillEditorProps {
 }
 
 export default function QuillEditor(props: QuillEditorProps) {
+    log('mf-quill: init', props);
     const modules = quillModules();
     const theme = useTheme();
     modules.toolbar = {
         container: '#' + props.widgetKey,
     };
 
-    const inputRef = useRef(null);
-    useEffect(() => {
-        if (inputRef != null && inputRef.current != null) {
-            // @ts-ignore
-            const quill = inputRef.current as ReactQuill;
-            quill.setEditorSelection(quill.getEditor(), {index: quill.getEditor().getLength(), length: 0});
-        }
-    }, []);
+
+    // const inputRef = useRef(null);
+    // useEffect(() => {
+    //     if (inputRef != null && inputRef.current != null) {
+    //         // @ts-ignore
+    //         const quill = inputRef.current as ReactQuill;
+    //         quill.setEditorSelection(quill.getEditor(), {index: quill.getEditor().getLength(), length: 0});
+    //     }
+    // }, []);
 
     const handleChange = (value: string, delta: DeltaStatic, source: Sources, editor: UnprivilegedEditor) => {
+        log('mf-onChange: ' + value, delta);
         props.onChange(value, delta, source, editor);
     };
 
@@ -88,7 +92,7 @@ export default function QuillEditor(props: QuillEditorProps) {
                 value={props.value}
                 onChange={handleChange}
                 modules={modules}
-                ref={inputRef}
+                // ref={inputRef}
             />
             {CustomToolbar()}
         </div>
