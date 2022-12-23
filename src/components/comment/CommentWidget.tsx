@@ -69,6 +69,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             window.removeEventListener('storage', refreshUserByStorage);
             window.removeEventListener(StorageEvent, refreshUserByStorage);
         };
+        // eslint-disable-next-line
     }, []);
 
     /// Check User Login Status
