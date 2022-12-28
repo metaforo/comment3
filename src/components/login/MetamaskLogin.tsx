@@ -4,9 +4,15 @@ import log from '../../utils/LogUtil';
 import {GlobalState} from '../../context/GlobalContext';
 
 export async function connectToMetamask(globalState: GlobalState) {
+    let chainId = globalState.chainId ?? 1;
+    if (chainId <= 0) {
+        chainId = 1;
+    }
+    const targetNetworkId = '0x' + chainId.toString(16);
+
     // @ts-ignore
     const {ethereum} = window;
-    const targetNetworkId = '0x1';
+
     const chainSwitch = await ethereum
         .request({
             method: 'wallet_switchEthereumChain',
@@ -38,7 +44,7 @@ export async function connectToMetamask(globalState: GlobalState) {
     if (!account) {
         return false;
     }
-    const signMsg = JSON.stringify(typedData(account));
+    const signMsg = JSON.stringify(typedData(account, chainId));
     const sign = await ethereum
         .request({
             method: 'eth_signTypedData_v4',

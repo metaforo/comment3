@@ -2,7 +2,7 @@ import React, {Dispatch} from 'react';
 import {camelCase} from 'lodash';
 import {DeltaStatic} from 'quill';
 
-export function typedData(address: string) {
+export function typedData(address: string, chainId: number) {
     return {
         types: {
             EIP712Domain: [
@@ -22,7 +22,7 @@ export function typedData(address: string) {
         domain: {
             name: 'Metaqus',
             version: '1.0',
-            chainId: 1,
+            chainId: chainId,
         },
         message: {
             account: address,
