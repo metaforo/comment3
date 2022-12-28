@@ -125,7 +125,7 @@ export default function CommentListItem(props: CommentListItemProps) {
 
                 <QuillViewer content={post.content} />
                 <div className='mf-comment-operation'>
-                    {!isSmallSize && // don't show reply button for inner reply
+                    {!isSmallSize && ( // don't show reply button for inner reply
                         <IconButton
                             onClick={() => {
                                 props.onShowReplyClick(props.openingReply === post.id ? undefined : post);
@@ -133,7 +133,7 @@ export default function CommentListItem(props: CommentListItemProps) {
                         >
                             <SvgIcon data={replyIcon({size: 14, color: theme.palette.text.secondary})} />
                         </IconButton>
-                    }
+                    )}
                     <IconButton
                         onClick={() => {
                             props.onLikeClick(post);
