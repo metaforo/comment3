@@ -96,9 +96,16 @@ function initMfCommentWidget() {
                 continue;
             }
             const attrs = element.attributes;
+            let chainId = 1;
+            try {
+                chainId = parseInt(attrs.getNamedItem('chainId')!.value);
+            } catch (e) {
+                chainId = 1;
+            }
             showCommentList(element, {
                 siteName: attrs.getNamedItem('siteName')!.value,
                 pageId: attrs.getNamedItem('pageId')!.value,
+                chainId: chainId,
                 userDisplayName: attrs.getNamedItem('userDisplayName')?.value ?? undefined,
                 userAvatar: attrs.getNamedItem('userAvatar')?.value ?? undefined,
                 disableEditProfile: attrs.getNamedItem('disableEditProfile')?.value === 'true' ?? undefined,

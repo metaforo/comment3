@@ -125,17 +125,19 @@ export default function CommentListItem(props: CommentListItemProps) {
 
                 <QuillViewer content={post.content} />
                 <div className='mf-comment-operation'>
-                    <IconButton
-                        onClick={() => {
-                            props.onShowReplyClick(props.openingReply === post.id ? undefined : post);
-                        }}
-                    >
-                        <SvgIcon data={replyIcon({size: 14, color: theme.palette.text.secondary})} />
-                    </IconButton>
+                    {!isSmallSize && ( // don't show reply button for inner reply
+                        <IconButton
+                            onClick={() => {
+                                props.onShowReplyClick(props.openingReply === post.id ? undefined : post);
+                            }}
+                        >
+                            <SvgIcon data={replyIcon({size: 14, color: theme.palette.text.secondary})} />
+                        </IconButton>
+                    )}
                     <IconButton
                         onClick={() => {
                             props.onLikeClick(post);
-                            this.forceUpdate();
+                            // this.forceUpdate();
                         }}
                     >
                         <SvgIcon

@@ -4,7 +4,19 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import {GlobalState} from '../../context/GlobalContext';
 
 export async function connectToWalletConnectByProvider(globalState: GlobalState) {
-    const getProvider = () => new WalletConnectProvider({infuraId: '27804223e321460cb5682ca4b676f224'});
+    let chainId = globalState.chainId ?? 1;
+    if (chainId <= 0) {
+        chainId = 1;
+    }
+
+    const getProvider = () =>
+        new WalletConnectProvider({
+            infuraId: '27804223e321460cb5682ca4b676f224',
+            chainId: chainId,
+            rpc: {
+                137: 'https://polygon-rpc.com',
+            },
+        });
     try {
         await getProvider().wc.killSession();
     } catch (e) {
@@ -27,7 +39,7 @@ export async function connectToWalletConnectByProvider(globalState: GlobalState)
     }
 
     const account = connectResult[0];
-    const msg = JSON.stringify(typedData(account));
+    const msg = JSON.stringify(typedData(account, chainId));
     const sign = await provider
         .request({
             method: 'eth_signTypedData_v4',

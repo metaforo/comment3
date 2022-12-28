@@ -16,6 +16,8 @@ import {Global} from '../../utils/GlobalVariables';
 export type MfCommentWidgetProps = {
     siteName: string;
     pageId: string;
+    /// default is 1. use decimal. For example: if you want 0x89 (polygon), you need set chainId as 137.
+    chainId?: number;
 
     /// current user's display name.
     userDisplayName?: string;
@@ -61,6 +63,7 @@ export default function MfCommentWidget(props: MfCommentWidgetProps) {
     baseProps.pageId = props.pageId;
     baseProps.preferDisplayName = props.userDisplayName;
     baseProps.preferDisplayAvatar = props.userAvatar;
+    baseProps.chainId = props.chainId;
     if (props.disableEditProfile) {
         baseProps.disableEditProfile = true;
     }

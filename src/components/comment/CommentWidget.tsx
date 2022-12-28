@@ -69,6 +69,7 @@ export default function CommentWidget(props: CommentWidgetProps) {
             window.removeEventListener('storage', refreshUserByStorage);
             window.removeEventListener(StorageEvent, refreshUserByStorage);
         };
+        // eslint-disable-next-line
     }, []);
 
     /// Check User Login Status
@@ -252,12 +253,12 @@ export default function CommentWidget(props: CommentWidgetProps) {
         }
 
         if (post.liked) {
-            post.likeCount--;
+            post.likeCount = (post.likeCount ?? 1) - 1;
             post.liked = !post.liked;
             // noinspection JSIgnoredPromiseFromCall
             unlikePost(commentWidgetState.siteName, post.id);
         } else {
-            post.likeCount++;
+            post.likeCount = (post.likeCount ?? 0) + 1;
             post.liked = !post.liked;
             // noinspection JSIgnoredPromiseFromCall
             likePost(commentWidgetState.siteName, post.id);

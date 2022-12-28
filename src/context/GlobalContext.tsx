@@ -5,6 +5,7 @@ export interface GlobalState {
     isDemo: boolean;
     siteName: string;
     pageId: string;
+    chainId?: number;
     preferDisplayName: string | undefined;
     preferDisplayAvatar: string | undefined;
     disableEditProfile: boolean;
@@ -16,6 +17,7 @@ export const initGlobalState = () => {
         isDemo: false,
         siteName: '',
         pageId: '',
+        chainId: 1,
         preferDisplayName: undefined,
         preferDisplayAvatar: undefined,
         disableEditProfile: false,

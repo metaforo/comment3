@@ -30,6 +30,7 @@ export default function TippingWidget(props: TipWidgetProps) {
             window.removeEventListener('storage', refreshUserByStorage);
             window.removeEventListener(StorageEvent, refreshUserByStorage);
         };
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
