@@ -135,7 +135,7 @@ export default function CommentListItem(props: CommentListItemProps) {
                     <IconButton
                         onClick={() => {
                             props.onLikeClick(post);
-                            this.forceUpdate();
+                            // this.forceUpdate();
                         }}
                     >
                         <SvgIcon
