@@ -11,7 +11,9 @@ export async function getEns(addr: string) {
     if (!provider) {
         return null;
     }
-    return await provider.lookupAddress(addr);
+    return await provider.lookupAddress(addr).catch(() => {
+        return null;
+    });
 }
 
 export async function getAddress(ensName: string) {
@@ -19,5 +21,7 @@ export async function getAddress(ensName: string) {
         return null;
     }
 
-    return await provider.resolveName(ensName);
+    return await provider.resolveName(ensName).catch(() => {
+        return null;
+    });
 }
