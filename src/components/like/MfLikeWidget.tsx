@@ -4,7 +4,7 @@ import {composeProviders, formatSiteName} from '../../utils/Util';
 import {UserContextProvider} from '../../context/UserContext';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
 import {ThemeProvider} from '@mui/material';
-import React from 'react';
+import React, {memo} from 'react';
 import LikeWidget from './LikeWidget';
 import {LIB_VER} from '../../utils/Constants';
 import {GlobalContextProvider, initGlobalState} from '../../context/GlobalContext';
@@ -26,7 +26,15 @@ export type MfLikeWidgetProps = {
     debug?: boolean;
 };
 
-export default function MfLikeWidget(props: MfLikeWidgetProps) {
+// use memo to avoid re-render when parent widget is re-rendering. ref : https://www.zhihu.com/question/442368205
+const MfLikeWidget: React.FC<MfLikeWidgetProps> = memo((props: MfLikeWidgetProps) => (
+    <MfLikeWidgetContainer {...props} />
+));
+
+MfLikeWidget.displayName = 'MfLikeWidget';
+export default MfLikeWidget;
+
+function MfLikeWidgetContainer(props: MfLikeWidgetProps) {
     const baseProps = initGlobalState();
     if (props.debug) {
         Global.isDebug = true;

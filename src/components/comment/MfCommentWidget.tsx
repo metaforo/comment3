@@ -5,7 +5,7 @@ import {CommentWidgetContextProvider} from '../../context/CommentWidgetContext';
 import {UserContextProvider} from '../../context/UserContext';
 import {ThemeProvider} from '@mui/material';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
-import React from 'react';
+import React, {memo} from 'react';
 import CommentWidget from './CommentWidget';
 import {initQuill} from '../../utils/QuillUtil';
 import '../../css/quill.css';
@@ -41,7 +41,15 @@ export type MfCommentWidgetProps = {
     demo?: boolean;
 };
 
-export default function MfCommentWidget(props: MfCommentWidgetProps) {
+// use memo to avoid re-render when parent widget is re-rendering. ref : https://www.zhihu.com/question/442368205
+const MfCommentWidget: React.FC<MfCommentWidgetProps> = memo((props: MfCommentWidgetProps) => (
+    <MfCommentWidgetContainer {...props} />
+));
+
+MfCommentWidget.displayName = 'MfCommentWidget';
+export default MfCommentWidget;
+
+function MfCommentWidgetContainer(props: MfCommentWidgetProps) {
     const baseProps = initGlobalState();
     if (props.debug) {
         Global.isDebug = true;
