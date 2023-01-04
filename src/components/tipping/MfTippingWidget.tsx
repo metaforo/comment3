@@ -6,7 +6,7 @@ import {TipWidgetContextProvider} from '../../context/TipWidgetContext';
 import {UserContextProvider} from '../../context/UserContext';
 import {ThemeProvider} from '@mui/material';
 import {createThemeFromAttr} from '../../utils/ThemeUtil';
-import React from 'react';
+import React, {memo} from 'react';
 import TippingWidget from './TippingWidget';
 import {LIB_VER} from '../../utils/Constants';
 import {GlobalContextProvider, initGlobalState} from '../../context/GlobalContext';
@@ -29,7 +29,15 @@ export type MfTippingWidgetProps = {
     demo?: boolean;
 };
 
-export default function MfTippingWidget(props: MfTippingWidgetProps) {
+// use memo to avoid re-render when parent widget is re-rendering. ref : https://www.zhihu.com/question/442368205
+const MfTippingWidget: React.FC<MfTippingWidgetProps> = memo((props: MfTippingWidgetProps) => (
+    <MfTippingWidgetContainer {...props} />
+));
+
+MfTippingWidget.displayName = 'MfTippingWidget';
+export default MfTippingWidget;
+
+function MfTippingWidgetContainer(props: MfTippingWidgetProps) {
     const baseProps = initGlobalState();
 
     if (props.debug) {
