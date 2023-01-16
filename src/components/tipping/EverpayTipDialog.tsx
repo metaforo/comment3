@@ -4,7 +4,7 @@ import {
     Avatar,
     Button,
     Dialog,
-    FormControl,
+    FormGroup,
     IconButton,
     MenuItem,
     Select,
@@ -27,6 +27,8 @@ import {grey} from '@mui/material/colors';
 import LoadingWidget from '../common/LoadingWidget';
 import {useGlobalContext} from '../../context/GlobalContext';
 import {logout} from '../../utils/UserUtil';
+import {TippingChain} from '../../utils/Constants';
+import {EthTippingChannel, EthToken, loadUserEthBalance} from './Ethereum';
 
 export interface EverpayDialogProps {
     open: boolean;
@@ -47,24 +49,40 @@ export function EverpayDialog(props: EverpayDialogProps) {
     } as EverpayBalance);
     const [err, setErr] = useState('');
     const [success, setSuccess] = useState(false);
-    const [balanceList, setBalanceList] = useState([] as EverpayBalance[]);
+
+    // Tipping Type : everpay / eth / ...
+    const [tippingTypeList, setTippingTypeList] = useState([TippingChain.everpay]);
+    // Current selected tipping type everpay or eth
+    const [tippingType, setTippingType] = useState(TippingChain.everpay);
+
+    const [everpayBalanceList, setEverpayBalanceList] = useState([] as EverpayBalance[]);
+    const [ethBalanceList, setEthBalanceList] = useState([] as EthToken[]);
 
     useEffect(() => {
-        initEverpayInfo();
+        const tippingChannel = new EthTippingChannel();
+        tippingChannel.loadUserBalance(userInfoState);
+        initUserBalance();
         // eslint-disable-next-line
-    }, [userInfoState]);
+    }, [userInfoState.loginStatus]);
+
 
     const handleClose = () => {
         closeDialog();
     };
 
-    const initEverpayInfo = () => {
+    const initUserBalance = () => {
         setLoading(true);
 
         loadUserBalance(userInfoState).then((balances) => {
             if (balances != null) {
-                setBalanceList(balances!);
+                setEverpayBalanceList(balances!);
                 setSelectedBalance(balances[0]);
+            }
+            return loadUserEthBalance(userInfoState);
+        }).then((tokenList) => {
+            setEthBalanceList(tokenList);
+            if (tokenList.length > 0) {
+                setTippingTypeList([TippingChain.everpay, TippingChain.eth]);
             }
             setLoading(false);
         });
@@ -174,7 +192,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
         bgcolor: 'white',
         border: '1px solid white',
     };
-    const menuItems = balanceList.map((balance) => {
+    const everpayTokenList = everpayBalanceList.map((balance) => {
         return (
             <MenuItem key={balance.symbol} value={balance.symbol}>
                 <div className='mf-balance-menu-item'>
@@ -185,6 +203,21 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     ></Avatar>
                     <p style={{flexGrow: 1}}>{balance.symbol}</p>
                     <p>{floatToString(balance.balance, balance.decimals)}</p>
+                </div>
+            </MenuItem>
+        );
+    });
+    const ethTokenList = ethBalanceList.map((balance) => {
+        return (
+            <MenuItem key={balance.name} value={balance.name}>
+                <div className='mf-balance-menu-item'>
+                    <Avatar
+                        alt={balance.name}
+                        src={balance.iconUrl}
+                        sx={avatarSxProps}
+                    ></Avatar>
+                    <p style={{flexGrow: 1}}>{balance.name}</p>
+                    <p>{floatToString(balance.balance, balance.decimal)}</p>
                 </div>
             </MenuItem>
         );
@@ -214,6 +247,83 @@ export function EverpayDialog(props: EverpayDialogProps) {
         </div>
     );
 
+    let tokenSelectList;
+    if (tippingType == TippingChain.everpay) {
+        tokenSelectList = <Select
+            value={selectedBalance.symbol}
+            onChange={(event: SelectChangeEvent) => {
+                everpayBalanceList.forEach((b) => {
+                    if (b.symbol === event.target.value) {
+                        setSelectedBalance(b);
+                        setTokenAmount('0');
+                        setErr('');
+                    }
+                });
+            }}
+            renderValue={(selected) => (
+                <div className='mf-balance-select-item'>
+                    <Avatar
+                        alt={selected}
+                        src={
+                            'https://cdn.metaforo.io/images/token/' +
+                            selected.toLowerCase() +
+                            '_thumb.png'
+                        }
+                        sx={avatarSxProps}
+                    />
+                    <p>{selected}</p>
+                </div>
+            )}
+            MenuProps={{
+                className: 'mf-main',
+                PaperProps: {
+                    style: {
+                        maxHeight: 520,
+                    },
+                },
+            }}
+        >
+            {everpayTokenList}
+        </Select>;
+    } else {
+        tokenSelectList = <Select
+            value={selectedBalance.symbol}
+            onChange={(event: SelectChangeEvent) => {
+                everpayBalanceList.forEach((b) => {
+                    if (b.symbol === event.target.value) {
+                        setSelectedBalance(b);
+                        setTokenAmount('0');
+                        setErr('');
+                    }
+                });
+            }}
+            renderValue={(selected) => (
+                <div className='mf-balance-select-item'>
+                    <Avatar
+                        alt={selected}
+                        src={
+                            'https://cdn.metaforo.io/images/token/' +
+                            selected.toLowerCase() +
+                            '_thumb.png'
+                        }
+                        sx={avatarSxProps}
+                    />
+                    <p>{selected}</p>
+                </div>
+            )}
+            MenuProps={{
+                className: 'mf-main',
+                PaperProps: {
+                    style: {
+                        maxHeight: 520,
+                    },
+                },
+            }}
+        >
+            {ethTokenList}
+        </Select>;
+    }
+
     const content = (
         <Stack
             direction={'column'}
@@ -223,7 +333,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                 visibility: loading || success ? 'hidden' : 'visible',
             }}
         >
-            <FormControl>
+            <FormGroup>
                 <div className={'mf-dialog-main'}>
                     <div className={'mf-dialog-tip-address'}>
                         <div className={'mf-dialog-address-text'} style={{color: grey['600']}}>
@@ -244,43 +354,59 @@ export function EverpayDialog(props: EverpayDialogProps) {
                     </div>
 
                     <div className={'mf-dialog-select-main'}>
-                        <div className={'mf-dialog-select'}>
-                            <Select
-                                value={selectedBalance.symbol}
-                                onChange={(event: SelectChangeEvent) => {
-                                    balanceList.forEach((b) => {
-                                        if (b.symbol === event.target.value) {
-                                            setSelectedBalance(b);
-                                            setTokenAmount('0');
-                                            setErr('');
-                                        }
-                                    });
-                                }}
-                                renderValue={(selected) => (
-                                    <div className='mf-balance-select-item'>
-                                        <Avatar
-                                            alt={selected}
-                                            src={
-                                                'https://cdn.metaforo.io/images/token/' +
-                                                selected.toLowerCase() +
-                                                '_thumb.png'
-                                            }
-                                            sx={avatarSxProps}
-                                        />
-                                        <p>{selected}</p>
-                                    </div>
-                                )}
-                                MenuProps={{
-                                    className: 'mf-main',
-                                    PaperProps: {
-                                        style: {
-                                            maxHeight: 520,
+                        <div className={'mf-dialog-select mf-item-1'}>
+                            <Select value={tippingType}
+                                    onChange={(event: SelectChangeEvent) => {
+                                        setTippingType(event.target.value);
+                                    }}
+                                    renderValue={(selected) => (
+                                        <div className='mf-balance-select-item'>
+                                            <Avatar
+                                                alt={selected}
+                                                src={
+                                                    'https://cdn.metaforo.io/images/token/' +
+                                                    (selected == TippingChain.everpay ? 'everpay' : 'eth') +
+                                                    '_thumb.png'
+                                                }
+                                                sx={avatarSxProps}
+                                            />
+                                            <p>{selected}</p>
+                                        </div>
+                                    )}
+                                    MenuProps={{
+                                        className: 'mf-main',
+                                        PaperProps: {
+                                            style: {
+                                                maxHeight: 520,
+                                            },
                                         },
-                                    },
-                                }}
+                                    }}
                             >
-                                {menuItems}
+                                <MenuItem value={TippingChain.everpay}>
+                                    <div className='mf-balance-menu-item'>
+                                        <Avatar
+                                            alt={'everpay'}
+                                            src={'https://cdn.metaforo.io/images/token/everpay_thumb.png'}
+                                            sx={avatarSxProps}
+                                        ></Avatar>
+                                        <p style={{flexGrow: 1}}>{TippingChain.everpay}</p>
+                                    </div>
+                                </MenuItem>
+                                <MenuItem value={TippingChain.eth}>
+                                    <div className='mf-balance-menu-item'>
+                                        <Avatar
+                                            alt={'ethereum'}
+                                            src={'https://cdn.metaforo.io/images/token/eth_thumb.png'}
+                                            sx={avatarSxProps}
+                                        ></Avatar>
+                                        <p style={{flexGrow: 1}}>{TippingChain.eth}</p>
+                                    </div>
+                                </MenuItem>
                             </Select>
+                        </div>
+
+                        <div className={'mf-dialog-select mf-item-2'}>
+                            {tokenSelectList}
                         </div>
                         <div className={'mf-dialog-input'}>
                             <TextField
@@ -343,7 +469,7 @@ export function EverpayDialog(props: EverpayDialogProps) {
                         Tip
                     </Button>
                 </div>
-            </FormControl>
+            </FormGroup>
         </Stack>
     );
 

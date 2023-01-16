@@ -4,8 +4,49 @@ import {LoginType, UserStatus} from '../../utils/Constants';
 import {ethers} from 'ethers';
 import {Storage} from '../../utils/Storage';
 import {BalanceItem, EverpayInfo} from 'everpay/cjs/types';
+import {BaseToken} from '../../model/tipping/BaseToken';
+import {BaseTippingChannel} from '../../model/tipping/BaseTippingChannel';
 
 let everpayInstance: Everpay | null = null;
+
+export class EverpayToken extends BaseToken {
+    name: string;
+    iconUrl: string;
+    decimal: number;
+    balance: number;
+
+    tag: string;
+}
+
+export class EverpayTippingChannel extends BaseTippingChannel {
+    constructor() {
+        super();
+        this.name = 'Everpay';
+        this.iconUrl = 'https://cdn.metaforo.io/images/token/everpay_thumb.png';
+    }
+
+    async loadUserBalance(userInfoState: UserInfoState): Promise<BaseToken[]> {
+        return loadUserBalance(userInfoState)
+            .then((everpayBalanceList: EverpayBalance[]) => {
+                return everpayBalanceList.map((everpay) => {
+                    return {
+                        name: everpay.symbol,
+                        iconUrl: 'https://cdn.metaforo.io/images/token/' + everpay.symbol.toLowerCase() + '_thumb.png',
+                        decimal: everpay.decimals,
+                        balance: everpay.balance,
+                        tag: everpay.tag,
+                    } as EverpayToken;
+                });
+            });
+    }
+
+    startTipping(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+
+}
+
 
 interface TipEverpayProps {
     toAccount: string;

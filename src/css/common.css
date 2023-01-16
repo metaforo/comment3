@@ -144,43 +144,48 @@
   margin-top: 30px;
 }
 
-.mf-dialog-input .MuiInputBase-root {
-  height: 48px;
-  border-radius: 12px;
-}
-
 .mf-dialog-select {
   display: inline-block;
   position: absolute;
   z-index: 1;
-  left: 0;
 }
-
+.mf-dialog-select.mf-item-1 {
+  left: 30px;
+}
+.mf-dialog-select.mf-item-2 {
+  left: 180px;
+}
 .mf-dialog-select .MuiSelect-select {
   height: 48px;
 }
-
 .mf-dialog-select .MuiSelect-select:focus {
   border-radius: 0;
 }
-
 .mf-dialog-select .MuiOutlinedInput-notchedOutline {
   height: 48px;
   border: none;
 }
-
 .mf-dialog-select .MuiInputBase-root {
   height: 48px;
   border-radius: 12px;
-  width: 135px;
+  width: 150px;
+}
+.mf-dialog-select .MuiSelect-select {
+  width: 150px;
+  border-radius: 0;
+  padding: 0 0 0 8px;
+  border-right: 1px solid #4A4A53;
 }
 
+.mf-dialog-input .MuiInputBase-root {
+  height: 48px;
+  border-radius: 12px;
+}
 .mf-dialog-input .MuiFormControl-root {
   width: 100%;
 }
-
 .mf-dialog-input .MuiInputBase-input {
-  padding-left: 150px;
+  padding-left: 330px;
 }
 
 .mf-balance-select-item {
@@ -190,13 +195,6 @@
 
 .mf-balance-select-item div {
   margin-right: 8px;
-}
-
-.mf-dialog-select .MuiSelect-select {
-  width: 135px;
-  border-radius: 0;
-  padding: 0 0 0 8px;
-  border-right: 1px solid #4A4A53;
 }
 
 .mf-comment-list .MuiListItem-root {
